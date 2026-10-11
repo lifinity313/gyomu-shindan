@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
+<meta name="description" content="7問・約2分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <span class="brand">Lifinity.</span>
+    <span class="brand-sub">無料・2分・登録なし</span>
+  </header>
+
+  <!-- ===== 開始画面 ===== -->
+  <section class="screen active" id="screen-intro">
+    <div class="hero">
+      <div class="hero-art" id="hero-art"></div>
+      <p class="eyebrow">売上アップのための</p>
+      <h1 class="title">「手放す仕事・<br>集中する仕事」診断</h1>
+      <p class="lead">毎日忙しいのに売上が伸びない。集客も営業も事務も、ぜんぶ自分。<br>7つの質問で、あなたの仕事を<strong>マップ</strong>にして、<strong>何を手放し、どこに集中するか</strong>が見えてきます。</p>
+    </div>
+
+    <div class="steps">
+      <div class="step"><span class="step-icon">✍️</span><span class="step-no">1</span><p>7問に<br>タップで答える</p></div>
+      <div class="step"><span class="step-icon">🗺️</span><span class="step-no">2</span><p>あなたの<br>業務マップが出る</p></div>
+      <div class="step"><span class="step-icon">🚀</span><span class="step-no">3</span><p>手放す仕事と<br>次の一手が分かる</p></div>
+    </div>
+
+    <button class="btn btn-primary btn-big" id="btn-start" type="button">診断をはじめる →</button>
+    <ul class="meta">
+      <li>⏱ 全7問・約2分</li>
+      <li>🔒 回答はこの端末の中だけ。外部に送りません</li>
+      <li>🧑‍💼 個人事業主・ひとり社長・講師・コンサル・コーチ・士業の方向け</li>
+    </ul>
+  </section>
+
+  <!-- ===== 質問画面 ===== -->
+  <section class="screen" id="screen-question">
+    <div class="progress" aria-label="進捗">
+      <div class="progress-top"><span class="progress-label" id="progress-label">Q1 / 7</span><span class="progress-pct" id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div class="qcard">
+      <div class="qicon" id="question-icon">🕒</div>
+      <h2 class="question" id="question-title"></h2>
+      <p class="qhint" id="question-hint"></p>
+    </div>
+    <div class="options" id="options" role="group"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" id="btn-back" type="button">← 前の質問へ</button>
+    </div>
+  </section>
+
+  <!-- ===== 結果画面 ===== -->
+  <section class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="result-art" id="result-art"></div>
+      <p class="result-you">あなたは</p>
+      <p class="result-type" id="r-type"></p>
+      <p class="result-tagline" id="r-tagline"></p>
+    </div>
+    <h2 class="result-headline" id="r-headline"></h2>
+    <p class="caveat">7問の回答から考えられる優先候補です。実際の業務時間や売上への貢献を測ったものではないので、ご自身の状況に照らして読んでください。</p>
+
+    <article class="card">
+      <h3 class="card-title"><span class="emoji">🗺️</span>あなたの業務マップ</h3>
+      <p class="card-lead">5つの業務に、回答から見えた「重さ」を積み上げました。バーが長いほど手放す候補です。</p>
+      <div class="legend">
+        <span><i class="sw sw-time"></i>時間を使っている</span>
+        <span><i class="sw sw-burden"></i>負担が大きい</span>
+        <span><i class="sw sw-deleg"></i>人やAIに任せられる</span>
+      </div>
+      <div class="map" id="r-map"></div>
+      <div class="legend legend-marks"><span>💰 売上に最もつながっている</span><span>⭐ もっと時間を使いたい</span></div>
+    </article>
+
+    <article class="card">
+      <h3 class="card-title"><span class="emoji">🎒</span>手放すことを検討したい仕事</h3>
+      <p class="card-lead">「誰に任せるか」と「ChatGPTへの頼み方」も付けました。コピーしてそのまま使えます。</p>
+      <div id="r-release"></div>
+      <p class="card-note" id="r-release-note"></p>
+    </article>
+
+    <article class="card">
+      <h3 class="card-title"><span class="emoji">🎯</span>あなたが集中すべき仕事</h3>
+      <div id="r-focus"></div>
+      <p class="card-note" id="r-focus-note"></p>
+    </article>
+
+    <article class="card card-accent">
+      <h3 class="card-title"><span class="emoji">🚀</span>売上アップのための次の一手</h3>
+      <p class="card-lead">売上の流れのどこが細くなっているかを図にしました。</p>
+      <div class="funnel" id="r-funnel"></div>
+      <p class="priority-title" id="r-priority-title"></p>
+      <p class="priority-text" id="r-priority-text"></p>
+      <p class="card-note" id="r-priority-bridge"></p>
+    </article>
+
+    <article class="card">
+      <h3 class="card-title"><span class="emoji">✅</span>今日からできるアクション</h3>
+      <p class="card-lead">できたらタップしてチェック。3つで今日は十分です。</p>
+      <ul class="actions" id="r-actions"></ul>
+    </article>
+
+    <article class="card card-cta">
+      <div class="cta-art">💁‍♀️</div>
+      <p class="cta-text">診断結果はいかがでしたか？<br>売上を伸ばすためには、仕事を増やすだけでなく、何を手放し、どこに時間と労力を集中させるかが重要です。<br><br><span id="cta-company">Lifinity.</span>では、現在の事業や集客状況を整理し、売上につながる仕組みづくりをサポートしています。<br>自分の事業に合った具体的な改善策を整理したい方は、個別相談をご活用ください。</p>
+      <a class="btn btn-primary" id="btn-consult" href="#" target="_blank" rel="noopener">売上アップのための個別相談はこちら</a>
+    </article>
+
+    <div class="nav nav-center">
+      <button class="btn btn-ghost" id="btn-restart" type="button">↻ 診断を最初からやり直す</button>
+    </div>
+  </section>
+
+  <footer class="footer"><span id="footer-company">Lifinity.</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
