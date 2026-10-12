@@ -145,6 +145,9 @@
     $('rp-type').textContent = r.type;
     $('rp-tagline').textContent = r.tagline;
     $('rp-headline').textContent = r.headline;
+    $('rp-goal').innerHTML = '';
+    $('rp-goal').appendChild(document.createTextNode('あなたの3か月後の目標: '));
+    $('rp-goal').appendChild(el('b', null, r.intake.goal));
 
     var ik = $('rp-intake'); ik.innerHTML = '';
     [['お仕事', r.intake.industry], ['月の売上', r.intake.revenue], ['一番の悩み', r.intake.worry + (r.intake.worryFree ? '（' + r.intake.worryFree + '）' : '')], ['3か月後の目標', r.intake.goal]].forEach(function (row) {
@@ -167,6 +170,7 @@
     tile('商談1件の価値', n.dealValue == null ? '—' : String(n.dealValue), n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
     tile('検討のまま消えた金額（月）', String(n.lostMoney), '万円', '（相談 − 契約）× 単価');
     $('rp-cause').textContent = r.cause;
+    $('rp-alone').textContent = r.alone;
     var fl = $('rp-formulas'); fl.innerHTML = '';
     n.formulas.forEach(function (f) { fl.appendChild(el('li', null, f)); });
 
@@ -213,6 +217,34 @@
 
     var acts = $('rp-actions'); acts.innerHTML = '';
     r.actions.forEach(function (a) { acts.appendChild(el('li', null, a)); });
+
+    /* 個別相談で決めること（config の事実だけ。空なら隠す） */
+    var C = (typeof CONSULT === 'object' && CONSULT) ? CONSULT : {};
+    var cb = $('rp-consult-body'); cb.innerHTML = '';
+    var ck = el('dl', 'ck'), rows = 0;
+    function ckRow(label, val) {
+      if (!val || (Array.isArray(val) && !val.length)) return;
+      ck.appendChild(el('dt', null, label));
+      var dd = el('dd');
+      if (Array.isArray(val)) { var ul = el('ul'); val.forEach(function (v) { ul.appendChild(el('li', null, v)); }); dd.appendChild(ul); }
+      else dd.textContent = val;
+      ck.appendChild(dd); rows++;
+    }
+    ckRow('時間', C.minutes ? C.minutes + '分' : '');
+    ckRow('料金', C.fee);
+    ckRow('決めること', C.decides);
+    ckRow('持ち帰るもの', C.takeaway);
+    ckRow('向いている人', C.fit);
+    ckRow('向かない人', C.notFit);
+    if (C.noHardSell) ckRow('売り込み', 'その場で申し込みを求めることはしません');
+    cb.appendChild(ck);
+    $('rp-consult-block').style.display = rows ? '' : 'none';
+
+    var ab = (typeof ABOUT_TEXT === 'string') ? ABOUT_TEXT.trim() : '';
+    $('rp-about').textContent = ab;
+    $('rp-about-block').style.display = ab ? '' : 'none';
+
+    $('rp-worry').textContent = r.intake.worryFree ? '「' + r.intake.worryFree + '」と書いてくださった件は、相談の最初にお聞きします。' : '';
 
     var cs = $('rp-consult'); cs.innerHTML = '';
     if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) {

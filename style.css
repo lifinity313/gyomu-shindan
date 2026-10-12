@@ -237,3 +237,17 @@ details.formulas li { font-size: 12.5px; color: var(--ink-sub); padding: 4px 0; 
 .report details.prompt summary::after { content: ""; }
 .report .prompt-body { display: block; }
 .report .btn-mini { display: none; }
+
+/* v5: 動線ブロック */
+.rp-goal { margin-top: 8px; font-size: 13px; background: #fff; border-radius: 10px; padding: 6px 10px; display: inline-block; }
+.rp-goal b { color: var(--coral-dark); }
+.rp-alone { background: #fff7ee; border-color: var(--sun); }
+.rp-alone-text { font-size: 14px; }
+.rp-after { margin-top: 10px; font-size: 13.5px; font-weight: 700; color: var(--coral-dark); }
+.rp-consult-block { border: 2px solid var(--coral); }
+.rp-consult-block .ck { display: grid; grid-template-columns: 120px 1fr; gap: 4px 10px; font-size: 13.5px; }
+.rp-consult-block .ck dt { color: var(--ink-sub); font-weight: 700; }
+.rp-consult-block .ck dd { margin: 0; }
+.rp-consult-block ul { padding-left: 18px; margin: 0; }
+.rp-worry { font-size: 13.5px; font-weight: 700; margin-bottom: 6px; }
+.rp-about p { font-size: 13.5px; }
