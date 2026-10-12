@@ -8,7 +8,7 @@ var LEAD_ENDPOINT = "https://lifeinfinity.jp/kyogyo/api/shindan";
 var CONSULT_URL = "https://lifeinfinity.jp/kyogyo/yoyaku";
 
 /* 相談ボタンの文言（PDF とメールに同じ文言で出る。社長の文言そのまま 2026-10-13） */
-var CONSULT_LABEL = "動線設計の個別ロードマップ作戦会議に参加する";
+var CONSULT_LABEL = "導線設計のロードマップ 個別作戦会議に参加する";
 
 /* 個別相談の事実（PDF「個別相談で決めること」に載せる。空の項目は載らない。事実だけ書く） */
 var CONSULT = {
