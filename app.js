@@ -12,14 +12,14 @@
   var OICON = {
     industry: { A: '🎓', B: '⚖️', C: '💆', D: '🎨', E: '🧑‍💼' },
     revenue: { A: '🌱', B: '🌿', C: '🌳', D: '🏢', E: '🏙️' },
-    worry: { A: '📉', B: '🤷', C: '⏰', D: '🧱', E: '🧭' },
+    worry: { A: '📉', B: '🤷', C: '⏰', D: '🧱', E: '🏷️', F: '🧭' },
     goal: { A: '🌙', B: '📈', C: '✍️', D: '🏖️', E: '🚀' },
-    q1: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
+    q1: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡', F: '🧑‍🤝‍🧑', G: '📚' },
     hours: { A: '◔', B: '◑', C: '◕', D: '●' },
-    q2: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
-    q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
-    q4: { A: '📣', B: '🤝', C: '🔁', D: '🧑‍🤝‍🧑', E: '❓' },
-    q5: { A: '🌱', B: '📞', C: '🎁', D: '🧪', E: '🧭' },
+    q2: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡', F: '🍻', G: '📚' },
+    q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '✉️', F: '📚', G: '🤷' },
+    q4: { A: '📣', B: '🤝', C: '🔁', D: '🤲', E: '🧑‍🤝‍🧑', F: '🔍', G: '❓' },
+    q5: { A: '🌱', B: '📞', C: '🎁', D: '🧪', E: '🧭', F: '📚' },
     q6: { A: '🏃', B: '🚧', C: '🤔', D: '📨', E: '⚙️' },
     leads: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
     won: { A: '0️⃣', B: '1️⃣', C: '2️⃣', D: '4️⃣' },
@@ -84,7 +84,8 @@
     $('progress-fill').style.width = pct + '%';
     $('phase').innerHTML = index < INTAKE_COUNT ? '<b>STEP 1</b>　今の状況と目標' : '<b>STEP 2</b>　仕事と数字';
     $('question-icon').textContent = q.icon;
-    $('question-title').textContent = q.title;
+    var q1q = QUESTIONS.filter(function (x) { return x.id === 'q1'; })[0];
+    $('question-title').textContent = q.title.replace('{q1}', answers.q1 ? q1q.options[answers.q1] : 'その仕事');
     $('question-hint').textContent = q.hint || '';
     var box = $('options'); box.innerHTML = '';
     Object.keys(q.options).forEach(function (letter) {
