@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
 <meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <div class="app">
@@ -118,42 +118,36 @@
 <!-- ===== PDF用レポート（A4 3枚。画面外で描画して1枚ずつPDF化） ===== -->
 <div class="report" id="report" aria-hidden="true">
 
-  <!-- 1枚目: 結論 -->
+  <!-- 1枚目: 結論（4つだけ） -->
   <section class="rp-page rp-p1">
     <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta" id="rp-meta"></span></div>
-    <div class="rp-p1-hero">
-      <div class="rp-art" id="rp-art"></div>
-      <div>
-        <div class="rp-you">診断結果　あなたは</div>
-        <div class="rp-type" id="rp-type"></div>
-        <div class="rp-stop" id="rp-stop"></div>
-      </div>
-    </div>
+    <div class="rp-chip"><span id="rp-type"></span></div>
+    <h1 class="rp-h1" id="rp-stop"></h1>
     <div class="rp-key">
-      <div class="rp-key-label" id="rp-key-label"></div>
       <div class="rp-key-num"><span id="rp-key-num"></span><small id="rp-key-unit"></small></div>
+      <div class="rp-key-label" id="rp-key-label"></div>
       <div class="rp-key-sub" id="rp-key-sub"></div>
     </div>
-    <div class="rp-why">
-      <div class="rp-h">回答から分かったこと</div>
-      <ul id="rp-why"></ul>
-    </div>
-    <div class="rp-two">
-      <div class="rp-box rp-box-stop"><div class="rp-box-h">やめること</div><p id="rp-stop-do"></p></div>
-      <div class="rp-box rp-box-go"><div class="rp-box-h">集中すること</div><p id="rp-go-do"></p></div>
+    <div class="rp-go">
+      <div class="rp-go-h">だから、やることは1つ</div>
+      <p id="rp-go-do"></p>
+      <p class="rp-go-not" id="rp-stop-do"></p>
     </div>
     <div class="rp-cta1">
-      <div class="rp-h">個別相談で決めること</div>
+      <div class="rp-go-h">個別相談で、これを一緒に直します</div>
       <div id="rp-consult-body"></div>
       <p class="rp-worry" id="rp-worry"></p>
       <div class="rp-consult" id="rp-consult"></div>
     </div>
-    <div class="rp-foot">1/3　詳しい根拠は2枚目、今日からの手順は3枚目</div>
+    <div class="rp-art-small" id="rp-art"></div>
+    <div class="rp-foot">1/3　根拠は2枚目、今日からの手順は3枚目</div>
   </section>
 
   <!-- 2枚目: 根拠 -->
   <section class="rp-page rp-p2">
     <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta">なぜ、そこで止まるのか</span></div>
+    <div class="rp-h2">回答から分かったこと</div>
+    <ul class="rp-why" id="rp-why"></ul>
     <div class="rp-h2">あなたの1週間、たぶんこう</div>
     <div class="scene" id="rp-scene"></div>
     <div class="rp-h2">このタイプがやりがちな3つ</div>
@@ -187,8 +181,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="config.js?v=7"></script>
-<script src="logic.js?v=7"></script>
-<script src="app.js?v=7"></script>
+<script src="config.js?v=8"></script>
+<script src="logic.js?v=8"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

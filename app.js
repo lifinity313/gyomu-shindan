@@ -141,21 +141,27 @@
   /* 1枚目の主役の数字と、やめる／集中する の1行（タイプ×数字） */
   function headlineParts(r) {
     var n = r.numbers, a = answers, q6 = a.q6;
-    var stage = { A: '入口（集客）', B: '問い合わせから相談への間', C: '相談から契約への間', D: '今のお客さんの対応', E: '流れの中の、まだ見えていない1か所' }[q6];
+    var stage = {
+      A: 'あなたの売上は、あなたが動くのをやめた瞬間に止まります。',
+      B: '問い合わせは来ています。相談に進む前に、ほとんどが消えています。',
+      C: '相談までは来ています。「検討します」のあとで、消えています。',
+      D: '今のお客さんの対応で手がふさがり、新しい人を待たせています。',
+      E: '仕組みはあります。どこを押せば伸びるかが、まだ決まっていません。'
+    }[q6];
     var key, stop, go;
     if (q6 === 'C' && n.leads > 0) {
-      key = { label: '検討のまま消えている金額（月）', num: String(n.lostMoney), unit: '万円', sub: '相談' + n.leads + '件のうち契約' + n.won + '件。残り' + n.lostCount + '件 × 単価' + n.price + '万円。新しい集客より、ここを拾う方が早い。' };
+      key = { label: '毎月、このお金が「検討します」のまま消えています', num: String(n.lostMoney), unit: '万円', sub: '相談' + n.leads + '件のうち契約' + n.won + '件。残り' + n.lostCount + '件 × 単価' + n.price + '万円。' };
     } else if (q6 === 'D') {
-      key = { label: '対応を型にすると戻る時間（月）', num: String(Math.round(n.freeMonth)), unit: '時間', sub: '商談' + n.dealsFromTime + '件分。先月の相談は' + n.leads + '件なので、この時間だけで相談を倍にできる。' };
+      key = { label: '毎月、この時間が同じ対応に消えています', num: String(Math.round(n.freeMonth)), unit: '時間', sub: '商談' + n.dealsFromTime + '件分。先月の相談は' + n.leads + '件です。' };
     } else if (q6 === 'E' && n.dealValue != null) {
-      key = { label: '商談1件の価値', num: String(n.dealValue), unit: '万円', sub: '成約率を10ポイント上げると月' + Math.round(n.leads * n.price * 0.1 * 10) / 10 + '万円。相談を1件増やすより、細い所を1つ太くする方が早い。' };
+      key = { label: '商談1件の価値', num: String(n.dealValue), unit: '万円', sub: '成約率を10ポイント上げると、月' + Math.round(n.leads * n.price * 0.1 * 10) / 10 + '万円増えます。' };
     } else if (q6 === 'B') {
-      key = { label: '相談まで来た人（先月）', num: String(n.leads), unit: '件', sub: '問い合わせは、この数より多いはず。相談に進む前に消えた人を数えていないので、取りこぼしが見えていない。' };
+      key = { label: '先月、相談まで来た人', num: String(n.leads), unit: '件', sub: '問い合わせはこの数より多いはず。相談に進む前に消えた人を、数えていません。' };
     } else {
-      key = { label: '先月の相談（あなたが動いた分だけ）', num: String(n.leads), unit: '件', sub: '投稿と声かけを止めた週は0。入口があなたの手にある限り、この数は稼働で頭打ち。' };
+      key = { label: '先月の相談。あなたが動いた分だけ', num: String(n.leads), unit: '件', sub: '投稿と声かけを止めた週は0件。この数は、あなたの稼働で頭打ちです。' };
     }
-    stop = { A: '新しい集客施策を増やすこと', B: '問い合わせに丁寧に返して終わること', C: '商談の数を増やそうとすること', D: '問い合わせを後回しにすること', E: '新しい集客から手を付けること' }[q6];
-    go = { A: '入口を自分の手から外す（予約枠・固定投稿の相談の入口）', B: '返信のあとに「次の一歩」を置く（日程・資料・質問）', C: '相談で「決める基準」を先に聞く。価格は最後にしない', D: '同じ返信を型にして、空いた時間を新規に回す', E: '集客→商談→成約→継続を数字で並べ、細い1か所を直す' }[q6];
+    stop = { A: '新しい集客を増やすのは、その後です。', B: '返信を丁寧にするだけでは、変わりません。', C: '商談の数を増やしても、同じ割合で消えます。', D: '新しい集客を増やしても、受けられません。', E: '新しい集客から手を付けると、細い所はそのままです。' }[q6];
+    go = { A: '相談の入口を、あなたが居なくても動く形にする（予約枠と、固定投稿からの申込み）。', B: '問い合わせに返したあと、「次の一歩」（日程・資料・質問）を必ず置く。', C: '相談の最初に「何があれば決められるか」を聞く。価格は最後にしない。', D: '同じ返信を型にして、空いた時間を新しい人に回す。', E: '集客→商談→成約→継続の数を並べて、一番細い所を1つ直す。' }[q6];
     return { stage: stage, key: key, stop: stop, go: go };
   }
 
@@ -174,7 +180,7 @@
     $('rp-meta').textContent = (answers.leadName ? answers.leadName + ' 様　' : '') + new Date().toLocaleDateString('ja-JP');
     $('rp-art').innerHTML = charSVG(r.mood);
     $('rp-type').textContent = r.type;
-    $('rp-stop').textContent = '売上が止まっている場所は、' + hp.stage + 'です。';
+    $('rp-stop').textContent = hp.stage;
     $('rp-key-label').textContent = hp.key.label;
     $('rp-key-num').textContent = hp.key.num;
     $('rp-key-unit').textContent = hp.key.unit;
@@ -204,7 +210,7 @@
     ckRow('向かない人', C.notFit);
     if (C.noHardSell) ckRow('売り込み', 'その場で申し込みを求めることはしません');
     if (rows) cb.appendChild(ck);
-    else cb.appendChild(el('p', 'rp-empty', hp.stage + 'を、あなたの事業の形でどう直すかを一緒に決めます。'));
+    else cb.appendChild(el('p', 'rp-empty', '上の1つを、あなたの事業の形でどう進めるかを一緒に決めます。'));
     $('rp-worry').textContent = r.intake.worryFree ? '「' + r.intake.worryFree + '」と書いてくださった件から始めます。' : '';
     var cs = $('rp-consult'); cs.innerHTML = '';
     if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) {
