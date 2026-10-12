@@ -10,8 +10,7 @@
   /* 質問ごとのアイコンとヒント、選択肢のアイコン */
   var OICON = {
     q1: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
-    ratio: { A: '◔', B: '◑', C: '◕', D: '●' },
-    hours: { A: '🌤️', B: '🌥️', C: '🌧️', D: '⛈️' },
+    hours: { A: '◔', B: '◑', C: '◕', D: '●' },
     q2: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
     q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
     q4: { A: '📣', B: '🤝', C: '🔁', D: '🧑‍🤝‍🧑', E: '❓' },
@@ -187,7 +186,7 @@
     var map = $('r-map'); map.innerHTML = '';
     var topCat = r.release[0].cat;
     r.map.forEach(function (m) {
-      var row = el('div', 'mrow' + (m.cat === topCat ? ' top' : ''));
+      var row = el('div', 'mrow' + (m.cat === topCat && m.eligible ? ' top' : ''));
       var ic = el('div', 'micon', m.icon); ic.style.background = m.color + '33';
       row.appendChild(ic);
       var mid = el('div');

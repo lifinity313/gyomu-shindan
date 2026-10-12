@@ -1,20 +1,18 @@
 /* 診断ロジック v3（ブラウザと node の両方で動く純粋関数）
-   answers = { q1:'A'.., ratio:'A'.., hours:'A'.., q2..q7, leads:'A'.., won:'A'.., price:'A'.. } → 結果 */
+   answers = { q1:'A'.., hours:'A'.., q2..q7, leads:'A'.., won:'A'.., price:'A'.. } → 結果 */
 (function (root) {
   'use strict';
 
   /* ---------- 質問（場面で聞く） ---------- */
   var QUESTIONS = [
-    { id: 'q1', kind: 'cat', icon: '🖥️', title: '先週、あなたの画面に一番長く映っていたのは？', hint: '思い出せる範囲で、一番長かったもの',
-      options: { A: '投稿の下書きと Canva', B: 'Zoom の商談と提案資料', C: 'お客さんとの LINE と納品物', D: 'カレンダー調整・請求書・資料のフォルダ', E: '企画のメモと戦略ノート' } },
-    { id: 'ratio', kind: 'ratio', icon: '⏳', title: 'それは、仕事時間のどれくらいを占めていますか？', hint: 'ざっくりでOK',
-      options: { A: '2割くらい', B: '4割くらい', C: '6割くらい', D: '8割以上' } },
-    { id: 'hours', kind: 'num', icon: '🕒', title: '先週の仕事時間は、だいたい何時間？', hint: '移動や「ちょっと返信」も含めて',
-      options: { A: '30時間以下', B: '30〜45時間', C: '45〜60時間', D: '60時間以上' } },
-    { id: 'q2', kind: 'cat', icon: '😮‍💨', title: '来週の予定表で、見た瞬間にため息が出るのは？', hint: '「これ来るのか」と思うもの',
+    { id: 'q1', kind: 'cat', icon: '🕒', title: '先週、一番時間を使った仕事は？', hint: '一番近いものを1つ',
+      options: { A: 'SNS の投稿づくり・集客', B: '商談・提案', C: 'お客さんへの対応・サービス提供', D: '事務・日程調整・資料作成', E: '商品づくり・企画・経営のこと' } },
+    { id: 'hours', kind: 'num', icon: '⏳', title: 'その仕事に、週に何時間くらい使っていますか？', hint: 'ざっくりでOK',
+      options: { A: '5時間以下', B: '5〜10時間', C: '10〜20時間', D: '20時間以上' } },
+    { id: 'q2', kind: 'cat', icon: '😮‍💨', title: '来週の予定で、いちばん気が重いのは？', hint: '「これ来るのか」と思うもの',
       options: { A: '投稿のネタ出しの時間', B: '初対面の人との商談', C: 'お客さんからの「ちょっと相談いいですか」', D: '月末の請求と資料づくり', E: '「新しい商品を考える」と書いた空白の時間' } },
-    { id: 'q3', kind: 'cat', icon: '🗣️', title: '「それ、自分でやらなくてよくない？」と言われたことがあるのは？', hint: '家族・友人・お客さんの誰でも',
-      options: { A: '投稿づくり', B: '日程調整と商談前の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '言われたことがない' } },
+    { id: 'q3', kind: 'cat', icon: '🤖', title: '自分でなくても（人や AI でも）できると思う作業は？', hint: '「本当は自分がやらなくていい」と思うもの',
+      options: { A: '投稿づくり', B: '日程調整と商談前の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '思いつかない' } },
     { id: 'q4', kind: 'cat', icon: '💰', title: '直近で契約になったお客さんは、どこから来ましたか？', hint: '一番最近の1人を思い出して',
       options: { A: '投稿や広告を見て DM が来た', B: '自分から声をかけて商談した', C: '既存のお客さんの継続・追加', D: '知人・お客さんからの紹介', E: '思い出せない／ばらばら' } },
     { id: 'q5', kind: 'cat', icon: '🌤️', title: '予定が全部消えた1日。仕事で何をしますか？', hint: '義務ではなく、やりたいこと',
@@ -31,8 +29,7 @@
       options: { A: '3万円まで', B: '3〜10万円', C: '10〜30万円', D: '30〜100万円', E: '100万円以上' } }
   ];
 
-  var RATIO = { A: 0.2, B: 0.4, C: 0.6, D: 0.8 };
-  var HOURS = { A: 25, B: 38, C: 52, D: 65 };
+  var HOURS = { A: 3, B: 7.5, C: 15, D: 25 }; /* その仕事に使う週の時間 */
   var LEADS = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
   var WON   = { A: 0, B: 1, C: 2.5, D: 5 };
   var PRICE = { A: 2, B: 6, C: 18, D: 60, E: 150 }; /* 万円 */
@@ -154,9 +151,9 @@
 
   function diagnose(a) {
     /* ---------- 数字 ---------- */
-    var hours = HOURS[a.hours], ratio = RATIO[a.ratio], leads = LEADS[a.leads], won = Math.min(WON[a.won], LEADS[a.leads] || 0), price = PRICE[a.price];
+    var leads = LEADS[a.leads], won = Math.min(WON[a.won], LEADS[a.leads] || 0), price = PRICE[a.price];
     if (a.leads === 'A') won = 0;
-    var topHours = hours * ratio;                 /* 週に一番長い業務へ使う時間 */
+    var topHours = HOURS[a.hours];                /* 一番時間を使う仕事の週の時間 */
     var freeWeek = topHours * 0.5;                /* 定型と見る半分 */
     var freeMonth = freeWeek * 4.3;
     var dealsFromTime = Math.floor(freeMonth / 1.5);
@@ -165,11 +162,11 @@
     var lostCount = Math.max(leads - won, 0);
     var lostMoney = lostCount * price;
     var numbers = {
-      hours: hours, ratio: ratio, topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
+      topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
       leads: leads, won: won, rate: rate, ratePct: rate != null ? Math.round(rate * 100) : null,
       price: price, dealValue: dealValue != null ? round1(dealValue) : null, lostCount: lostCount, lostMoney: lostMoney,
       formulas: [
-        '手放すと浮く時間 ＝ 週' + hours + '時間 × ' + Math.round(ratio * 100) + '% × 半分（定型とみなす） ＝ 週' + round1(freeWeek) + '時間 ＝ 月' + round1(freeMonth) + '時間',
+        '手放すと浮く時間 ＝ 週' + topHours + '時間 × 半分（定型の作業とみなす） ＝ 週' + round1(freeWeek) + '時間 ＝ 月' + round1(freeMonth) + '時間',
         '商談に換算 ＝ 月' + round1(freeMonth) + '時間 ÷ 1.5時間（商談1件の準備込み） ＝ ' + dealsFromTime + '件分',
         rate != null ? '成約率 ＝ 契約' + won + '件 ÷ 相談' + leads + '件 ＝ ' + Math.round(rate * 100) + '%' : '成約率 ＝ 相談0件のため計算できません',
         dealValue != null ? '商談1件の価値 ＝ ' + man(price) + ' × ' + Math.round(rate * 100) + '% ＝ ' + man(dealValue) : '商談1件の価値 ＝ 相談が1件あれば計算できます',
@@ -185,13 +182,21 @@
     Q3_MAP[a.q3].forEach(function (m) { add(m.cat, m.pts, m.pts >= 3 ? 'delegable' : null); });
     var revenueCat = Q4_MAP[a.q4].cat;
     var order = ['sns', 'sales', 'service', 'admin', 'dev'];
-    var ranked = Object.keys(score).sort(function (x, y) { return (score[y] - score[x]) || (order.indexOf(x) - order.indexOf(y)); }).slice(0, 3);
+    /* 手放す対象は導線の中の手作業だけ。顧客対応は Q3 で本人が「定型の返信」を選んだときだけ、商品づくり・経営は対象外 */
+    var eligible = Object.keys(score).filter(function (cat) {
+      if (cat === 'dev') return false;
+      if (cat === 'service') return a.q3 === 'C';
+      return true;
+    });
+    var ranked = eligible.sort(function (x, y) { return (score[y] - score[x]) || (order.indexOf(x) - order.indexOf(y)); }).slice(0, 3);
+    var fallback = false;
+    if (!ranked.length) { ranked = ['admin']; fallback = true; }
     var release = ranked.map(function (cat) {
       var c = CATS[cat], tags = hits[cat] || [], names = [];
       if (tags.indexOf('time') >= 0) names.push('画面に一番長く映っていた');
       if (tags.indexOf('burden') >= 0) names.push('予定表でため息が出る');
       if (tags.indexOf('delegable') >= 0) names.push('人に「自分でやらなくていい」と言われた');
-      var why = names.length ? joinJa(names) + '業務です。' : '「日程調整と商談前の準備」に含まれる事務として候補に入れています。';
+      var why = names.length ? joinJa(names) + '仕事の中の、手作業の部分です。' : (fallback ? '回答からは絞れないので、導線の中で一番手作業が多い日程調整と請求から始めます。' : '「日程調整と商談前の準備」に含まれる事務です。');
       var isRevenue = (cat === revenueCat);
       if (isRevenue) why += 'ただし直近の契約はここから来ています。業務ごと手放すのではなく、定型の作業だけを切り出します。「' + c.keep + '」は自分に残します。';
       else if (cat === 'dev') why += '「' + c.keep + '」は手放さず、その前の準備作業だけを任せます。';
@@ -199,7 +204,9 @@
       return { cat: cat, category: c.label, icon: c.icon, color: c.color, title: c.routine, why: why, revenueProtected: isRevenue, tryToday: c.tryToday, tools: c.tools, prompt: c.prompt };
     });
     var topCat = ranked[0];
-    var releaseNote = (a.q3 === 'E') ? '「自分でやらなくていい」と言われたことが無いのは、周りに見せていないからかもしれません。今週、上の業務を1つ誰かに話してみてください。' : '';
+    var releaseNote = '';
+    if (CAT_BY_LETTER[a.q1] === 'service' && a.q3 !== 'C') releaseNote = 'お客さんへの対応とサービス提供は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
+    if (CAT_BY_LETTER[a.q1] === 'dev') releaseNote = '商品づくり・企画・経営は手放しません。その前の下調べと資料の整形だけを任せます。';
     if (topCat === CAT_BY_LETTER[a.q1]) {
       releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、商談' + dealsFromTime + '件分の時間が戻ります。';
     }
@@ -225,7 +232,7 @@
     /* ---------- 因果（タイプ × 数字） ---------- */
     var cause;
     if (a.q6 === 'A') {
-      cause = '新規の数は「あなたの稼働 × 発信の本数」で決まっています。週' + hours + '時間働いて、先月の相談は' + leads + '件。稼働を増やす余地はもうほとんど無いので、同じ稼働で相談が増える形（入口の自動化）に変えるしかありません。';
+      cause = '新規の数は「あなたが動いた分 × 発信の本数」で決まっています。先月の相談' + leads + '件は、あなたの手で作った分です。稼働はこれ以上増やせないので、同じ稼働で相談が増える形（入口の自動化）に変えるしかありません。';
     } else if (a.q6 === 'B') {
       cause = leads > 0
         ? '先月、相談まで進んだのは' + leads + '件、契約は' + won + '件。問い合わせの数はもっと多いはずです。問い合わせ→相談の率を数えていないので、どこで消えているかが見えていません。'
@@ -255,7 +262,7 @@
       return { cat: cat, label: CATS[cat].label, icon: CATS[cat].icon, color: CATS[cat].color,
                time: tags.indexOf('time') >= 0 ? 2 : 0, burden: tags.indexOf('burden') >= 0 ? 2 : 0,
                delegable: (Q3_MAP[a.q3].filter(function (m) { return m.cat === cat; })[0] || { pts: 0 }).pts,
-               isRevenue: (revenueCat === cat), isWant: (want.cat === cat) };
+               isRevenue: (revenueCat === cat), isWant: (want.cat === cat), eligible: eligible.indexOf(cat) >= 0 };
     });
 
     return {
