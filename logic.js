@@ -1,237 +1,269 @@
-/* 診断ロジック（ブラウザと node の両方で動く純粋関数）
-   answers = { q1:'A'..'E', ..., q7:'A'..'E' } → 結果オブジェクト */
+/* 診断ロジック v3（ブラウザと node の両方で動く純粋関数）
+   answers = { q1:'A'.., ratio:'A'.., hours:'A'.., q2..q7, leads:'A'.., won:'A'.., price:'A'.. } → 結果 */
 (function (root) {
   'use strict';
 
+  /* ---------- 質問（場面で聞く） ---------- */
   var QUESTIONS = [
-    { id: 'q1', title: '現在、最も時間を使っている業務は？',
-      options: { A: 'SNS発信・集客活動', B: '営業・商談・提案', C: '顧客対応・サービス提供', D: '事務・日程調整・資料作成', E: '商品開発・企画・経営戦略' } },
-    { id: 'q2', title: '最も負担を感じている業務は？',
-      options: { A: 'SNS発信・集客活動', B: '営業・商談・提案', C: '顧客対応・サービス提供', D: '事務・日程調整・資料作成', E: '商品開発・企画・経営戦略' } },
-    { id: 'q3', title: '自分以外の人やAIでも対応できそうな業務は？',
-      options: { A: 'SNS発信・集客活動', B: '営業準備・日程調整・顧客管理', C: '顧客対応の一部', D: '事務・資料作成', E: '特に思いつかない' } },
-    { id: 'q4', title: '現在、最も売上につながっている活動は？',
-      options: { A: 'SNS・広告などの集客', B: '商談・営業・提案', C: '既存顧客へのサービス提供・継続契約', D: '紹介・人脈づくり', E: '何が売上につながっているかわからない' } },
-    { id: 'q5', title: '本当はもっと時間を使いたいことは？',
-      options: { A: '新しい見込み客との接点づくり', B: '商談・提案・成約活動', C: '顧客への価値提供', D: '商品開発・新規事業', E: '経営戦略・仕組みづくり' } },
-    { id: 'q6', title: '現在の集客・売上の仕組みは？',
-      options: { A: '自分が動かないと新規顧客が増えない', B: '集客はできるが商談につながらない', C: '商談はあるが成約につながらない', D: '既存顧客の対応で新規集客に時間を使えない', E: 'ある程度仕組み化できている' } },
-    { id: 'q7', title: '今、最も改善したいことは？',
-      options: { A: '業務時間を減らしたい', B: '集客を安定させたい', C: '商談・成約を増やしたい', D: '自分がいなくても業務が回る状態にしたい', E: '売上をさらに拡大したい' } }
+    { id: 'q1', kind: 'cat', icon: '🖥️', title: '先週、あなたの画面に一番長く映っていたのは？', hint: '思い出せる範囲で、一番長かったもの',
+      options: { A: '投稿の下書きと Canva', B: 'Zoom の商談と提案資料', C: 'お客さんとの LINE と納品物', D: 'カレンダー調整・請求書・資料のフォルダ', E: '企画のメモと戦略ノート' } },
+    { id: 'ratio', kind: 'ratio', icon: '⏳', title: 'それは、仕事時間のどれくらいを占めていますか？', hint: 'ざっくりでOK',
+      options: { A: '2割くらい', B: '4割くらい', C: '6割くらい', D: '8割以上' } },
+    { id: 'hours', kind: 'num', icon: '🕒', title: '先週の仕事時間は、だいたい何時間？', hint: '移動や「ちょっと返信」も含めて',
+      options: { A: '30時間以下', B: '30〜45時間', C: '45〜60時間', D: '60時間以上' } },
+    { id: 'q2', kind: 'cat', icon: '😮‍💨', title: '来週の予定表で、見た瞬間にため息が出るのは？', hint: '「これ来るのか」と思うもの',
+      options: { A: '投稿のネタ出しの時間', B: '初対面の人との商談', C: 'お客さんからの「ちょっと相談いいですか」', D: '月末の請求と資料づくり', E: '「新しい商品を考える」と書いた空白の時間' } },
+    { id: 'q3', kind: 'cat', icon: '🗣️', title: '「それ、自分でやらなくてよくない？」と言われたことがあるのは？', hint: '家族・友人・お客さんの誰でも',
+      options: { A: '投稿づくり', B: '日程調整と商談前の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '言われたことがない' } },
+    { id: 'q4', kind: 'cat', icon: '💰', title: '直近で契約になったお客さんは、どこから来ましたか？', hint: '一番最近の1人を思い出して',
+      options: { A: '投稿や広告を見て DM が来た', B: '自分から声をかけて商談した', C: '既存のお客さんの継続・追加', D: '知人・お客さんからの紹介', E: '思い出せない／ばらばら' } },
+    { id: 'q5', kind: 'cat', icon: '🌤️', title: '予定が全部消えた1日。仕事で何をしますか？', hint: '義務ではなく、やりたいこと',
+      options: { A: '新しい人に会いに行く・DM を送る', B: '止まっている商談の相手に連絡する', C: '今のお客さんに、もう一段深い提案をする', D: '新しい商品の設計を書く', E: '業務の手順書と仕組みを作る' } },
+    { id: 'q6', kind: 'cat', icon: '🔁', title: '投稿と声かけを1か月止めたら、新規の問い合わせはどうなりますか？', hint: '今の売上の流れに一番近いもの',
+      options: { A: 'ゼロになる', B: '来るけど「また考えます」で終わる', C: '相談までは来るが「検討します」で消える', D: 'そもそも問い合わせを後回しにしている', E: '止めても1〜2件は来る' } },
+    { id: 'q7', kind: 'cat', icon: '🎯', title: '3か月後、何が変わっていたら「よくやった」と言えますか？', hint: '1つだけ',
+      options: { A: '夜9時にパソコンを閉じている', B: '毎月決まった数の問い合わせが来ている', C: '月の契約が今より2件増えている', D: '1週間休んでも仕事が回っている', E: '月の売上が今の1.5倍になっている' } },
+    { id: 'leads', kind: 'num', icon: '📥', title: '先月、新規の相談・商談は何件ありましたか？', hint: '問い合わせではなく、話をした件数',
+      options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
+    { id: 'won', kind: 'num', icon: '✍️', title: 'そのうち、契約になったのは何件？', hint: '',
+      options: { A: '0件', B: '1件', C: '2〜3件', D: '4件以上' } },
+    { id: 'price', kind: 'num', icon: '💴', title: 'お客さん1人あたりの売上（1契約）は、だいたい？', hint: '一番多い商品で',
+      options: { A: '3万円まで', B: '3〜10万円', C: '10〜30万円', D: '30〜100万円', E: '100万円以上' } }
   ];
 
-  /* 業務カテゴリ（Q1・Q2の選択肢と同じ5分類） */
+  var RATIO = { A: 0.2, B: 0.4, C: 0.6, D: 0.8 };
+  var HOURS = { A: 25, B: 38, C: 52, D: 65 };
+  var LEADS = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
+  var WON   = { A: 0, B: 1, C: 2.5, D: 5 };
+  var PRICE = { A: 2, B: 6, C: 18, D: 60, E: 150 }; /* 万円 */
+
+  /* ---------- 業務カテゴリ ---------- */
   var CAT_BY_LETTER = { A: 'sns', B: 'sales', C: 'service', D: 'admin', E: 'dev' };
   var CATS = {
-    sns:     { label: 'SNS発信・集客活動', icon: '📣', color: '#ff7a59',
+    sns:     { label: 'SNS発信・集客', icon: '📣', color: '#ff7a59',
+               scene: '朝いちばんに Instagram を開き、昨日の投稿の数字を見てから1日が始まる。投稿は「今日こそ作り置き」と言いながら、結局その日の分だけ。',
+               routine: '投稿の下書き・画像づくり・予約投稿',
+               keep: '発信の方針と、反応してくれた人への返信',
                tools: ['ChatGPT', 'Canva', '予約投稿ツール'],
                prompt: 'あなたはSNS運用のプロです。私は【あなたの職業・対象のお客様】です。次のテーマで、Instagram／Threads向けの投稿文を3案、各150字以内で書いてください。1行目は読者が思わず止まる一言にしてください。\nテーマ：【ここにテーマ】\n読者の悩み：【ここに悩み】',
-               routine: '投稿の下書き作成・画像づくり・予約投稿',
-               keep: '発信の方針と、反応してくれた人への返信',
-               tryToday: '次の投稿1本の下書きをAIに出させ、直すのにかかった時間を測る' },
+               tryToday: '次の投稿1本の下書きを ChatGPT に出させ、直すのにかかった時間を測る' },
     sales:   { label: '営業・商談・提案', icon: '🤝', color: '#2bb3a3',
-               tools: ['ChatGPT', '日程予約ツール（TimeRex・Googleカレンダー予約）', 'スプレッドシート'],
-               prompt: '次の商談相手に送る日程調整メールを、丁寧で短い文面で書いてください。候補日を3つ入れ、相手が1行返すだけで決まる形にしてください。\n相手：【会社名・お名前】\n候補日：【日時を3つ】\n商談の目的：【ここに目的】',
+               scene: 'Zoom の前に資料を直し、商談が終わるとまた次の資料。1日に話した人数は多いのに、契約の話まで行った会話は少ない。',
                routine: '商談前の資料準備・日程調整・見込み客リストの管理',
                keep: '商談・提案そのもの',
+               tools: ['ChatGPT', '日程予約ツール（TimeRex・Google カレンダー予約）', 'スプレッドシート'],
+               prompt: '次の商談相手に送る日程調整メールを、丁寧で短い文面で書いてください。候補日を3つ入れ、相手が1行返すだけで決まる形にしてください。\n相手：【会社名・お名前】\n候補日：【日時を3つ】\n商談の目的：【ここに目的】',
                tryToday: '次の商談の日程調整を、予約ページかテンプレート返信で済ませる' },
     service: { label: '顧客対応・サービス提供', icon: '💬', color: '#8b7cf6',
-               tools: ['ChatGPT', 'LINE公式アカウントの自動応答', 'よくある質問ページ'],
-               prompt: 'お客様からよく来る次の質問に対する返信テンプレートを作ってください。丁寧で簡潔に、3〜5行、最後に次の案内を1行添えてください。\n質問：【ここに質問】\n私のサービス：【ここにサービス内容】\n伝えたい結論：【ここに結論】',
+               scene: 'お客さんからの LINE に「少々お待ちください」と返して、今の作業を止める。納品物を直している間に、次の相談が来る。',
                routine: '定型の問い合わせ対応・よくある質問への回答・納品物の整形',
                keep: '顧客ごとに判断が要る対応と、価値を届ける部分',
+               tools: ['ChatGPT', 'LINE 公式アカウントの自動応答', 'よくある質問ページ'],
+               prompt: 'お客様からよく来る次の質問に対する返信テンプレートを作ってください。丁寧で簡潔に、3〜5行、最後に次の案内を1行添えてください。\n質問：【ここに質問】\n私のサービス：【ここにサービス内容】\n伝えたい結論：【ここに結論】',
                tryToday: '一番多い質問を1つ選び、回答テンプレートを作って次回はそれを貼る' },
     admin:   { label: '事務・日程調整・資料作成', icon: '📄', color: '#ffc857',
-               tools: ['ChatGPT', '請求書ツール（freee・マネーフォワード）', 'オンライン秘書'],
-               prompt: '次の内容で、お客様へ送る資料の構成案（見出しと各見出しの要点）を作ってください。A4で3枚以内、専門用語は使わず、お客様が決めやすい順番にしてください。\n資料の目的：【ここに目的】\n読む人：【ここに相手】\n入れたい内容：【箇条書きで】',
+               scene: '日程調整の往復が3通目になり、請求書の数字を2回確認し、資料のフォルダ名を考えている間に午前が終わる。',
                routine: '日程調整・請求書や資料のひな形づくり・経費処理',
                keep: '最終的な確認と承認',
-               tryToday: '次に作る請求書か資料を、ひな形から作るかAIに下書きさせる' },
+               tools: ['ChatGPT', '請求書ツール（freee・マネーフォワード）', 'オンライン秘書'],
+               prompt: '次の内容で、お客様へ送る資料の構成案（見出しと各見出しの要点）を作ってください。A4で3枚以内、専門用語は使わず、お客様が決めやすい順番にしてください。\n資料の目的：【ここに目的】\n読む人：【ここに相手】\n入れたい内容：【箇条書きで】',
+               tryToday: '次に作る請求書か資料を、ひな形から作るか ChatGPT に下書きさせる' },
     dev:     { label: '商品開発・企画・経営戦略', icon: '💡', color: '#5ec27f',
-               tools: ['ChatGPT（Deep Research）', 'Perplexity', 'Canva'],
-               prompt: '【業界】で【対象のお客様】向けに【サービス内容】を提供しています。競合3社の特徴・価格帯・強みを表で整理し、出典のURLも付けてください。最後に、私が差別化できそうな切り口を3つ挙げてください。',
+               scene: 'ノートに新しい商品の構成を書き足す。先月も書いた。まだ誰にも見せていない。',
                routine: '市場調査の下調べ・企画書や資料の整形',
                keep: '何を作るか、どこへ向かうかを決めること',
-               tryToday: '次の企画の下調べをAIに出させ、自分は読んで判断するだけにする' }
+               tools: ['ChatGPT（Deep Research）', 'Perplexity', 'Canva'],
+               prompt: '【業界】で【対象のお客様】向けに【サービス内容】を提供しています。競合3社の特徴・価格帯・強みを表で整理し、出典のURLも付けてください。最後に、私が差別化できそうな切り口を3つ挙げてください。',
+               tryToday: '次の企画の下調べを ChatGPT に出させ、自分は読んで判断するだけにする' }
   };
 
-  /* Q3 の選択肢を業務カテゴリに対応づける（文言が他の設問と違うため内部で変換） */
-  var Q3_MAP = {
-    A: [{ cat: 'sns', pts: 3 }],
-    B: [{ cat: 'sales', pts: 3 }, { cat: 'admin', pts: 1 }],  /* 営業準備・日程調整・顧客管理＝営業の定型部分＋事務 */
-    C: [{ cat: 'service', pts: 3 }],
-    D: [{ cat: 'admin', pts: 3 }],
-    E: []
+  var BURDEN_SCENE = {
+    A: '日曜の夜、「投稿のネタがない」と検索を始める。',
+    B: '初対面の商談の前日は、話す順番を頭の中で何度も組み直す。',
+    C: '「ちょっと相談いいですか」の通知が鳴ると、今やっている仕事の手が止まる。',
+    D: '月末の請求書と資料は、毎月「今月こそ早めに」と言って、毎月最終日になる。',
+    E: '「新しい商品を考える」と予定に入れた時間は、別の急ぎに取られて消える。'
   };
 
-  /* Q4（売上につながっている活動）と Q5（時間を使いたいこと） */
+  /* Q3 → 業務カテゴリ（文言が他の設問と違うので内部で変換） */
+  var Q3_MAP = { A: [{ cat: 'sns', pts: 3 }], B: [{ cat: 'sales', pts: 3 }, { cat: 'admin', pts: 1 }], C: [{ cat: 'service', pts: 3 }], D: [{ cat: 'admin', pts: 3 }], E: [] };
+
   var Q4_MAP = {
-    A: { cat: 'sns',      label: '見込み客との接点づくり（SNS・広告）' },
-    B: { cat: 'sales',    label: '見込み客との商談・提案' },
-    C: { cat: 'service',  label: '既存顧客への価値提供と継続契約' },
-    D: { cat: 'referral', label: '紹介が生まれる関係づくり' },
-    E: { cat: 'unknown',  label: '何が売上につながっているかの把握' }
+    A: { cat: 'sns',      label: '投稿や広告からの DM を、相談まで運ぶこと' },
+    B: { cat: 'sales',    label: '自分から声をかけて商談を作ること' },
+    C: { cat: 'service',  label: '今のお客さんへの価値提供と、継続・追加の提案' },
+    D: { cat: 'referral', label: '紹介が生まれる関係づくり（契約直後に「紹介」を言う）' },
+    E: { cat: 'unknown',  label: '直近3件の契約が、どこから来たかを書き出すこと' }
   };
   var Q5_MAP = {
-    A: { cat: 'sns',      label: '新しい見込み客との接点づくり' },
-    B: { cat: 'sales',    label: '商談・提案・成約活動' },
-    C: { cat: 'service',  label: '顧客への価値提供' },
-    D: { cat: 'dev',      label: '商品開発・新規事業' },
-    E: { cat: 'strategy', label: '経営戦略・仕組みづくり' }
+    A: { cat: 'sns',      label: '新しい人との接点づくり' },
+    B: { cat: 'sales',    label: '止まっている商談を動かすこと' },
+    C: { cat: 'service',  label: '今のお客さんへの、もう一段深い提案' },
+    D: { cat: 'dev',      label: '新しい商品の設計' },
+    E: { cat: 'strategy', label: '手順書と仕組みづくり' }
   };
 
-  /* Q6（現状）→ 次の一手 */
-  var Q6_MAP = {
-    A: { type: 'ひとり走り回りタイプ', tagline: '自分が動いた分だけ売上が立つ', mood: 'run', stage: 'lead', stageNote: '入口が自分の手作業に頼っている',
-         headline: '集客の導線',
-         title: '集客導線の仕組み化',
-         text: '新しい集客施策を増やす前に、見込み客があなたを知ってから相談に来るまでの流れを、自分が動かなくても進む形に整えましょう。',
-         actions: [
-           '今週の新規の問い合わせや反応が、どこから来たかを3件書き出す（SNS・紹介・検索など）',
-           'プロフィールや固定投稿に「相談の入口」（予約リンクか問い合わせ先）を1か所置く'
-         ] },
-    B: { type: '入口渋滞タイプ', tagline: '人は集まるのに、相談まで進まない', mood: 'queue', stage: 'talk', stageNote: '集客から商談への間で止まっている',
-         headline: '見込み客から相談への流れ',
-         title: '見込み客の教育・相談予約導線の改善',
-         text: '新しい集客施策を増やす前に、既存の見込み客が個別相談へ進む導線を整えましょう。',
-         actions: [
-           '直近の問い合わせやフォロワーのうち、相談に進まなかった人を5人書き出し、止まった理由を1行ずつ書く',
-           '相談を申し込むまでの手順を数え、1つ減らす（例: フォームの項目を減らす・空き日程を先に見せる）'
-         ] },
-    C: { type: 'あと一押しタイプ', tagline: '商談はあるのに、決まらない', mood: 'think', stage: 'close', stageNote: '商談から成約への間で止まっている',
-         headline: '商談から成約までの流れ',
-         title: '提案内容・セールスプロセスの改善',
-         text: '商談の数を増やす前に、商談の中身（聞く→提案する→決めてもらう）の順番と内容を見直しましょう。',
-         actions: [
-           '直近の商談3件について、決まらなかった理由を相手の言葉のまま書き出す',
-           '提案の最後に「次にやること」を1つだけ示す形に変え、次の商談で試す'
-         ] },
-    D: { type: '対応パンクタイプ', tagline: '今のお客さんで手一杯', mood: 'buried', stage: 'keep', stageNote: '継続対応が重くて入口に手が回らない',
-         headline: '顧客対応の仕組み',
-         title: '業務標準化・自動化・外注化',
-         text: '既存顧客の対応を型にして自分の手を離れる部分を作り、新規集客に使える時間を確保しましょう。',
-         actions: [
-           '今日の顧客対応を書き出し、同じ内容を2回以上答えたものに印を付ける',
-           '印の付いた1つを、返信テンプレートか手順書にする'
-         ] },
-    E: { type: '伸びしろ探しタイプ', tagline: '仕組みはある。細い所を見つける段階', mood: 'search', stage: 'none', stageNote: '数字を並べて、細い所を探す',
-         headline: '売上のボトルネック',
-         title: 'ボトルネック分析と売上拡大施策',
-         text: '集客→商談→成約→継続の数字を並べ、一番細くなっている所を特定してから拡大施策を打ちましょう。',
-         actions: [
-           '先月の「問い合わせ数→商談数→成約数→継続数」を1行に並べる',
-           '一番減り幅が大きい所を1つ選び、来週試す打ち手を1つ決める'
-         ] }
+  /* Q6 → タイプ */
+  var TYPES = {
+    A: { type: 'ひとり走り回りタイプ', tagline: '投稿した週と声をかけた週にだけ、問い合わせが来る', mood: 'run', stage: 'lead',
+         scene: '問い合わせは、あなたが投稿した週と、声をかけた週にだけ来る。止めた週は静かになる。だから止められない。',
+         habits: ['投稿が止まると落ち着かず、質より本数で埋める', '問い合わせが来た人に、その場の都合で価格や内容を変える', '契約直後に「紹介してください」を言っていない'],
+         headline: '集客の導線', title: '集客導線を、自分の手から外す',
+         text: '新しい集客施策を増やす前に、見込み客があなたを知ってから相談に来るまでの流れを、あなたが動かなくても進む形に整えます。',
+         actions: ['今週の新規の問い合わせや反応が、どこから来たかを3件書き出す（SNS・紹介・検索など）', 'プロフィールか固定投稿に「相談の入口」（予約リンクか問い合わせ先）を1か所置く'],
+         q7: { A: '夜9時に閉じられない理由は、入口があなたの稼働で動いているからです。', B: '「毎月決まった数」は、入口を自分の手から外したときに初めて数えられます。', C: '契約を2件増やすなら、商談を増やす前に、入口の自動化で商談の数を安定させる順番です。', D: '1週間休むと入口が止まる状態です。先に入口を仕組みにします。', E: '1.5倍は、稼働を1.5倍にするのではなく、入口を仕組みにして稼働を減らしながら作ります。' } },
+    B: { type: '入口渋滞タイプ', tagline: '人は来る。相談まで進まない', mood: 'queue', stage: 'talk',
+         scene: 'DM や問い合わせは来る。返事もする。「また考えます」「タイミングが来たら」で終わり、その人の名前は翌月には思い出せない。',
+         habits: ['問い合わせに丁寧に答えて終わり。次の一歩（日程・資料・質問）を置いていない', '相談の入口が「DM ください」だけで、予約枠が無い', '見込み客の名前を一覧にしていない。誰が止まっているか分からない'],
+         headline: '見込み客から相談への流れ', title: '問い合わせを相談に進める導線をつくる',
+         text: '新しい集客施策を増やす前に、既に来ている見込み客が個別相談へ進む導線を整えます。',
+         actions: ['直近の問い合わせやフォロワーのうち、相談に進まなかった人を5人書き出し、止まった理由を1行ずつ書く', '相談を申し込むまでの手順を数え、1つ減らす（例: フォームの項目を減らす・空き日程を先に見せる）'],
+         q7: { A: '返信に追われて9時を過ぎるのは、返信のあとに「次の一歩」が無いから往復が増えるためです。', B: '問い合わせの数より先に、問い合わせが相談になる率を上げるほうが早いです。', C: '契約を2件増やすのに、新しい集客は要りません。止まっている人の中にいます。', D: '相談の入口を予約枠にすると、あなたが居なくても次の一歩が進みます。', E: '1.5倍は、来ている人の取りこぼしを拾う所から始まります。' } },
+    C: { type: 'あと一押しタイプ', tagline: '相談は盛り上がる。1週間後に「今回は」', mood: 'think', stage: 'close',
+         scene: '相談の場は盛り上がる。「ぜひ」と言われる。1週間後に「検討した結果、今回は」のメッセージ。何が足りなかったかは、聞けていない。',
+         habits: ['商談で説明が8割、質問が2割。相手の「決める基準」を聞いていない', '価格を最後に言う。相手は価格を聞くまで決められない', '「検討します」に「いつまでに、何があれば決められますか」と返していない'],
+         headline: '商談から成約までの流れ', title: '提案の中身と、決めてもらう順番を直す',
+         text: '商談の数を増やす前に、商談の中身（聞く→提案する→決めてもらう）の順番と内容を見直します。',
+         actions: ['直近の商談3件について、決まらなかった理由を相手の言葉のまま書き出す', '提案の最後に「次にやること」を1つだけ示す形に変え、次の商談で試す'],
+         q7: { A: '商談の準備に時間が溶けるのは、毎回ゼロから組み立てているからです。型を1つ作ると準備が半分になります。', B: '問い合わせを増やしても、決まらない商談が増えるだけです。先に成約の流れを直します。', C: '契約2件は、消えている商談を拾えば足ります。下の数字を見てください。', D: '決め方を型にすると、あなたの熱量に頼らず決まる商談が増えます。', E: '1.5倍は、成約率を上げるのが一番早い道です。集客は増やさなくていい場合があります。' } },
+    D: { type: '対応パンクタイプ', tagline: '今のお客さんで手一杯。新規は後回し', mood: 'buried', stage: 'keep',
+         scene: '問い合わせの通知を見て「あとで返す」と思い、既存のお客さんの対応が終わると夜。翌日に返信すると、相手の熱は下がっている。',
+         habits: ['同じ質問に、毎回ゼロから返信している', '納品物の形式が毎回違う。型を作っていない', '新規の問い合わせを、既存の対応より後ろに置いている'],
+         headline: '顧客対応の仕組み', title: '対応を型にして、自分の手を離す',
+         text: '既存のお客さんの対応を型にして自分の手を離れる部分を作り、新規に使える時間を取り戻します。',
+         actions: ['今日の顧客対応を書き出し、同じ内容を2回以上答えたものに印を付ける', '印の付いた1つを、返信テンプレートか手順書にする'],
+         q7: { A: '夜9時に閉じるには、返信の半分を型にするのが一番早いです。', B: '問い合わせは来ています。来た日のうちに返せる体制が先です。', C: '契約2件分の時間は、対応の型化で浮きます。', D: '1週間休める状態は、今あなたの頭の中にしかない手順を何個書き出せるかで決まります。', E: '1.5倍の前に、今の対応で埋まっている時間を空けないと、増えた分を受けられません。' } },
+    E: { type: '伸びしろ探しタイプ', tagline: '仕組みはある。どこを押せば増えるかが見えていない', mood: 'search', stage: 'none',
+         scene: '止めても問い合わせは来る。ただ、どこを押せば増えるかが分かっていない。先月と今月の数字を並べたことがない。',
+         habits: ['集客→商談→成約→継続のどこで何件落ちているか、月ごとに見ていない', '伸ばす施策を「新しい集客」から始めがち', '今のお客さんの追加提案・紹介を、仕組みとして回していない'],
+         headline: '売上の細い所', title: '数字を並べて、細い1か所を太くする',
+         text: '集客→商談→成約→継続の数字を並べ、一番細い所を特定してから拡大施策を打ちます。',
+         actions: ['先月の「問い合わせ数→商談数→成約数→継続数」を1行に並べる', '一番減り幅が大きい所を1つ選び、来週試す打ち手を1つ決める'],
+         q7: { A: '時間を減らすなら、効いていない施策を数字で見つけて止めるのが先です。', B: '問い合わせの数は安定しています。次は相談に進む率です。', C: '契約2件は、成約率か継続率のどちらかを上げると届きます。下の数字で比べてください。', D: '仕組みはあります。あとは手順書に落ちているかどうかです。', E: '1.5倍は、集客を1.5倍にするより、細い所を1か所太くするほうが早いことが多いです。' } }
   };
 
-  /* Q7（改善したいこと）と Q6（現状）の対応。一致していれば「絞ってよい」と言える */
-  var Q7_LABEL = { A: '業務時間を減らしたい', B: '集客を安定させたい', C: '商談・成約を増やしたい', D: '自分がいなくても業務が回る状態にしたい', E: '売上をさらに拡大したい' };
-  var ALIGNED = { A: ['B', 'D'], B: ['B', 'C'], C: ['C'], D: ['A', 'D'], E: ['E'] }; /* Q6 → 一致する Q7 */
+  var ALIGNED = { A: ['B', 'D'], B: ['B', 'C'], C: ['C'], D: ['A', 'D'], E: ['E'] };
+  var Q7_LABEL = { A: '夜9時にパソコンを閉じている', B: '毎月決まった数の問い合わせが来ている', C: '月の契約が今より2件増えている', D: '1週間休んでも仕事が回っている', E: '月の売上が今の1.5倍になっている' };
 
+  function round1(x) { return Math.round(x * 10) / 10; }
+  function man(x) { /* 万円表示 */
+    if (x >= 10000) return round1(x / 10000) + '億円';
+    return (x >= 100 ? Math.round(x) : round1(x)) + '万円';
+  }
   function joinJa(arr) { return arr.map(function (s) { return '「' + s + '」'; }).join(''); }
 
   function diagnose(a) {
-    /* ---------- ① 手放す候補（Q1・Q2・Q3） ---------- */
+    /* ---------- 数字 ---------- */
+    var hours = HOURS[a.hours], ratio = RATIO[a.ratio], leads = LEADS[a.leads], won = Math.min(WON[a.won], LEADS[a.leads] || 0), price = PRICE[a.price];
+    if (a.leads === 'A') won = 0;
+    var topHours = hours * ratio;                 /* 週に一番長い業務へ使う時間 */
+    var freeWeek = topHours * 0.5;                /* 定型と見る半分 */
+    var freeMonth = freeWeek * 4.3;
+    var dealsFromTime = Math.floor(freeMonth / 1.5);
+    var rate = leads > 0 ? won / leads : null;    /* 成約率 */
+    var dealValue = rate != null ? price * rate : null; /* 商談1件の期待値 */
+    var lostCount = Math.max(leads - won, 0);
+    var lostMoney = lostCount * price;
+    var numbers = {
+      hours: hours, ratio: ratio, topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
+      leads: leads, won: won, rate: rate, ratePct: rate != null ? Math.round(rate * 100) : null,
+      price: price, dealValue: dealValue != null ? round1(dealValue) : null, lostCount: lostCount, lostMoney: lostMoney,
+      formulas: [
+        '手放すと浮く時間 ＝ 週' + hours + '時間 × ' + Math.round(ratio * 100) + '% × 半分（定型とみなす） ＝ 週' + round1(freeWeek) + '時間 ＝ 月' + round1(freeMonth) + '時間',
+        '商談に換算 ＝ 月' + round1(freeMonth) + '時間 ÷ 1.5時間（商談1件の準備込み） ＝ ' + dealsFromTime + '件分',
+        rate != null ? '成約率 ＝ 契約' + won + '件 ÷ 相談' + leads + '件 ＝ ' + Math.round(rate * 100) + '%' : '成約率 ＝ 相談0件のため計算できません',
+        dealValue != null ? '商談1件の価値 ＝ ' + man(price) + ' × ' + Math.round(rate * 100) + '% ＝ ' + man(dealValue) : '商談1件の価値 ＝ 相談が1件あれば計算できます',
+        '検討のまま消えた金額（月） ＝ （相談' + leads + '件 − 契約' + won + '件）× ' + man(price) + ' ＝ ' + man(lostMoney)
+      ]
+    };
+
+    /* ---------- 手放す候補（Q1・Q2・Q3） ---------- */
     var score = {}, hits = {};
-    function add(cat, pts, tag) {
-      score[cat] = (score[cat] || 0) + pts;
-      hits[cat] = hits[cat] || [];
-      if (tag && hits[cat].indexOf(tag) < 0) hits[cat].push(tag);
-    }
+    function add(cat, pts, tag) { score[cat] = (score[cat] || 0) + pts; hits[cat] = hits[cat] || []; if (tag && hits[cat].indexOf(tag) < 0) hits[cat].push(tag); }
     add(CAT_BY_LETTER[a.q1], 2, 'time');
     add(CAT_BY_LETTER[a.q2], 2, 'burden');
     Q3_MAP[a.q3].forEach(function (m) { add(m.cat, m.pts, m.pts >= 3 ? 'delegable' : null); });
-
     var revenueCat = Q4_MAP[a.q4].cat;
     var order = ['sns', 'sales', 'service', 'admin', 'dev'];
-    var ranked = Object.keys(score)
-      .sort(function (x, y) { return (score[y] - score[x]) || (order.indexOf(x) - order.indexOf(y)); })
-      .slice(0, 3);
-
+    var ranked = Object.keys(score).sort(function (x, y) { return (score[y] - score[x]) || (order.indexOf(x) - order.indexOf(y)); }).slice(0, 3);
     var release = ranked.map(function (cat) {
-      var c = CATS[cat];
-      var tags = hits[cat] || [];
-      var names = [];
-      if (tags.indexOf('time') >= 0) names.push('最も時間を使っている');
-      if (tags.indexOf('burden') >= 0) names.push('最も負担を感じている');
-      if (tags.indexOf('delegable') >= 0) names.push('他の人やAIでも対応できそう');
-      var why = names.length
-        ? '回答では' + joinJa(names) + '業務でした。'
-        : '回答の「営業準備・日程調整・顧客管理」に、日程調整などの事務が含まれるため候補に入れています。';
+      var c = CATS[cat], tags = hits[cat] || [], names = [];
+      if (tags.indexOf('time') >= 0) names.push('画面に一番長く映っていた');
+      if (tags.indexOf('burden') >= 0) names.push('予定表でため息が出る');
+      if (tags.indexOf('delegable') >= 0) names.push('人に「自分でやらなくていい」と言われた');
+      var why = names.length ? joinJa(names) + '業務です。' : '「日程調整と商談前の準備」に含まれる事務として候補に入れています。';
       var isRevenue = (cat === revenueCat);
-      if (isRevenue) {
-        why += 'ただし売上に最もつながっている活動でもあるため、業務全体ではなく定型の作業だけを切り出す候補です。「' + c.keep + '」は自分に残します。';
-      } else if (cat === 'dev') {
-        why += '「' + c.keep + '」は手放さず、その前の準備作業だけが候補です。';
-      } else {
-        why += '「' + c.keep + '」は自分に残し、それ以外を任せる形が考えられます。';
-      }
+      if (isRevenue) why += 'ただし直近の契約はここから来ています。業務ごと手放すのではなく、定型の作業だけを切り出します。「' + c.keep + '」は自分に残します。';
+      else if (cat === 'dev') why += '「' + c.keep + '」は手放さず、その前の準備作業だけを任せます。';
+      else why += '「' + c.keep + '」だけ残して、あとは任せる形です。';
       return { cat: cat, category: c.label, icon: c.icon, color: c.color, title: c.routine, why: why, revenueProtected: isRevenue, tryToday: c.tryToday, tools: c.tools, prompt: c.prompt };
     });
-    var releaseNote = (a.q3 === 'E')
-      ? '「他の人やAIでも対応できそうな業務」は思いつかないとの回答でしたので、時間と負担の重なりから候補を出しています。実際に任せられるかは、業務を書き出してから判断してください。'
-      : '';
+    var topCat = ranked[0];
+    var releaseNote = (a.q3 === 'E') ? '「自分でやらなくていい」と言われたことが無いのは、周りに見せていないからかもしれません。今週、上の業務を1つ誰かに話してみてください。' : '';
+    if (topCat === CAT_BY_LETTER[a.q1]) {
+      releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、商談' + dealsFromTime + '件分の時間が戻ります。';
+    }
 
-    /* ---------- ② 集中する仕事（Q4・Q5） ---------- */
-    var rev = Q4_MAP[a.q4], want = Q5_MAP[a.q5];
-    var focus = [], focusNote = '';
+    /* ---------- 集中する仕事（Q4・Q5） ---------- */
+    var rev = Q4_MAP[a.q4], want = Q5_MAP[a.q5], focus = [], focusNote = '';
     if (rev.cat === 'unknown') {
-      focus.push({ title: '何が売上につながっているかを把握すること',
-        why: '「何が売上につながっているかわからない」との回答のため、集中先を決める材料がまだありません。直近の売上を、どの活動から生まれたか1件ずつ振り返るのが先です。' });
-      focus.push({ title: want.label,
-        why: '時間を使いたい活動として選ばれた仮の候補です。売上の出どころが分かるまでは、全体の時間の一部で試す位置づけにしてください。' });
-      focusNote = '売上の出どころが分かった時点で、集中先を決め直してください。';
+      focus.push({ title: rev.label, why: '直近の契約がどこから来たか思い出せない状態では、集中先を決められません。契約3件の出どころを書き出すと、たいてい1つに偏っています。そこが集中先です。' });
+      focus.push({ title: want.label, why: '空いた1日にやりたいこととして選ばれました。出どころが分かるまでは、週の2割までで試します。' });
     } else if (rev.cat === want.cat) {
-      focus.push({ title: rev.label,
-        why: '売上に最もつながっている活動であり、あなたが時間を使いたい活動でもあります。手放す候補で浮いた時間を、まずここに回すのが最も矛盾の少ない選択です。' });
+      focus.push({ title: rev.label, why: '直近の契約はここから来ていて、空いた1日にやりたいこともここです。手放して浮いた時間は、迷わずここに入れます。' });
     } else {
-      focus.push({ title: rev.label,
-        why: '売上に最もつながっている活動です。時間を使いたいこととは違いますが、今の売上を支えているため、先に守る対象です。' });
-      var wantWhy = (want.cat === 'dev' || want.cat === 'strategy')
-        ? '時間を使いたい活動として選ばれました。売上を支える活動の時間を確保したうえで、週に決まった時間を切り分けて進める候補です。'
-        : '時間を使いたい活動として選ばれました。まだ売上の裏づけが無いため、上の活動を守ったうえで、小さく時間を取り効果を確かめる候補です。';
-      focus.push({ title: want.label, why: wantWhy });
-      focusNote = '売上につながっている活動と、時間を使いたい活動が異なります。希望だけで集中先を決めず、売上を支える活動を先に守ってください。';
+      focus.push({ title: rev.label, why: '直近の契約はここから来ています。やりたいことと違っても、今の売上を作っている活動なので先に守ります。' });
+      focus.push({ title: want.label, why: (want.cat === 'dev' || want.cat === 'strategy') ? '空いた1日にやりたいこと。売上を作る活動の時間を確保したうえで、週に決まった時間を切り分けて進めます。' : '空いた1日にやりたいこと。まだ契約の実績が無いので、上を守ったうえで小さく試して効果を見ます。' });
+      focusNote = '「売上を作っている活動」と「やりたい活動」が違います。やりたい方から始めると、今の売上が先に落ちます。';
     }
 
-    /* ---------- ③ 次の一手（Q6・Q7） ---------- */
-    var q6 = Q6_MAP[a.q6];
-    var aligned = ALIGNED[a.q6].indexOf(a.q7) >= 0;
-    var bridge;
-    if (a.q7 === 'A') {
-      bridge = '「業務時間を減らしたい」という希望は、上の「手放すことを検討したい仕事」から1つ着手することで同時に進められます。';
-    } else if (aligned) {
-      bridge = '改善したいこと（' + Q7_LABEL[a.q7] + '）と現状が一致しているため、ここに絞って進める候補です。';
-    } else {
-      bridge = '「' + Q7_LABEL[a.q7] + '」という希望に対して、現状の回答から見ると、先に上の点を整えるほうが近道になる可能性があります。';
-    }
-    var priority = { title: q6.title, text: q6.text, bridge: bridge };
+    /* ---------- 次の一手（Q6・Q7） ---------- */
+    var t = TYPES[a.q6];
+    var bridge = t.q7[a.q7];
+    var priority = { title: t.title, text: t.text, bridge: bridge };
 
-    /* ---------- ⑤ 今日からできるアクション ---------- */
-    var actions = q6.actions.slice();
+    /* ---------- 因果（タイプ × 数字） ---------- */
+    var cause;
+    if (a.q6 === 'A') {
+      cause = '新規の数は「あなたの稼働 × 発信の本数」で決まっています。週' + hours + '時間働いて、先月の相談は' + leads + '件。稼働を増やす余地はもうほとんど無いので、同じ稼働で相談が増える形（入口の自動化）に変えるしかありません。';
+    } else if (a.q6 === 'B') {
+      cause = leads > 0
+        ? '先月、相談まで進んだのは' + leads + '件、契約は' + won + '件。問い合わせの数はもっと多いはずです。問い合わせ→相談の率を数えていないので、どこで消えているかが見えていません。'
+        : '先月、相談まで進んだ人は0件。問い合わせは来ているのに、相談の場が1つも作れていません。入口の「次の一歩」が無いからです。';
+    } else if (a.q6 === 'C') {
+      cause = leads > 0
+        ? '先月、相談' + leads + '件のうち契約' + won + '件。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。新しい集客より、ここを拾う方が早いです。'
+        : '先月の相談は0件なので成約率は出ません。相談が1件でも入ったら、この数字が動き始めます。';
+    } else if (a.q6 === 'D') {
+      cause = '「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、商談' + dealsFromTime + '件分の時間が戻ります。先月の相談は' + leads + '件なので、この時間だけで相談を倍にできる計算です。';
+    } else {
+      cause = (dealValue != null)
+        ? '相談' + leads + '件→契約' + won + '件（成約率' + Math.round(rate * 100) + '%）、単価' + man(price) + '。相談を1件増やすと期待値' + man(dealValue) + '、成約率を10ポイント上げると月' + man(leads * price * 0.1) + '。どちらが早いかを数字で決めます。'
+        : '先月の相談は0件です。仕組みがあるのに相談が無いなら、入口は動いていません。まず問い合わせ→相談の数を数える所からです。';
+    }
+
+    /* ---------- 場面描写 ---------- */
+    var scene = [CATS[CAT_BY_LETTER[a.q1]].scene, BURDEN_SCENE[a.q2], t.scene].join('\n');
+
+    /* ---------- 今日からできること ---------- */
+    var actions = t.actions.slice();
     actions.push('「' + release[0].title + '」のうち1つを今日だけ任せてみる。例: ' + release[0].tryToday);
 
-    /* 業務マップ（時間・負担・任せられる の内訳と、売上源・やりたい の印） */
+    /* ---------- 業務マップ ---------- */
     var map = order.map(function (cat) {
       var tags = hits[cat] || [];
       return { cat: cat, label: CATS[cat].label, icon: CATS[cat].icon, color: CATS[cat].color,
-               time: tags.indexOf('time') >= 0 ? 2 : 0,
-               burden: tags.indexOf('burden') >= 0 ? 2 : 0,
+               time: tags.indexOf('time') >= 0 ? 2 : 0, burden: tags.indexOf('burden') >= 0 ? 2 : 0,
                delegable: (Q3_MAP[a.q3].filter(function (m) { return m.cat === cat; })[0] || { pts: 0 }).pts,
                isRevenue: (revenueCat === cat), isWant: (want.cat === cat) };
     });
 
     return {
-      type: q6.type, tagline: q6.tagline, mood: q6.mood,
-      funnel: { stage: q6.stage, note: q6.stageNote },
-      map: map,
-      headline: 'あなたが今、見直すべきなのは' + q6.headline + 'です',
-      release: release,
-      releaseNote: releaseNote,
-      focus: focus,
-      focusNote: focusNote,
-      priority: priority,
-      actions: actions
+      type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
+      headline: 'あなたが今、見直すべきなのは' + t.headline + 'です',
+      scene: scene, habits: t.habits, cause: cause, numbers: numbers, map: map,
+      release: release, releaseNote: releaseNote, focus: focus, focusNote: focusNote,
+      priority: priority, actions: actions
     };
   }
 

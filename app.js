@@ -8,17 +8,20 @@
   var screens = { intro: $('screen-intro'), question: $('screen-question'), result: $('screen-result') };
 
   /* 質問ごとのアイコンとヒント、選択肢のアイコン */
-  var QICON = ['🕒', '😮‍💨', '🤖', '💰', '⭐', '🔁', '🎯'];
-  var QHINT = ['直感でOK。一番近いものを1つ', '「これが来ると気が重い」で選んでOK', 'ChatGPTや外注、ツールに渡せそうなもの', 'お金が入っているのはどこから？', '時間が2倍あったら何をする？', '今の売上の流れに一番近いもの', '3か月後に変わっていてほしいこと'];
-  var OICON = [
-    { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
-    { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
-    { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
-    { A: '📣', B: '🤝', C: '🔁', D: '🧑‍🤝‍🧑', E: '❓' },
-    { A: '🌱', B: '🤝', C: '🎁', D: '🧪', E: '🧭' },
-    { A: '🏃', B: '🚧', C: '🤔', D: '📨', E: '⚙️' },
-    { A: '⏱️', B: '📈', C: '💴', D: '🛋️', E: '🚀' }
-  ];
+  var OICON = {
+    q1: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
+    ratio: { A: '◔', B: '◑', C: '◕', D: '●' },
+    hours: { A: '🌤️', B: '🌥️', C: '🌧️', D: '⛈️' },
+    q2: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
+    q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
+    q4: { A: '📣', B: '🤝', C: '🔁', D: '🧑‍🤝‍🧑', E: '❓' },
+    q5: { A: '🌱', B: '📞', C: '🎁', D: '🧪', E: '🧭' },
+    q6: { A: '🏃', B: '🚧', C: '🤔', D: '📨', E: '⚙️' },
+    q7: { A: '🌙', B: '📈', C: '✍️', D: '🏖️', E: '🚀' },
+    leads: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
+    won: { A: '0️⃣', B: '1️⃣', C: '2️⃣', D: '4️⃣' },
+    price: { A: '💴', B: '💴', C: '💰', D: '💰', E: '💎' }
+  };
 
   /* ---------- イラスト（インラインSVG） ---------- */
   function charSVG(mood) {
@@ -97,9 +100,9 @@
     $('progress-pct').textContent = pct + '%';
     $('progress-fill').style.width = pct + '%';
     renderDots();
-    $('question-icon').textContent = QICON[index];
+    $('question-icon').textContent = q.icon;
     $('question-title').textContent = q.title;
-    $('question-hint').textContent = QHINT[index];
+    $('question-hint').textContent = q.hint || '';
     var box = $('options'); box.innerHTML = '';
     Object.keys(q.options).forEach(function (letter) {
       var b = document.createElement('button');
@@ -107,7 +110,7 @@
       b.className = 'option' + (answers[q.id] === letter ? ' selected' : '');
       b.setAttribute('data-letter', letter);
       b.innerHTML = '<span class="oicon"></span><span class="label"></span><span class="mark"></span>';
-      b.querySelector('.oicon').textContent = OICON[index][letter];
+      b.querySelector('.oicon').textContent = OICON[q.id][letter];
       b.querySelector('.label').textContent = q.options[letter];
       b.querySelector('.mark').textContent = letter;
       b.addEventListener('click', function () { choose(letter); });
@@ -156,6 +159,29 @@
     $('r-type').textContent = r.type;
     $('r-tagline').textContent = r.tagline;
     $('r-headline').textContent = r.headline;
+
+    /* 1週間の場面 */
+    var sc = $('r-scene'); sc.innerHTML = '';
+    r.scene.split('\n').forEach(function (line) { sc.appendChild(el('p', null, line)); });
+
+    /* やりがちな3つ */
+    var hb = $('r-habits'); hb.innerHTML = '';
+    r.habits.forEach(function (h, i) { var li = el('li'); li.appendChild(el('span', 'hn', String(i + 1))); li.appendChild(el('span', null, h)); hb.appendChild(li); });
+
+    /* あなたの数字 */
+    var n = r.numbers, tiles = $('r-tiles'); tiles.innerHTML = '';
+    function tile(label, value, unit, sub) {
+      var d = el('div', 'tile'); d.appendChild(el('div', 'tl', label));
+      var v = el('div', 'tv', value); if (unit) v.appendChild(el('small', null, unit)); d.appendChild(v);
+      if (sub) d.appendChild(el('div', 'ts', sub)); tiles.appendChild(d);
+    }
+    tile('手放すと浮く時間（月）', String(Math.round(n.freeMonth)), '時間', '商談' + n.dealsFromTime + '件分');
+    tile('成約率', n.ratePct == null ? '—' : String(n.ratePct), n.ratePct == null ? '' : '%', '契約' + n.won + '件 ÷ 相談' + n.leads + '件');
+    tile('商談1件の価値', n.dealValue == null ? '—' : String(n.dealValue), n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
+    tile('検討のまま消えた金額（月）', String(n.lostMoney), '万円', '（相談 − 契約）× 単価');
+    $('r-cause').textContent = r.cause;
+    var fl = $('r-formulas'); fl.innerHTML = '';
+    n.formulas.forEach(function (f) { fl.appendChild(el('li', null, f)); });
 
     /* 業務マップ */
     var map = $('r-map'); map.innerHTML = '';
