@@ -3,6 +3,7 @@
   var QUESTIONS = window.Diagnosis.QUESTIONS;
   var diagnose = window.Diagnosis.diagnose;
   var INTAKE_COUNT = QUESTIONS.filter(function (q) { return q.kind === 'intake'; }).length;
+  var CTA_LABEL = (typeof CONSULT_LABEL === 'string' && CONSULT_LABEL.trim()) ? CONSULT_LABEL.trim() : '個別相談を申し込む';
   var answers = {};
   var index = 0;
   var result = null;
@@ -237,7 +238,7 @@
     $('rp-worry').textContent = r.intake.worryFree ? '「' + r.intake.worryFree + '」と書いてくださった件から始めます。' : '';
     var cs = $('rp-consult'); cs.innerHTML = '';
     if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) {
-      var link = el('a', null, '個別相談を申し込む'); link.href = CONSULT_URL.trim(); cs.appendChild(link);
+      var link = el('a', null, CTA_LABEL); link.href = CONSULT_URL.trim(); link.id = 'rp-consult-link'; cs.appendChild(link);
       cs.appendChild(el('small', null, CONSULT_URL.trim()));
     }
 
@@ -293,17 +294,25 @@
     $('rp-about-block').style.display = ab ? '' : 'none';
   }
 
-  /* ---------- PDF（1ページ＝1枚の画像） ---------- */
+  /* ---------- PDF（1ページ＝1枚の画像。ボタンの位置に押せるリンクを重ねる） ---------- */
   function buildPdf() {
     var pages = Array.prototype.slice.call(document.querySelectorAll('#report .rp-page'));
     var jsPDF = window.jspdf.jsPDF;
     var pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    var MM = 210 / 794; // 1px → mm
     var chain = Promise.resolve();
     pages.forEach(function (page, i) {
       chain = chain.then(function () {
         return html2canvas(page, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 }).then(function (canvas) {
           if (i > 0) pdf.addPage();
           pdf.addImage(canvas.toDataURL('image/jpeg', 0.88), 'JPEG', 0, 0, 210, 297);
+          /* このページにあるリンク（a[href]）を、同じ位置に押せる領域として置く */
+          var pr = page.getBoundingClientRect();
+          Array.prototype.forEach.call(page.querySelectorAll('a[href]'), function (anchor) {
+            var r = anchor.getBoundingClientRect();
+            if (!r.width || !r.height) return;
+            pdf.link((r.left - pr.left) * MM, (r.top - pr.top) * MM, r.width * MM, r.height * MM, { url: anchor.href });
+          });
         });
       });
     });
@@ -328,6 +337,8 @@
         name: name, email: email, intake: result.intake, answers: answers,
         result: { type: result.type, headline: result.headline, numbers: result.numbers, release: result.release.map(function (x) { return x.title; }), focus: result.focus.map(function (x) { return x.title; }), priority: result.priority.title },
         pdf: { filename: 'shindan_' + new Date().toISOString().slice(0, 10) + '.pdf', base64: pdfBase64 },
+        consultUrl: (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) ? CONSULT_URL.trim() : '',
+        ctaLabel: CTA_LABEL,
         source: location.href
       };
       return fetch(LEAD_ENDPOINT.trim(), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
