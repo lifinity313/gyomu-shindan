@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
+<title>あなたの売上は、どこで止まっているか｜「手放す仕事・集中する仕事」診断</title>
 <meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 <div class="app">
@@ -18,25 +18,18 @@
 
   <!-- ===== 開始画面 ===== -->
   <section class="screen active" id="screen-intro">
-    <div class="hero">
-      <div class="hero-art" id="hero-art"></div>
-      <p class="eyebrow">売上アップのための</p>
-      <h1 class="title">「手放す仕事・<br>集中する仕事」診断</h1>
-      <p class="lead">毎日忙しいのに売上が伸びない。集客も営業も事務も、ぜんぶ自分。<br>今の状況と目標を聞いたうえで、あなたの1週間と<strong>あなたの数字</strong>（浮く時間・商談1件の価値・検討で消えている金額）を出し、<strong>何を手放し、どこに集中するか</strong>を決めます。</p>
+    <p class="eyebrow">ひとりで事業を回している人へ</p>
+    <h1 class="title">あなたの売上は、<br>どこで止まっているか。</h1>
+    <p class="lead">忙しいのに売上が伸びないのは、頑張りが足りないからではありません。集客→相談→契約→継続のどこか1か所が細くなっていて、毎月そこでお金が消えています。</p>
+    <div class="hero-flow" id="hero-art"></div>
+    <div class="gets">
+      <div class="get"><span class="get-no">1</span><p>止まっている場所<br><small>5つのうち、どれか</small></p></div>
+      <div class="get"><span class="get-no">2</span><p>そこで消えている金額<br><small>あなたの数字で計算</small></p></div>
+      <div class="get"><span class="get-no">3</span><p>まず、やること1つ<br><small>明日からの手順つき</small></p></div>
     </div>
-
-    <div class="steps">
-      <div class="step"><span class="step-icon">✍️</span><span class="step-no">1</span><p>状況と目標を<br>4問で聞く</p></div>
-      <div class="step"><span class="step-icon">🔢</span><span class="step-no">2</span><p>仕事と数字を<br>10問で聞く</p></div>
-      <div class="step"><span class="step-icon">📩</span><span class="step-no">3</span><p>あなたのタイプが出る。<br>詳細はPDFでメールへ</p></div>
-    </div>
-
-    <button class="btn btn-primary btn-big" id="btn-start" type="button">診断をはじめる →</button>
-    <ul class="meta">
-      <li>⏱ 全14問・約3分</li>
-      <li>📩 詳しい結果（あなたの1週間・数字・手放す作業・次の一手）はPDFでメールにお届け</li>
-      <li>🧑‍💼 個人事業主・ひとり社長・講師・コンサル・コーチ・士業の方向け</li>
-    </ul>
+    <button class="btn btn-primary btn-big" id="btn-start" type="button">3分で診断する →</button>
+    <p class="start-note">14問・タップだけ・登録なし。結果はPDFでメールに届きます。</p>
+    <p class="trust">対人支援15年、相談2,500人を見てきた Lifinity. が設計しました。</p>
   </section>
 
   <!-- ===== 質問画面（入口4問＋診断10問） ===== -->
@@ -65,10 +58,10 @@
   <!-- ===== 結果（タイプだけ）＋メール登録 ===== -->
   <section class="screen" id="screen-gate">
     <div class="result-hero">
-      <div class="result-art" id="result-art"></div>
-      <p class="result-you">あなたは</p>
+      <p class="result-you">あなたの売上が止まっている場所</p>
       <p class="result-type" id="r-type"></p>
       <p class="result-tagline" id="r-tagline"></p>
+      <div class="result-flow" id="result-art"></div>
     </div>
 
     <article class="card card-gate">
@@ -139,7 +132,6 @@
       <p class="rp-worry" id="rp-worry"></p>
       <div class="rp-consult" id="rp-consult"></div>
     </div>
-    <div class="rp-art-small" id="rp-art"></div>
     <div class="rp-foot">1/4　2枚目: 止まる場所は5つ　3枚目: なぜ止まるか　4枚目: 今日からの手順</div>
   </section>
 
@@ -192,6 +184,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="config.js?v=13"></script>
 <script src="logic.js?v=14"></script>
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

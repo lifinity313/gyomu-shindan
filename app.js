@@ -51,7 +51,7 @@
     return s + '</svg>';
   }
 
-  function funnelSVG(stage) {
+  function funnelSVG(stage, note) {
     var stages = [['lead', '集客', '知ってもらう'], ['talk', '商談', '相談に来る'], ['close', '成約', '決めてもらう'], ['keep', '継続', '続けてもらう']];
     var s = '<svg viewBox="0 0 340 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="売上の流れ">', x = 6;
     stages.forEach(function (st, i) {
@@ -65,7 +65,7 @@
       if (i < 3) s += '<text x="' + (x + 80) + '" y="72" font-size="14" fill="#6f665d">▶</text>';
       x += 86;
     });
-    if (stage === 'none') s += '<text x="170" y="138" text-anchor="middle" font-size="12" font-weight="800" fill="#2bb3a3">数字を並べて細い所を探す</text>';
+    if (stage === 'none') s += '<text x="170" y="138" text-anchor="middle" font-size="12" font-weight="800" fill="#2bb3a3">' + (note || '数字を並べて細い所を探す') + '</text>';
     return s + '</svg>';
   }
 
@@ -132,7 +132,7 @@
   function finish() {
     result = diagnose(answers);
     $('progress-fill').style.width = '100%';
-    $('result-art').innerHTML = charSVG(result.mood);
+    $('result-art').innerHTML = funnelSVG(result.funnel.stage);
     $('r-type').textContent = result.type;
     $('r-tagline').textContent = result.tagline;
     $('form-msg').textContent = '';
@@ -202,7 +202,6 @@
   function renderReport(r) {
     var n = r.numbers, hp = headlineParts(r);
     $('rp-meta').textContent = (answers.leadName ? answers.leadName + ' 様　' : '') + new Date().toLocaleDateString('ja-JP');
-    $('rp-art').innerHTML = charSVG(r.mood);
     $('rp-type').textContent = r.type;
     $('rp-stop').textContent = hp.h1;
     $('rp-key-label').textContent = hp.key.label;
@@ -360,7 +359,7 @@
     ['privacy-company', 'footer-company', 'rp-company'].forEach(function (id) { $(id).textContent = COMPANY_NAME; });
   }
 
-  $('hero-art').innerHTML = charSVG('hero');
+  $('hero-art').innerHTML = funnelSVG('none', 'このどこかが、細くなっています');
   $('btn-start').addEventListener('click', function () { index = 0; renderQuestion(); show('question'); });
   $('btn-back').addEventListener('click', function () { if (index > 0) { index -= 1; renderQuestion(); } });
   $('btn-free-next').addEventListener('click', next);
