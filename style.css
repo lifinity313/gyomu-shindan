@@ -271,7 +271,7 @@ details.formulas li { font-size: 12.5px; color: var(--ink-sub); padding: 4px 0; 
 
 /* v7: 1枚目を4つに */
 .rp-chip { display: inline-block; font-size: 13px; font-weight: 800; color: var(--coral-dark); background: var(--coral-soft); border-radius: 999px; padding: 4px 14px; margin-top: 4px; }
-.rp-h1 { font-size: 27px; font-weight: 900; line-height: 1.45; margin: 14px 0 18px; letter-spacing: 0.01em; }
+.rp-h1 { font-size: 22px; font-weight: 900; line-height: 1.45; margin: 14px 0 18px; letter-spacing: 0.01em; }
 .rp-p1 .rp-key { display: block; text-align: left; padding: 18px 22px; }
 .rp-p1 .rp-key-num { font-size: 64px; }
 .rp-p1 .rp-key-num small { font-size: 24px; }
@@ -279,7 +279,7 @@ details.formulas li { font-size: 12.5px; color: var(--ink-sub); padding: 4px 0; 
 .rp-p1 .rp-key-sub { font-size: 14px; color: var(--ink-sub); margin-top: 6px; }
 .rp-go { margin-top: 20px; background: var(--teal-soft); border-radius: 16px; padding: 16px 22px; }
 .rp-go-h { font-size: 13px; font-weight: 800; letter-spacing: 0.06em; color: var(--teal); margin-bottom: 6px; }
-.rp-go p { font-size: 19px; font-weight: 800; line-height: 1.5; }
+.rp-go p { font-size: 16.5px; font-weight: 800; line-height: 1.5; }
 .rp-go .rp-go-not { font-size: 13.5px; font-weight: 600; color: var(--ink-sub); margin-top: 6px; }
 .rp-p1 .rp-cta1 { margin-top: 20px; }
 .rp-p1 .rp-cta1 .rp-go-h { color: var(--coral-dark); }
