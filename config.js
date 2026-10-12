@@ -5,7 +5,7 @@
 var LEAD_ENDPOINT = "https://lifeinfinity.jp/kyogyo/api/shindan";
 
 /* 個別相談ボタンのリンク先（PDF の最後に載せる）。空なら PDF にボタンを載せない */
-var CONSULT_URL = "";
+var CONSULT_URL = "https://lifeinfinity.jp/kyogyo/yoyaku";
 
 /* 個別相談の事実（PDF「個別相談で決めること」に載せる。空の項目は載らない。事実だけ書く） */
 var CONSULT = {

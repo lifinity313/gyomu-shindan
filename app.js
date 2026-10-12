@@ -241,7 +241,19 @@
       cs.appendChild(el('small', null, CONSULT_URL.trim()));
     }
 
-    /* 2枚目 */
+    /* 2枚目: 5タイプの一覧（自分の行に印） */
+    $('rp-type-inline').textContent = r.type;
+    var TYPES = window.Diagnosis.TYPES, tbody = $('rp-types').querySelector('tbody'); tbody.innerHTML = '';
+    ['A', 'B', 'C', 'D', 'E'].forEach(function (k) {
+      var t = TYPES[k], tr = el('tr', k === r.typeKey ? 'me' : '');
+      tr.appendChild(el('td', null, t.type));
+      tr.appendChild(el('td', null, t.where));
+      tr.appendChild(el('td', null, t.sign));
+      tr.appendChild(el('td', null, t.first));
+      tbody.appendChild(tr);
+    });
+
+    /* 3枚目 */
     var sc = $('rp-scene'); sc.innerHTML = '';
     r.scene.split('\n').forEach(function (line) { sc.appendChild(el('p', null, line)); });
     var hb = $('rp-habits'); hb.innerHTML = '';

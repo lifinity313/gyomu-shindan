@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
 <meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div class="app">
@@ -120,7 +120,7 @@
 
   <!-- 1枚目: 結論（4つだけ） -->
   <section class="rp-page rp-p1">
-    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta" id="rp-meta"></span></div>
+    <div class="rp-top"><span class="rp-doc">売上が止まっている場所がわかる<br><b>「手放す仕事・集中する仕事」診断　結果</b></span><span class="rp-meta" id="rp-meta"></span></div>
     <div class="rp-chip"><span id="rp-type"></span></div>
     <h1 class="rp-h1" id="rp-stop"></h1>
     <div class="rp-key">
@@ -140,14 +140,23 @@
       <div class="rp-consult" id="rp-consult"></div>
     </div>
     <div class="rp-art-small" id="rp-art"></div>
-    <div class="rp-foot">1/3　根拠は2枚目、今日からの手順は3枚目</div>
+    <div class="rp-foot">1/4　2枚目: 止まる場所は5つ　3枚目: なぜ止まるか　4枚目: 今日からの手順</div>
   </section>
 
-  <!-- 2枚目: 根拠 -->
+  <!-- 2枚目: 5タイプの一覧 -->
   <section class="rp-page rp-p2">
-    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta">なぜ、そこで止まるのか</span></div>
+    <div class="rp-top"><span class="rp-doc">「手放す仕事・集中する仕事」診断　結果</span><span class="rp-meta">売上が止まる場所は、5つ</span></div>
+    <div class="rp-h2">売上が止まる場所は5つ。あなたは<span id="rp-type-inline"></span></div>
+    <p class="rp-lead">ひとりで事業を回している人の売上は、この5か所のどれかで止まります。1つだけとは限りません。「これもある」と思った行は、2つ目の詰まりです。</p>
+    <table class="rp-table rp-types" id="rp-types"><thead><tr><th>タイプ</th><th>止まっている場所</th><th>よくあるサイン</th><th>まず直すこと</th></tr></thead><tbody></tbody></table>
     <div class="rp-h2">回答から分かったこと</div>
     <ul class="rp-why" id="rp-why"></ul>
+    <div class="rp-foot">2/4</div>
+  </section>
+
+  <!-- 3枚目: 根拠 -->
+  <section class="rp-page rp-p3b">
+    <div class="rp-top"><span class="rp-doc">「手放す仕事・集中する仕事」診断　結果</span><span class="rp-meta">なぜ、そこで止まるのか</span></div>
     <div class="rp-h2">あなたの1週間、たぶんこう</div>
     <div class="scene" id="rp-scene"></div>
     <div class="rp-h2">このタイプがやりがちな3つ</div>
@@ -157,12 +166,12 @@
     <div class="rp-h2">売上の流れの、細い所</div>
     <div class="funnel" id="rp-funnel"></div>
     <p class="rp-cause" id="rp-cause"></p>
-    <div class="rp-foot">2/3</div>
+    <div class="rp-foot">3/4</div>
   </section>
 
-  <!-- 3枚目: 手順 -->
+  <!-- 4枚目: 手順 -->
   <section class="rp-page rp-p3">
-    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta">今日からの手順</span></div>
+    <div class="rp-top"><span class="rp-doc">「手放す仕事・集中する仕事」診断　結果</span><span class="rp-meta">今日からの手順</span></div>
     <div class="rp-h2">導線の中で、手放す作業（お客さんへの対応と商品づくりは手放さない）</div>
     <table class="rp-table" id="rp-release-table"><thead><tr><th>作業</th><th>誰に任せる</th><th>今日やる1つ</th></tr></thead><tbody></tbody></table>
     <p class="rp-note" id="rp-release-note"></p>
@@ -175,14 +184,14 @@
     <div class="rp-h2">ChatGPT にこう頼む（1つ目の作業）</div>
     <div class="prompt-text" id="rp-prompt"></div>
     <div class="rp-about" id="rp-about-block"><div class="rp-box-h">誰が見ているか</div><p id="rp-about"></p></div>
-    <div class="rp-foot">3/3　<span id="rp-company">Lifinity.</span>　数字は入力した目安からの概算です</div>
+    <div class="rp-foot">4/4　<span id="rp-company">Lifinity.</span>　数字は入力した目安からの概算です</div>
   </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="config.js?v=8"></script>
-<script src="logic.js?v=10"></script>
-<script src="app.js?v=10"></script>
+<script src="config.js?v=11"></script>
+<script src="logic.js?v=11"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
