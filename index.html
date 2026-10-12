@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
-<meta name="description" content="7問・約2分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。">
+<meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
 
   <header class="header">
     <span class="brand">Lifinity.</span>
-    <span class="brand-sub">無料・3分・登録なし</span>
+    <span class="brand-sub">無料・3分・結果はPDFでお届け</span>
   </header>
 
   <!-- ===== 開始画面 ===== -->
@@ -22,29 +22,29 @@
       <div class="hero-art" id="hero-art"></div>
       <p class="eyebrow">売上アップのための</p>
       <h1 class="title">「手放す仕事・<br>集中する仕事」診断</h1>
-      <p class="lead">毎日忙しいのに売上が伸びない。集客も営業も事務も、ぜんぶ自分。<br>11の質問で、あなたの1週間と<strong>あなたの数字</strong>（浮く時間・商談1件の価値・検討で消えている金額）を出し、<strong>何を手放し、どこに集中するか</strong>を決めます。</p>
+      <p class="lead">毎日忙しいのに売上が伸びない。集客も営業も事務も、ぜんぶ自分。<br>今の状況と目標を聞いたうえで、あなたの1週間と<strong>あなたの数字</strong>（浮く時間・商談1件の価値・検討で消えている金額）を出し、<strong>何を手放し、どこに集中するか</strong>を決めます。</p>
     </div>
 
     <div class="steps">
-      <div class="step"><span class="step-icon">✍️</span><span class="step-no">1</span><p>11問に<br>タップで答える</p></div>
-      <div class="step"><span class="step-icon">🔢</span><span class="step-no">2</span><p>あなたの数字と<br>1週間が出る</p></div>
-      <div class="step"><span class="step-icon">🚀</span><span class="step-no">3</span><p>手放す仕事と<br>次の一手が分かる</p></div>
+      <div class="step"><span class="step-icon">✍️</span><span class="step-no">1</span><p>状況と目標を<br>4問で聞く</p></div>
+      <div class="step"><span class="step-icon">🔢</span><span class="step-no">2</span><p>仕事と数字を<br>10問で聞く</p></div>
+      <div class="step"><span class="step-icon">📩</span><span class="step-no">3</span><p>あなたのタイプが出る。<br>詳細はPDFでメールへ</p></div>
     </div>
 
     <button class="btn btn-primary btn-big" id="btn-start" type="button">診断をはじめる →</button>
     <ul class="meta">
-      <li>⏱ 全11問・約3分</li>
-      <li>🔒 回答はこの端末の中だけ。外部に送りません</li>
+      <li>⏱ 全14問・約3分</li>
+      <li>📩 詳しい結果（あなたの1週間・数字・手放す作業・次の一手）はPDFでメールにお届け</li>
       <li>🧑‍💼 個人事業主・ひとり社長・講師・コンサル・コーチ・士業の方向け</li>
     </ul>
   </section>
 
-  <!-- ===== 質問画面 ===== -->
+  <!-- ===== 質問画面（入口4問＋診断10問） ===== -->
   <section class="screen" id="screen-question">
     <div class="progress" aria-label="進捗">
-      <div class="progress-top"><span class="progress-label" id="progress-label">Q1 / 11</span><span class="progress-pct" id="progress-pct">0%</span></div>
+      <div class="progress-top"><span class="progress-label" id="progress-label">1 / 14</span><span class="progress-pct" id="progress-pct">0%</span></div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="dots" id="dots"></div>
+      <div class="phase" id="phase"></div>
     </div>
     <div class="qcard">
       <div class="qicon" id="question-icon">🕒</div>
@@ -52,87 +52,62 @@
       <p class="qhint" id="question-hint"></p>
     </div>
     <div class="options" id="options" role="group"></div>
+    <div class="free" id="free" hidden>
+      <label class="free-label" id="free-label" for="free-input"></label>
+      <textarea id="free-input" rows="2" maxlength="200" placeholder="例: 投稿は続けているのに問い合わせが月1件"></textarea>
+      <button class="btn btn-primary" id="btn-free-next" type="button">次へ →</button>
+    </div>
     <div class="nav">
       <button class="btn btn-ghost" id="btn-back" type="button">← 前の質問へ</button>
     </div>
   </section>
 
-  <!-- ===== 結果画面 ===== -->
-  <section class="screen" id="screen-result">
+  <!-- ===== 結果（タイプだけ）＋メール登録 ===== -->
+  <section class="screen" id="screen-gate">
     <div class="result-hero">
       <div class="result-art" id="result-art"></div>
       <p class="result-you">あなたは</p>
       <p class="result-type" id="r-type"></p>
       <p class="result-tagline" id="r-tagline"></p>
     </div>
-    <h2 class="result-headline" id="r-headline"></h2>
 
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">📅</span>あなたの1週間、たぶんこう</h3>
-      <div class="scene" id="r-scene"></div>
+    <article class="card card-gate">
+      <h3 class="card-title"><span class="emoji">📩</span>詳しい結果はPDFでお送りします</h3>
+      <ul class="gate-list">
+        <li>あなたの1週間、たぶんこう（場面で描写）</li>
+        <li>あなたの数字（浮く時間・成約率・商談1件の価値・検討で消えた金額）</li>
+        <li>導線の中で手放す作業と、ChatGPTへの頼み方</li>
+        <li>集中する仕事と、売上アップの次の一手</li>
+        <li>今日からできる3つ</li>
+      </ul>
+      <form id="lead-form" novalidate>
+        <label class="fl" for="lead-name">お名前</label>
+        <input class="fi" id="lead-name" type="text" autocomplete="name" placeholder="例: 山田 花子" required>
+        <label class="fl" for="lead-email">メールアドレス</label>
+        <input class="fi" id="lead-email" type="email" autocomplete="email" inputmode="email" placeholder="例: hanako@example.com" required>
+        <p class="privacy">入力いただいた内容は、診断結果PDFの送付と、<span id="privacy-company">Lifinity.</span>からのご案内（売上づくり・協業の情報）に使います。配信はいつでも解除できます。</p>
+        <button class="btn btn-primary btn-big" id="btn-send" type="submit">結果PDFを受け取る →</button>
+        <p class="form-msg" id="form-msg" role="status"></p>
+      </form>
     </article>
 
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">🔁</span>このタイプがやりがちな3つ</h3>
-      <ul class="habits" id="r-habits"></ul>
-    </article>
-
-    <article class="card card-numbers">
-      <h3 class="card-title"><span class="emoji">🔢</span>あなたの数字</h3>
-      <div class="tiles" id="r-tiles"></div>
-      <p class="cause" id="r-cause"></p>
-      <details class="formulas"><summary>計算の式を見る</summary><ul id="r-formulas"></ul></details>
-    </article>
-
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">🗺️</span>あなたの業務マップ</h3>
-      <p class="card-lead">5つの業務に、回答から見えた「重さ」を積み上げました。長いほど手放す候補です。</p>
-      <div class="legend">
-        <span><i class="sw sw-time"></i>時間を使っている</span>
-        <span><i class="sw sw-burden"></i>負担が大きい</span>
-        <span><i class="sw sw-deleg"></i>人やAIに任せられる</span>
-      </div>
-      <div class="map" id="r-map"></div>
-      <div class="legend legend-marks"><span>💰 売上に最もつながっている</span><span>⭐ もっと時間を使いたい</span></div>
-    </article>
-
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">🎒</span>導線の中で、手放す作業</h3>
-      <p class="card-lead">お客さんへの対応や商品づくりは手放しません。集客→相談→契約→継続の流れの中で、あなたの手が止めている定型の作業だけです。「誰に任せるか」と「ChatGPT への頼み方」付き。</p>
-      <div id="r-release"></div>
-      <p class="card-note" id="r-release-note"></p>
-    </article>
-
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">🎯</span>あなたが集中する仕事</h3>
-      <div id="r-focus"></div>
-      <p class="card-note" id="r-focus-note"></p>
-    </article>
-
-    <article class="card card-accent">
-      <h3 class="card-title"><span class="emoji">🚀</span>売上アップのための次の一手</h3>
-      <p class="card-lead">売上の流れの、細くなっている所です。</p>
-      <div class="funnel" id="r-funnel"></div>
-      <p class="priority-title" id="r-priority-title"></p>
-      <p class="priority-text" id="r-priority-text"></p>
-      <p class="card-note" id="r-priority-bridge"></p>
-    </article>
-
-    <article class="card">
-      <h3 class="card-title"><span class="emoji">✅</span>今日からできるアクション</h3>
-      <p class="card-lead">できたらタップしてチェック。3つで今日は十分です。</p>
-      <ul class="actions" id="r-actions"></ul>
-    </article>
-
-    <article class="card card-cta">
-      <div class="cta-art">💁‍♀️</div>
-      <p class="cta-text">診断結果はいかがでしたか？<br>売上を伸ばすためには、仕事を増やすだけでなく、何を手放し、どこに時間と労力を集中させるかが重要です。<br><br><span id="cta-company">Lifinity.</span>では、現在の事業や集客状況を整理し、売上につながる仕組みづくりをサポートしています。<br>自分の事業に合った具体的な改善策を整理したい方は、個別相談をご活用ください。</p>
-      <a class="btn btn-primary" id="btn-consult" href="#" target="_blank" rel="noopener">売上アップのための個別相談はこちら</a>
-    </article>
-
-    <p class="caveat">11問の回答から出した見立てと概算です。数字は入力した目安から計算しています。</p>
     <div class="nav nav-center">
       <button class="btn btn-ghost" id="btn-restart" type="button">↻ 診断を最初からやり直す</button>
+    </div>
+  </section>
+
+  <!-- ===== 送信完了 ===== -->
+  <section class="screen" id="screen-thanks">
+    <div class="result-hero">
+      <div class="cta-art">📬</div>
+      <p class="result-type">お送りしました</p>
+      <p class="result-tagline" id="thanks-text"></p>
+    </div>
+    <article class="card">
+      <p class="cta-text">数分たっても届かない場合は、迷惑メールフォルダをご確認ください。<br>PDFを読んで「自分の事業に合った形で整理したい」と思われたら、PDFの最後にある個別相談からご連絡ください。</p>
+    </article>
+    <div class="nav nav-center">
+      <button class="btn btn-ghost" id="btn-restart2" type="button">↻ もう一度診断する</button>
     </div>
   </section>
 
@@ -140,6 +115,76 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
+<!-- ===== PDF用の詳細レポート（画面外で描画してPDF化する） ===== -->
+<div class="report" id="report" aria-hidden="true">
+  <div class="rp-head">
+    <div class="rp-brand">Lifinity.</div>
+    <div class="rp-title">売上アップのための「手放す仕事・集中する仕事」診断 結果</div>
+    <div class="rp-meta" id="rp-meta"></div>
+  </div>
+  <div class="rp-hero">
+    <div class="rp-art" id="rp-art"></div>
+    <div>
+      <div class="rp-you">あなたは</div>
+      <div class="rp-type" id="rp-type"></div>
+      <div class="rp-tagline" id="rp-tagline"></div>
+      <div class="rp-headline" id="rp-headline"></div>
+    </div>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">📝 入力いただいた状況</div>
+    <div class="rp-intake" id="rp-intake"></div>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">📅 あなたの1週間、たぶんこう</div>
+    <div class="scene" id="rp-scene"></div>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">🔁 このタイプがやりがちな3つ</div>
+    <ul class="habits" id="rp-habits"></ul>
+  </div>
+  <div class="rp-card rp-numbers">
+    <div class="rp-h">🔢 あなたの数字</div>
+    <div class="tiles" id="rp-tiles"></div>
+    <p class="cause" id="rp-cause"></p>
+    <ul class="rp-formulas" id="rp-formulas"></ul>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">🗺️ あなたの業務マップ</div>
+    <div class="legend"><span><i class="sw sw-time"></i>時間を使っている</span><span><i class="sw sw-burden"></i>気が重い</span><span><i class="sw sw-deleg"></i>人やAIに任せられる</span><span>💰 直近の契約の出どころ</span><span>⭐ やりたいこと</span></div>
+    <div class="map" id="rp-map"></div>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">🎒 導線の中で、手放す作業</div>
+    <p class="card-lead">お客さんへの対応や商品づくりは手放しません。集客→相談→契約→継続の流れの中で、あなたの手が止めている定型の作業だけです。</p>
+    <div id="rp-release"></div>
+    <p class="card-note" id="rp-release-note"></p>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">🎯 あなたが集中する仕事</div>
+    <div id="rp-focus"></div>
+    <p class="card-note" id="rp-focus-note"></p>
+  </div>
+  <div class="rp-card rp-accent">
+    <div class="rp-h">🚀 売上アップのための次の一手</div>
+    <div class="funnel" id="rp-funnel"></div>
+    <p class="priority-title" id="rp-priority-title"></p>
+    <p class="priority-text" id="rp-priority-text"></p>
+    <p class="card-note" id="rp-priority-bridge"></p>
+  </div>
+  <div class="rp-card">
+    <div class="rp-h">✅ 今日からできる3つ</div>
+    <ol class="rp-actions" id="rp-actions"></ol>
+  </div>
+  <div class="rp-card rp-cta">
+    <p class="cta-text">診断結果はいかがでしたか？<br>売上を伸ばすためには、仕事を増やすだけでなく、何を手放し、どこに時間と労力を集中させるかが重要です。<br><br><span id="rp-company">Lifinity.</span>では、現在の事業や集客状況を整理し、売上につながる仕組みづくりをサポートしています。<br>自分の事業に合った具体的な改善策を整理したい方は、個別相談をご活用ください。</p>
+    <div class="rp-consult" id="rp-consult"></div>
+  </div>
+  <p class="caveat">14問の回答から出した見立てと概算です。数字は入力した目安から計算しています。</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="config.js"></script>
 <script src="logic.js"></script>
 <script src="app.js"></script>

@@ -1,10 +1,20 @@
 /* 診断ロジック v3（ブラウザと node の両方で動く純粋関数）
-   answers = { q1:'A'.., hours:'A'.., q2..q7, leads:'A'.., won:'A'.., price:'A'.. } → 結果 */
+   answers = { industry, revenue, worry, worryFree(自由記述), goal, q1, hours, q2..q6, leads, won, price } → 結果 */
 (function (root) {
   'use strict';
 
   /* ---------- 質問（場面で聞く） ---------- */
   var QUESTIONS = [
+    /* ---- 入口: 目標・悩み・状況 ---- */
+    { id: 'industry', kind: 'intake', icon: '🧑‍💼', title: 'あなたのお仕事に一番近いのは？', hint: '',
+      options: { A: '講師・コンサルタント・コーチ', B: '士業・専門職', C: 'サロン・施術・教室', D: '制作・デザイン・ライター', E: 'その他' } },
+    { id: 'revenue', kind: 'intake', icon: '📊', title: '今の月の売上は、だいたい？', hint: '直近3か月の平均で',
+      options: { A: '10万円まで', B: '10〜30万円', C: '30〜100万円', D: '100〜300万円', E: '300万円以上' } },
+    { id: 'worry', kind: 'intake', icon: '💭', title: '今、一番の悩みは？', hint: '一番近いものを1つ。ひとこと添えてもらえると、お送りする内容が具体的になります', free: 'ひとことで言うと（任意）',
+      options: { A: '集客が安定しない', B: '問い合わせはあるのに契約にならない', C: '忙しくて時間がない', D: '売上が頭打ち', E: '何から手をつければいいか分からない' } },
+    { id: 'goal', kind: 'intake', icon: '🎯', title: '3か月後、何が変わっていたら「よくやった」と言えますか？', hint: '1つだけ',
+      options: { A: '夜9時にパソコンを閉じている', B: '毎月決まった数の問い合わせが来ている', C: '月の契約が今より2件増えている', D: '1週間休んでも仕事が回っている', E: '月の売上が今の1.5倍になっている' } },
+    /* ---- 診断 ---- */
     { id: 'q1', kind: 'cat', icon: '🕒', title: '先週、一番時間を使った仕事は？', hint: '一番近いものを1つ',
       options: { A: 'SNS の投稿づくり・集客', B: '商談・提案', C: 'お客さんへの対応・サービス提供', D: '事務・日程調整・資料作成', E: '商品づくり・企画・経営のこと' } },
     { id: 'hours', kind: 'num', icon: '⏳', title: 'その仕事に、週に何時間くらい使っていますか？', hint: 'ざっくりでOK',
@@ -19,8 +29,6 @@
       options: { A: '新しい人に会いに行く・DM を送る', B: '止まっている商談の相手に連絡する', C: '今のお客さんに、もう一段深い提案をする', D: '新しい商品の設計を書く', E: '業務の手順書と仕組みを作る' } },
     { id: 'q6', kind: 'cat', icon: '🔁', title: '投稿と声かけを1か月止めたら、新規の問い合わせはどうなりますか？', hint: '今の売上の流れに一番近いもの',
       options: { A: 'ゼロになる', B: '来るけど「また考えます」で終わる', C: '相談までは来るが「検討します」で消える', D: 'そもそも問い合わせを後回しにしている', E: '止めても1〜2件は来る' } },
-    { id: 'q7', kind: 'cat', icon: '🎯', title: '3か月後、何が変わっていたら「よくやった」と言えますか？', hint: '1つだけ',
-      options: { A: '夜9時にパソコンを閉じている', B: '毎月決まった数の問い合わせが来ている', C: '月の契約が今より2件増えている', D: '1週間休んでも仕事が回っている', E: '月の売上が今の1.5倍になっている' } },
     { id: 'leads', kind: 'num', icon: '📥', title: '先月、新規の相談・商談は何件ありましたか？', hint: '問い合わせではなく、話をした件数',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
     { id: 'won', kind: 'num', icon: '✍️', title: 'そのうち、契約になったのは何件？', hint: '',
@@ -226,7 +234,7 @@
 
     /* ---------- 次の一手（Q6・Q7） ---------- */
     var t = TYPES[a.q6];
-    var bridge = t.q7[a.q7];
+    var bridge = t.q7[a.goal];
     var priority = { title: t.title, text: t.text, bridge: bridge };
 
     /* ---------- 因果（タイプ × 数字） ---------- */
@@ -265,7 +273,14 @@
                isRevenue: (revenueCat === cat), isWant: (want.cat === cat), eligible: eligible.indexOf(cat) >= 0 };
     });
 
+    var byId = {}; QUESTIONS.forEach(function (q) { byId[q.id] = q; });
+    var intake = {
+      industry: byId.industry.options[a.industry], revenue: byId.revenue.options[a.revenue],
+      worry: byId.worry.options[a.worry], worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal]
+    };
+
     return {
+      intake: intake,
       type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
       headline: 'あなたが今、見直すべきなのは' + t.headline + 'です',
       scene: scene, habits: t.habits, cause: cause, numbers: numbers, map: map,
