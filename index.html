@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>売上アップのための「手放す仕事・集中する仕事」診断 | Lifinity.</title>
 <meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <div class="app">
@@ -115,93 +115,80 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
-<!-- ===== PDF用の詳細レポート（画面外で描画してPDF化する） ===== -->
+<!-- ===== PDF用レポート（A4 3枚。画面外で描画して1枚ずつPDF化） ===== -->
 <div class="report" id="report" aria-hidden="true">
-  <div class="rp-head">
-    <div class="rp-brand">Lifinity.</div>
-    <div class="rp-title">売上アップのための「手放す仕事・集中する仕事」診断 結果</div>
-    <div class="rp-meta" id="rp-meta"></div>
-  </div>
-  <div class="rp-hero">
-    <div class="rp-art" id="rp-art"></div>
-    <div>
-      <div class="rp-you">あなたは</div>
-      <div class="rp-type" id="rp-type"></div>
-      <div class="rp-tagline" id="rp-tagline"></div>
-      <div class="rp-headline" id="rp-headline"></div>
-      <div class="rp-goal" id="rp-goal"></div>
+
+  <!-- 1枚目: 結論 -->
+  <section class="rp-page rp-p1">
+    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta" id="rp-meta"></span></div>
+    <div class="rp-p1-hero">
+      <div class="rp-art" id="rp-art"></div>
+      <div>
+        <div class="rp-you">診断結果　あなたは</div>
+        <div class="rp-type" id="rp-type"></div>
+        <div class="rp-stop" id="rp-stop"></div>
+      </div>
     </div>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">📝 入力いただいた状況</div>
-    <div class="rp-intake" id="rp-intake"></div>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">📅 あなたの1週間、たぶんこう</div>
+    <div class="rp-key">
+      <div class="rp-key-label" id="rp-key-label"></div>
+      <div class="rp-key-num"><span id="rp-key-num"></span><small id="rp-key-unit"></small></div>
+      <div class="rp-key-sub" id="rp-key-sub"></div>
+    </div>
+    <div class="rp-why">
+      <div class="rp-h">回答から分かったこと</div>
+      <ul id="rp-why"></ul>
+    </div>
+    <div class="rp-two">
+      <div class="rp-box rp-box-stop"><div class="rp-box-h">やめること</div><p id="rp-stop-do"></p></div>
+      <div class="rp-box rp-box-go"><div class="rp-box-h">集中すること</div><p id="rp-go-do"></p></div>
+    </div>
+    <div class="rp-cta1">
+      <div class="rp-h">個別相談で決めること</div>
+      <div id="rp-consult-body"></div>
+      <p class="rp-worry" id="rp-worry"></p>
+      <div class="rp-consult" id="rp-consult"></div>
+    </div>
+    <div class="rp-foot">1/3　詳しい根拠は2枚目、今日からの手順は3枚目</div>
+  </section>
+
+  <!-- 2枚目: 根拠 -->
+  <section class="rp-page rp-p2">
+    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta">なぜ、そこで止まるのか</span></div>
+    <div class="rp-h2">あなたの1週間、たぶんこう</div>
     <div class="scene" id="rp-scene"></div>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">🔁 このタイプがやりがちな3つ</div>
+    <div class="rp-h2">このタイプがやりがちな3つ</div>
     <ul class="habits" id="rp-habits"></ul>
-  </div>
-  <div class="rp-card rp-numbers">
-    <div class="rp-h">🔢 あなたの数字</div>
-    <div class="tiles" id="rp-tiles"></div>
-    <p class="cause" id="rp-cause"></p>
-    <ul class="rp-formulas" id="rp-formulas"></ul>
-  </div>
-  <div class="rp-card rp-alone">
-    <div class="rp-h">🧱 なぜ、ひとりだと同じ所で止まるか</div>
+    <div class="rp-h2">なぜ、ひとりだと同じ所で止まるか</div>
     <p class="rp-alone-text" id="rp-alone"></p>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">🗺️ あなたの業務マップ</div>
-    <div class="legend"><span><i class="sw sw-time"></i>時間を使っている</span><span><i class="sw sw-burden"></i>気が重い</span><span><i class="sw sw-deleg"></i>人やAIに任せられる</span><span>💰 直近の契約の出どころ</span><span>⭐ やりたいこと</span></div>
-    <div class="map" id="rp-map"></div>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">🎒 導線の中で、手放す作業</div>
-    <p class="card-lead">お客さんへの対応や商品づくりは手放しません。集客→相談→契約→継続の流れの中で、あなたの手が止めている定型の作業だけです。</p>
-    <div id="rp-release"></div>
-    <p class="card-note" id="rp-release-note"></p>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">🎯 あなたが集中する仕事</div>
-    <div id="rp-focus"></div>
-    <p class="card-note" id="rp-focus-note"></p>
-  </div>
-  <div class="rp-card rp-accent">
-    <div class="rp-h">🚀 売上アップのための次の一手</div>
+    <div class="rp-h2">売上の流れの、細い所</div>
     <div class="funnel" id="rp-funnel"></div>
-    <p class="priority-title" id="rp-priority-title"></p>
-    <p class="priority-text" id="rp-priority-text"></p>
-    <p class="card-note" id="rp-priority-bridge"></p>
-  </div>
-  <div class="rp-card">
-    <div class="rp-h">✅ 今日からできる3つ</div>
+    <p class="rp-cause" id="rp-cause"></p>
+    <div class="rp-foot">2/3</div>
+  </section>
+
+  <!-- 3枚目: 手順 -->
+  <section class="rp-page rp-p3">
+    <div class="rp-top"><span class="rp-brand">Lifinity.</span><span class="rp-meta">今日からの手順</span></div>
+    <div class="rp-h2">導線の中で、手放す作業（お客さんへの対応と商品づくりは手放さない）</div>
+    <table class="rp-table" id="rp-release-table"><thead><tr><th>作業</th><th>誰に任せる</th><th>今日やる1つ</th></tr></thead><tbody></tbody></table>
+    <p class="rp-note" id="rp-release-note"></p>
+    <div class="rp-h2">あなたの数字（式つき）</div>
+    <div class="tiles" id="rp-tiles"></div>
+    <ul class="rp-formulas" id="rp-formulas"></ul>
+    <div class="rp-h2">今日からできる3つ</div>
     <ol class="rp-actions" id="rp-actions"></ol>
-    <p class="rp-after">3つやって1週間で変わらなければ、原因は手順ではなく設計です。</p>
-  </div>
-  <div class="rp-card rp-consult-block" id="rp-consult-block">
-    <div class="rp-h">🗓️ 個別相談で決めること</div>
-    <div id="rp-consult-body"></div>
-  </div>
-  <div class="rp-card rp-about" id="rp-about-block">
-    <div class="rp-h">👋 誰が見ているか</div>
-    <p id="rp-about"></p>
-  </div>
-  <div class="rp-card rp-cta">
-    <p class="cta-text">診断結果はいかがでしたか？<br>売上を伸ばすためには、仕事を増やすだけでなく、何を手放し、どこに時間と労力を集中させるかが重要です。<br><br><span id="rp-company">Lifinity.</span>では、現在の事業や集客状況を整理し、売上につながる仕組みづくりをサポートしています。<br>自分の事業に合った具体的な改善策を整理したい方は、個別相談をご活用ください。</p>
-    <p class="rp-worry" id="rp-worry"></p>
-    <div class="rp-consult" id="rp-consult"></div>
-  </div>
-  <p class="caveat">14問の回答から出した見立てと概算です。数字は入力した目安から計算しています。</p>
+    <p class="rp-after">3つやって1週間で変わらなければ、原因は手順ではなく設計です。そのときは個別相談へ。</p>
+    <div class="rp-h2">ChatGPT にこう頼む（1つ目の作業）</div>
+    <div class="prompt-text" id="rp-prompt"></div>
+    <div class="rp-about" id="rp-about-block"><div class="rp-box-h">誰が見ているか</div><p id="rp-about"></p></div>
+    <div class="rp-foot">3/3　<span id="rp-company">Lifinity.</span>　数字は入力した目安からの概算です</div>
+  </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="config.js?v=6"></script>
-<script src="logic.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="config.js?v=7"></script>
+<script src="logic.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

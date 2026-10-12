@@ -138,87 +138,53 @@
     show('gate');
   }
 
+  /* 1枚目の主役の数字と、やめる／集中する の1行（タイプ×数字） */
+  function headlineParts(r) {
+    var n = r.numbers, a = answers, q6 = a.q6;
+    var stage = { A: '入口（集客）', B: '問い合わせから相談への間', C: '相談から契約への間', D: '今のお客さんの対応', E: '流れの中の、まだ見えていない1か所' }[q6];
+    var key, stop, go;
+    if (q6 === 'C' && n.leads > 0) {
+      key = { label: '検討のまま消えている金額（月）', num: String(n.lostMoney), unit: '万円', sub: '相談' + n.leads + '件のうち契約' + n.won + '件。残り' + n.lostCount + '件 × 単価' + n.price + '万円。新しい集客より、ここを拾う方が早い。' };
+    } else if (q6 === 'D') {
+      key = { label: '対応を型にすると戻る時間（月）', num: String(Math.round(n.freeMonth)), unit: '時間', sub: '商談' + n.dealsFromTime + '件分。先月の相談は' + n.leads + '件なので、この時間だけで相談を倍にできる。' };
+    } else if (q6 === 'E' && n.dealValue != null) {
+      key = { label: '商談1件の価値', num: String(n.dealValue), unit: '万円', sub: '成約率を10ポイント上げると月' + Math.round(n.leads * n.price * 0.1 * 10) / 10 + '万円。相談を1件増やすより、細い所を1つ太くする方が早い。' };
+    } else if (q6 === 'B') {
+      key = { label: '相談まで来た人（先月）', num: String(n.leads), unit: '件', sub: '問い合わせは、この数より多いはず。相談に進む前に消えた人を数えていないので、取りこぼしが見えていない。' };
+    } else {
+      key = { label: '先月の相談（あなたが動いた分だけ）', num: String(n.leads), unit: '件', sub: '投稿と声かけを止めた週は0。入口があなたの手にある限り、この数は稼働で頭打ち。' };
+    }
+    stop = { A: '新しい集客施策を増やすこと', B: '問い合わせに丁寧に返して終わること', C: '商談の数を増やそうとすること', D: '問い合わせを後回しにすること', E: '新しい集客から手を付けること' }[q6];
+    go = { A: '入口を自分の手から外す（予約枠・固定投稿の相談の入口）', B: '返信のあとに「次の一歩」を置く（日程・資料・質問）', C: '相談で「決める基準」を先に聞く。価格は最後にしない', D: '同じ返信を型にして、空いた時間を新規に回す', E: '集客→商談→成約→継続を数字で並べ、細い1か所を直す' }[q6];
+    return { stage: stage, key: key, stop: stop, go: go };
+  }
+
+  function whyBullets(r) {
+    var n = r.numbers, out = [];
+    var q = {}; QUESTIONS.forEach(function (x) { q[x.id] = x; });
+    out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.topHours + '時間。');
+    out.push('直近の契約は「' + q.q4.options[answers.q4] + '」から。やりたいことは「' + q.q5.options[answers.q5] + '」。');
+    out.push('投稿と声かけを1か月止めたら「' + q.q6.options[answers.q6] + '」。ここが今の売上の形です。');
+    out.push('先月の相談' + n.leads + '件、契約' + n.won + '件、単価' + n.price + '万円。');
+    return out;
+  }
+
   function renderReport(r) {
-    var n = r.numbers;
-    $('rp-meta').textContent = '作成日 ' + new Date().toLocaleDateString('ja-JP') + (answers.leadName ? '　' + answers.leadName + ' 様' : '');
+    var n = r.numbers, hp = headlineParts(r);
+    $('rp-meta').textContent = (answers.leadName ? answers.leadName + ' 様　' : '') + new Date().toLocaleDateString('ja-JP');
     $('rp-art').innerHTML = charSVG(r.mood);
     $('rp-type').textContent = r.type;
-    $('rp-tagline').textContent = r.tagline;
-    $('rp-headline').textContent = r.headline;
-    $('rp-goal').innerHTML = '';
-    $('rp-goal').appendChild(document.createTextNode('あなたの3か月後の目標: '));
-    $('rp-goal').appendChild(el('b', null, r.intake.goal));
+    $('rp-stop').textContent = '売上が止まっている場所は、' + hp.stage + 'です。';
+    $('rp-key-label').textContent = hp.key.label;
+    $('rp-key-num').textContent = hp.key.num;
+    $('rp-key-unit').textContent = hp.key.unit;
+    $('rp-key-sub').textContent = hp.key.sub;
+    var why = $('rp-why'); why.innerHTML = '';
+    whyBullets(r).forEach(function (t) { why.appendChild(el('li', null, t)); });
+    $('rp-stop-do').textContent = hp.stop;
+    $('rp-go-do').textContent = hp.go;
 
-    var ik = $('rp-intake'); ik.innerHTML = '';
-    [['お仕事', r.intake.industry], ['月の売上', r.intake.revenue], ['一番の悩み', r.intake.worry + (r.intake.worryFree ? '（' + r.intake.worryFree + '）' : '')], ['3か月後の目標', r.intake.goal]].forEach(function (row) {
-      ik.appendChild(el('dt', null, row[0])); ik.appendChild(el('dd', null, row[1]));
-    });
-
-    var sc = $('rp-scene'); sc.innerHTML = '';
-    r.scene.split('\n').forEach(function (line) { sc.appendChild(el('p', null, line)); });
-    var hb = $('rp-habits'); hb.innerHTML = '';
-    r.habits.forEach(function (h, i) { var li = el('li'); li.appendChild(el('span', 'hn', String(i + 1))); li.appendChild(el('span', null, h)); hb.appendChild(li); });
-
-    var tiles = $('rp-tiles'); tiles.innerHTML = '';
-    function tile(label, value, unit, sub) {
-      var d = el('div', 'tile'); d.appendChild(el('div', 'tl', label));
-      var v = el('div', 'tv', value); if (unit) v.appendChild(el('small', null, unit)); d.appendChild(v);
-      if (sub) d.appendChild(el('div', 'ts', sub)); tiles.appendChild(d);
-    }
-    tile('手放すと浮く時間（月）', String(Math.round(n.freeMonth)), '時間', '商談' + n.dealsFromTime + '件分');
-    tile('成約率', n.ratePct == null ? '—' : String(n.ratePct), n.ratePct == null ? '' : '%', '契約' + n.won + '件 ÷ 相談' + n.leads + '件');
-    tile('商談1件の価値', n.dealValue == null ? '—' : String(n.dealValue), n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
-    tile('検討のまま消えた金額（月）', String(n.lostMoney), '万円', '（相談 − 契約）× 単価');
-    $('rp-cause').textContent = r.cause;
-    $('rp-alone').textContent = r.alone;
-    var fl = $('rp-formulas'); fl.innerHTML = '';
-    n.formulas.forEach(function (f) { fl.appendChild(el('li', null, f)); });
-
-    var map = $('rp-map'); map.innerHTML = '';
-    var topCat = r.release[0].cat;
-    r.map.forEach(function (m) {
-      var row = el('div', 'mrow' + (m.cat === topCat && m.eligible ? ' top' : ''));
-      var ic = el('div', 'micon', m.icon); ic.style.background = m.color + '33'; row.appendChild(ic);
-      var mid = el('div'); mid.appendChild(el('div', 'mlabel', m.label));
-      var bar = el('div', 'mbar');
-      [['time', m.time], ['burden', m.burden], ['deleg', m.delegable]].forEach(function (sg) { if (sg[1] > 0) { var seg = el('div', 'seg seg-' + sg[0]); seg.style.width = (sg[1] / 7 * 100) + '%'; bar.appendChild(seg); } });
-      mid.appendChild(bar); row.appendChild(mid);
-      row.appendChild(el('div', 'mmarks', (m.isRevenue ? '💰' : '') + (m.isWant ? '⭐' : '')));
-      map.appendChild(row);
-    });
-
-    var rel = $('rp-release'); rel.innerHTML = '';
-    r.release.forEach(function (it, i) {
-      var d = el('div', 'item'); d.style.borderLeftColor = it.color;
-      var head = el('div', 'item-head'); head.appendChild(el('span', 'iicon', it.icon)); head.appendChild(el('span', 'item-cat', '候補' + (i + 1) + '　' + it.category)); d.appendChild(head);
-      var t = el('div', 'item-title', it.title); if (it.revenueProtected) t.appendChild(el('span', 'tag', '定型部分のみ')); d.appendChild(t);
-      d.appendChild(el('div', 'item-why', it.why));
-      d.appendChild(el('div', 'tools-label', '誰に任せる？'));
-      var tools = el('div', 'tools'); it.tools.forEach(function (name) { tools.appendChild(el('span', 'tl' + (/ChatGPT|Perplexity/.test(name) ? ' ai' : ''), name)); }); d.appendChild(tools);
-      var det = el('details', 'prompt'); det.open = true;
-      det.appendChild(el('summary', null, '🤖 ChatGPT にこう頼む（コピーして貼るだけ）'));
-      var body = el('div', 'prompt-body'); body.appendChild(el('div', 'prompt-text', it.prompt)); body.appendChild(el('p', 'card-note', '【 】の中をあなたの内容に置き換えてから送ってください。'));
-      det.appendChild(body); d.appendChild(det); rel.appendChild(d);
-    });
-    $('rp-release-note').textContent = r.releaseNote;
-
-    var foc = $('rp-focus'); foc.innerHTML = '';
-    r.focus.forEach(function (it, i) {
-      var d = el('div', 'item focus-item');
-      var head = el('div', 'item-head'); head.appendChild(el('span', 'iicon', i === 0 ? '🥇' : '🥈')); head.appendChild(el('span', 'item-cat', i === 0 ? '最優先' : '2番目')); d.appendChild(head);
-      d.appendChild(el('div', 'item-title', it.title)); d.appendChild(el('div', 'item-why', it.why)); foc.appendChild(d);
-    });
-    $('rp-focus-note').textContent = r.focusNote;
-
-    $('rp-funnel').innerHTML = funnelSVG(r.funnel.stage);
-    $('rp-priority-title').textContent = r.priority.title;
-    $('rp-priority-text').textContent = r.priority.text;
-    $('rp-priority-bridge').textContent = r.priority.bridge;
-
-    var acts = $('rp-actions'); acts.innerHTML = '';
-    r.actions.forEach(function (a) { acts.appendChild(el('li', null, a)); });
-
-    /* 個別相談で決めること（config の事実だけ。空なら隠す） */
+    /* 個別相談で決めること（config の事実だけ。空なら一文だけ） */
     var C = (typeof CONSULT === 'object' && CONSULT) ? CONSULT : {};
     var cb = $('rp-consult-body'); cb.innerHTML = '';
     var ck = el('dl', 'ck'), rows = 0;
@@ -237,45 +203,70 @@
     ckRow('向いている人', C.fit);
     ckRow('向かない人', C.notFit);
     if (C.noHardSell) ckRow('売り込み', 'その場で申し込みを求めることはしません');
-    cb.appendChild(ck);
-    $('rp-consult-block').style.display = rows ? '' : 'none';
+    if (rows) cb.appendChild(ck);
+    else cb.appendChild(el('p', 'rp-empty', hp.stage + 'を、あなたの事業の形でどう直すかを一緒に決めます。'));
+    $('rp-worry').textContent = r.intake.worryFree ? '「' + r.intake.worryFree + '」と書いてくださった件から始めます。' : '';
+    var cs = $('rp-consult'); cs.innerHTML = '';
+    if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) {
+      var link = el('a', null, '個別相談を申し込む'); link.href = CONSULT_URL.trim(); cs.appendChild(link);
+      cs.appendChild(el('small', null, CONSULT_URL.trim()));
+    }
 
+    /* 2枚目 */
+    var sc = $('rp-scene'); sc.innerHTML = '';
+    r.scene.split('\n').forEach(function (line) { sc.appendChild(el('p', null, line)); });
+    var hb = $('rp-habits'); hb.innerHTML = '';
+    r.habits.forEach(function (h, i) { var li = el('li'); li.appendChild(el('span', 'hn', String(i + 1))); li.appendChild(el('span', null, h)); hb.appendChild(li); });
+    $('rp-alone').textContent = r.alone;
+    $('rp-funnel').innerHTML = funnelSVG(r.funnel.stage);
+    $('rp-cause').textContent = r.cause;
+
+    /* 3枚目 */
+    var tb = $('rp-release-table').querySelector('tbody'); tb.innerHTML = '';
+    r.release.forEach(function (it) {
+      var tr = el('tr');
+      var td1 = el('td', null, it.title); if (it.revenueProtected) td1.appendChild(el('span', 'tag', '定型部分のみ'));
+      tr.appendChild(td1);
+      tr.appendChild(el('td', null, it.tools.join('／')));
+      tr.appendChild(el('td', null, it.tryToday));
+      tb.appendChild(tr);
+    });
+    $('rp-release-note').textContent = r.releaseNote;
+    var tiles = $('rp-tiles'); tiles.innerHTML = '';
+    function tile(label, value, unit, sub) {
+      var d = el('div', 'tile'); d.appendChild(el('div', 'tl', label));
+      var v = el('div', 'tv', value); if (unit) v.appendChild(el('small', null, unit)); d.appendChild(v);
+      if (sub) d.appendChild(el('div', 'ts', sub)); tiles.appendChild(d);
+    }
+    tile('手放すと浮く時間（月）', String(Math.round(n.freeMonth)), '時間', '商談' + n.dealsFromTime + '件分');
+    tile('成約率', n.ratePct == null ? '—' : String(n.ratePct), n.ratePct == null ? '' : '%', '契約' + n.won + '件 ÷ 相談' + n.leads + '件');
+    tile('商談1件の価値', n.dealValue == null ? '—' : String(n.dealValue), n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
+    tile('検討のまま消えた金額（月）', String(n.lostMoney), '万円', '（相談 − 契約）× 単価');
+    var fl = $('rp-formulas'); fl.innerHTML = '';
+    n.formulas.forEach(function (f) { fl.appendChild(el('li', null, f)); });
+    var acts = $('rp-actions'); acts.innerHTML = '';
+    r.actions.forEach(function (x) { acts.appendChild(el('li', null, x)); });
+    $('rp-prompt').textContent = r.release[0].prompt;
     var ab = (typeof ABOUT_TEXT === 'string') ? ABOUT_TEXT.trim() : '';
     $('rp-about').textContent = ab;
     $('rp-about-block').style.display = ab ? '' : 'none';
-
-    $('rp-worry').textContent = r.intake.worryFree ? '「' + r.intake.worryFree + '」と書いてくださった件は、相談の最初にお聞きします。' : '';
-
-    var cs = $('rp-consult'); cs.innerHTML = '';
-    if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) {
-      var a = el('a', null, '売上アップのための個別相談はこちら'); a.href = CONSULT_URL.trim(); cs.appendChild(a);
-      cs.appendChild(el('small', null, CONSULT_URL.trim()));
-    }
   }
 
-  /* ---------- PDF ---------- */
+  /* ---------- PDF（1ページ＝1枚の画像） ---------- */
   function buildPdf() {
-    var node = $('report');
-    return html2canvas(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 640 }).then(function (canvas) {
-      var jsPDF = window.jspdf.jsPDF;
-      var pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
-      var pageW = 210, pageH = 297, margin = 0;
-      var imgW = pageW - margin * 2;
-      var pxPerMm = canvas.width / imgW;
-      var pageHpx = Math.floor((pageH - margin * 2) * pxPerMm);
-      var y = 0, first = true;
-      while (y < canvas.height) {
-        var h = Math.min(pageHpx, canvas.height - y);
-        var slice = document.createElement('canvas');
-        slice.width = canvas.width; slice.height = h;
-        slice.getContext('2d').drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
-        var img = slice.toDataURL('image/jpeg', 0.85);
-        if (!first) pdf.addPage();
-        pdf.addImage(img, 'JPEG', margin, margin, imgW, h / pxPerMm);
-        first = false; y += h;
-      }
-      return pdf;
+    var pages = Array.prototype.slice.call(document.querySelectorAll('#report .rp-page'));
+    var jsPDF = window.jspdf.jsPDF;
+    var pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    var chain = Promise.resolve();
+    pages.forEach(function (page, i) {
+      chain = chain.then(function () {
+        return html2canvas(page, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 }).then(function (canvas) {
+          if (i > 0) pdf.addPage();
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.88), 'JPEG', 0, 0, 210, 297);
+        });
+      });
     });
+    return chain.then(function () { return pdf; });
   }
 
   /* ---------- 送信 ---------- */
