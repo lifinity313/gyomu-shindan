@@ -2,7 +2,7 @@
 
 /* 診断結果（PDF）を送る受け口のURL。協業バンク側に用意する API のアドレスを入れる。
    空のままだと、登録フォームは表示されるが送信はできない（「準備中」と表示）。 */
-var LEAD_ENDPOINT = "";
+var LEAD_ENDPOINT = "https://lifeinfinity.jp/kyogyo/api/shindan";
 
 /* 個別相談ボタンのリンク先（PDF の最後に載せる）。空なら PDF にボタンを載せない */
 var CONSULT_URL = "";
