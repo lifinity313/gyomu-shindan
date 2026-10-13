@@ -223,7 +223,7 @@
     var q = {}; QUESTIONS.forEach(function (x) { q[x.id] = x; });
     out.push('先月の数: 新しい接点' + n.reach + '人 → 問い合わせ' + n.inquiries + '件 → 個別相談' + n.leads + '件 → 契約' + n.won + '件（単価' + n.price + '万円）。');
     var lab = function (id, v) { return (Array.isArray(v) ? v : [v]).map(function (l) { return q[id].options[l]; }).join('・'); };
-    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせのあとは「' + q.qnext.options[answers.qnext] + '」。');
+    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせが来たら「' + q.qnext.options[answers.qnext] + '」。');
     out.push('個別相談の最初にするのは「' + q.qfirst.options[answers.qfirst] + '」。');
     out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.topHours + '時間。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
     return out;
