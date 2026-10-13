@@ -8,7 +8,7 @@
     /* ---- 状況（3問） ---- */
     { id: 'revenue', kind: 'intake', icon: '📊', title: '今の月の売上は？', hint: '直近3か月の平均で',
       options: { A: '10万円まで', B: '10〜30万円', C: '30〜100万円', D: '100〜300万円', E: '300万円以上' } },
-    { id: 'worry', kind: 'intake', icon: '💭', title: '今、一番の悩みは？', hint: 'ひとこと添えると、お送りする内容が具体的になります', free: 'ひとことで言うと（任意）',
+    { id: 'worry', kind: 'intake', multi: true, icon: '💭', title: '今の悩みは？（いくつでも）', hint: 'ひとこと添えると、お送りする内容が具体的になります', free: 'ひとことで言うと（任意）',
       options: { A: '集客が安定しない', B: '問い合わせが契約にならない', C: '忙しくて時間がない', D: '売上が頭打ち・単価が安い', E: '何から手をつけるか分からない' } },
     { id: 'goal', kind: 'intake', icon: '🎯', title: '3か月後に一番ほしい変化は？', hint: '1つだけ',
       options: { A: '夜9時に仕事を終える', B: '問い合わせが毎月安定', C: '契約が月2件増える', D: '1週間休んでも回る', E: '売上が1.5倍になる' } },
@@ -17,12 +17,12 @@
       options: { A: 'SNSの投稿づくり', B: '商談・交流会・提案', C: 'お客さんの対応・納品', D: '事務・日程・資料づくり', E: '商品づくり・企画・学び' } },
     { id: 'hours', kind: 'num', icon: '⏳', title: '「{q1}」に使う時間は、週に？', hint: 'ざっくりでOK',
       options: { A: '5時間以下', B: '5〜10時間', C: '10〜20時間', D: '20〜30時間', E: '30時間以上' } },
-    { id: 'q3', kind: 'cat', icon: '🤖', title: '自分でなくてもできる作業は？', hint: '人やAIに渡せそうなもの',
+    { id: 'q3', kind: 'cat', multi: true, icon: '🤖', title: '自分でなくてもできる作業は？', hint: '人やAIに渡せそうなもの。いくつでも',
       options: { A: '投稿づくり', B: '日程調整・商談の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '思いつかない' } },
     /* ---- 集客（2問） ---- */
     { id: 'reach', kind: 'num', icon: '📣', title: '先月、新しい接点は合わせて何人？', hint: 'フォロワーの増加・名刺・LINE登録を合わせて',
       options: { A: '5人まで', B: '5〜20人', C: '20〜50人', D: '50〜100人', E: '100人以上' } },
-    { id: 'q4', kind: 'cat', icon: '🧭', title: '新規のお客さんは、主にどこから？', hint: '直近の契約を思い出して',
+    { id: 'q4', kind: 'cat', multi: true, icon: '🧭', title: '新規のお客さんは、どこから？', hint: '直近の契約を思い出して。いくつでも',
       options: { A: '投稿・広告を見た人', B: '自分から声をかけた人', C: '紹介・交流会で会った人', D: 'ホームページ・検索', E: '分からない' } },
     /* ---- 教育（2問） ---- */
     { id: 'inquiries', kind: 'num', icon: '📥', title: '先月、問い合わせは何件？', hint: 'DM・フォーム・LINE・紹介の連絡を合わせて',
@@ -156,6 +156,10 @@
     return (x >= 100 ? Math.round(x) : round1(x)) + '万円';
   }
   function joinJa(arr) { return arr.map(function (s) { return '「' + s + '」'; }).join(''); }
+  /* 複数選択の答えは配列。1文字でも配列でも受ける */
+  function asList(v) { return Array.isArray(v) ? v.filter(Boolean) : (v ? [v] : []); }
+
+  function byIdOpt(id, letter) { var q = QUESTIONS.filter(function (x) { return x.id === id; })[0]; return q.options[letter] || ''; }
 
   function diagnose(a) {
     /* ---------- 数字（4段） ---------- */
@@ -203,12 +207,15 @@
     var score = {}, hits = {};
     function add(cat, pts, tag) { score[cat] = (score[cat] || 0) + pts; hits[cat] = hits[cat] || []; if (tag && hits[cat].indexOf(tag) < 0) hits[cat].push(tag); }
     add(CAT_BY_LETTER[a.q1], 2, 'time');
-    Q3_MAP[a.q3].forEach(function (m) { add(m.cat, m.pts, m.pts >= 3 ? 'delegable' : null); });
-    var revenueCat = Q4_MAP[a.q4].cat;
+    var q3list = asList(a.q3).filter(function (l) { return l !== 'E'; });
+    q3list.forEach(function (l) { Q3_MAP[l].forEach(function (m) { add(m.cat, m.pts, m.pts >= 3 ? 'delegable' : null); }); });
+    var q4list = asList(a.q4).filter(function (l) { return l !== 'E'; });
+    var revenueCats = q4list.map(function (l) { return Q4_MAP[l].cat; });
+    var revenueCat = revenueCats[0] || Q4_MAP[asList(a.q4)[0] || 'E'].cat;
     var order = ['sns', 'sales', 'service', 'admin', 'dev'];
     var eligible = Object.keys(score).filter(function (cat) {
       if (cat === 'dev') return false;
-      if (cat === 'service') return a.q3 === 'C';
+      if (cat === 'service') return q3list.indexOf('C') >= 0;
       return true;
     });
     var ranked = eligible.sort(function (x, y) { return (score[y] - score[x]) || (order.indexOf(x) - order.indexOf(y)); }).slice(0, 3);
@@ -219,25 +226,28 @@
       if (tags.indexOf('time') >= 0) names.push('一番時間を使っている');
       if (tags.indexOf('delegable') >= 0) names.push('自分でなくてもできると答えた');
       var why = names.length ? joinJa(names) + '仕事の中の、手作業の部分です。' : (fallback ? '回答からは絞れないので、手作業が一番多い日程調整と請求から始めます。' : '「日程調整・商談の準備」に含まれる事務です。');
-      var isRevenue = (cat === revenueCat);
+      var isRevenue = revenueCats.indexOf(cat) >= 0;
       if (isRevenue) why += 'ただし新規のお客さんはここから来ています。仕事ごと手放すのではなく、定型の作業だけを切り出します。「' + c.keep + '」は自分に残します。';
       else why += '「' + c.keep + '」だけ残して、あとは任せる形です。';
       return { cat: cat, category: c.label, icon: c.icon, color: c.color, title: c.routine, why: why, revenueProtected: isRevenue, tryToday: c.tryToday, tools: c.tools, prompt: c.prompt };
     });
     var topCat = ranked[0];
     var releaseNote = '';
-    if (CAT_BY_LETTER[a.q1] === 'service' && a.q3 !== 'C') releaseNote = 'お客さんへの対応と納品は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
+    if (CAT_BY_LETTER[a.q1] === 'service' && q3list.indexOf('C') < 0) releaseNote = 'お客さんへの対応と納品は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
     if (CAT_BY_LETTER[a.q1] === 'dev') releaseNote = '商品づくり・企画・学びは手放しません。その前の下調べと資料の整形だけを任せます。';
     if (topCat === CAT_BY_LETTER[a.q1]) {
       releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、個別相談' + dealsFromTime + '件分の時間が戻ります。';
     }
 
     /* ---------- 集中する仕事（新規のお客さんの出どころ × 止まっている場所） ---------- */
-    var rev = Q4_MAP[a.q4], focus = [], focusNote = '';
-    if (rev.cat === 'unknown') {
-      focus.push({ title: rev.label, why: '新規のお客さんがどこから来たか分からない状態では、集中先を決められません。契約3件の出どころを書き出すと、たいてい1つに偏っています。そこが集中先です。' });
+    var focus = [], focusNote = '';
+    if (!q4list.length) {
+      focus.push({ title: Q4_MAP.E.label, why: '新規のお客さんがどこから来たか分からない状態では、集中先を決められません。契約3件の出どころを書き出すと、たいてい1つに偏っています。そこが集中先です。' });
+    } else if (q4list.length === 1) {
+      focus.push({ title: Q4_MAP[q4list[0]].label, why: '新規のお客さんはここから来ています。今の売上を作っている入口なので、先に守ります。' });
     } else {
-      focus.push({ title: rev.label, why: '新規のお客さんはここから来ています。今の売上を作っている入口なので、先に守ります。' });
+      var srcNames = q4list.map(function (l) { return byIdOpt('q4', l); });
+      focus.push({ title: Q4_MAP[q4list[0]].label, why: '新規のお客さんは' + joinJa(srcNames) + 'から来ています。入口が複数あるので、直近3件の契約がどれから来たかを数えて、一番多い1つを先に守ります。' });
     }
     focus.push({ title: t.first, why: '止まっている場所（' + t.where + '）を直す仕事です。上の入口を守ったうえで、ここに時間を入れます。' });
 
@@ -246,7 +256,7 @@
 
     /* ---------- 因果（止まっている場所 × 数字） ---------- */
     var cause;
-    if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が「' + Q4_MAP[a.q4].label.replace(/を、.*$/, '') + '」だけなので、あなたが動いた分しか増えません。';
+    if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
     else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'C' ? '「質問に答えて終わり」なので、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
     else if (typeKey === 'C') cause = '個別相談' + leads + '件のうち契約' + won + '件（成約率' + pct(r3) + '%）。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
     else if (typeKey === 'D') cause = '問い合わせ' + inquiries + '件のうち、個別相談は' + leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
@@ -260,12 +270,12 @@
       var tags = hits[cat] || [];
       return { cat: cat, label: CATS[cat].label, icon: CATS[cat].icon, color: CATS[cat].color,
                time: tags.indexOf('time') >= 0 ? 2 : 0, burden: 0,
-               delegable: (Q3_MAP[a.q3].filter(function (m) { return m.cat === cat; })[0] || { pts: 0 }).pts,
+               delegable: q3list.reduce(function (acc, l) { var m = Q3_MAP[l].filter(function (x) { return x.cat === cat; })[0]; return Math.max(acc, m ? m.pts : 0); }, 0),
                isRevenue: (revenueCat === cat), isWant: false, eligible: eligible.indexOf(cat) >= 0 };
     });
 
     var byId = {}; QUESTIONS.forEach(function (q) { byId[q.id] = q; });
-    var intake = { industry: '', revenue: byId.revenue.options[a.revenue], worry: byId.worry.options[a.worry], worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal] };
+    var intake = { industry: '', revenue: byId.revenue.options[a.revenue], worry: asList(a.worry).map(function (l) { return byId.worry.options[l]; }).join('・'), worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal] };
 
     return {
       intake: intake,

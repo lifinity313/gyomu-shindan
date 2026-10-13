@@ -92,7 +92,8 @@
     Object.keys(q.options).forEach(function (letter) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'option' + (answers[q.id] === letter ? ' selected' : '');
+      var picked = q.multi ? (Array.isArray(answers[q.id]) && answers[q.id].indexOf(letter) >= 0) : (answers[q.id] === letter);
+      b.className = 'option' + (picked ? ' selected' : '') + (q.multi ? ' multi' : '');
       b.setAttribute('data-letter', letter);
       b.innerHTML = '<span class="oicon"></span><span class="label"></span><span class="mark"></span>';
       b.querySelector('.oicon').textContent = (OICON[q.id] || {})[letter] || '';
@@ -102,16 +103,29 @@
       box.appendChild(b);
     });
     var free = $('free');
-    if (q.free) {
-      free.hidden = !answers[q.id];
-      $('free-label').textContent = q.free;
-      $('free-input').value = answers[q.id + 'Free'] || '';
+    var hasPick = q.multi ? (Array.isArray(answers[q.id]) && answers[q.id].length > 0) : !!answers[q.id];
+    if (q.free || q.multi) {
+      free.hidden = !hasPick;
+      $('free-label').textContent = q.free || '';
+      $('free-input').hidden = !q.free;
+      $('free-label').hidden = !q.free;
+      $('free-input').value = q.free ? (answers[q.id + 'Free'] || '') : '';
+      $('btn-free-next').textContent = q.multi ? '選び終わったら次へ →' : '次へ →';
     } else { free.hidden = true; }
     $('btn-back').hidden = (index === 0);
   }
 
   function choose(letter) {
     var q = QUESTIONS[index];
+    if (q.multi) {
+      var cur = Array.isArray(answers[q.id]) ? answers[q.id].slice() : [];
+      var none = Object.keys(q.options).slice(-1)[0]; /* 最後の選択肢（思いつかない／分からない）は単独 */
+      if (letter === none) cur = cur.indexOf(none) >= 0 ? [] : [none];
+      else { cur = cur.filter(function (l) { return l !== none; }); var i = cur.indexOf(letter); if (i >= 0) cur.splice(i, 1); else cur.push(letter); }
+      answers[q.id] = cur;
+      renderQuestion();
+      return;
+    }
     answers[q.id] = letter;
     if (q.free) {
       /* 自由記述つきの質問は、選んだあとに記入欄を出して「次へ」で進む */
@@ -123,6 +137,7 @@
   }
   function next() {
     var q = QUESTIONS[index];
+    if (q.multi && !(Array.isArray(answers[q.id]) && answers[q.id].length)) return;
     if (q.free) answers[q.id + 'Free'] = $('free-input').value;
     if (index < QUESTIONS.length - 1) { index += 1; renderQuestion(); }
     else { finish(); }
@@ -188,9 +203,10 @@
     var n = r.numbers, out = [];
     var q = {}; QUESTIONS.forEach(function (x) { q[x.id] = x; });
     out.push('先月の数: 新しい接点' + n.reach + '人 → 問い合わせ' + n.inquiries + '件 → 個別相談' + n.leads + '件 → 契約' + n.won + '件（単価' + n.price + '万円）。');
-    out.push('新規のお客さんは「' + q.q4.options[answers.q4] + '」から。問い合わせのあとは「' + q.qnext.options[answers.qnext] + '」。');
+    var lab = function (id, v) { return (Array.isArray(v) ? v : [v]).map(function (l) { return q[id].options[l]; }).join('・'); };
+    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせのあとは「' + q.qnext.options[answers.qnext] + '」。');
     out.push('個別相談の最初にするのは「' + q.qfirst.options[answers.qfirst] + '」。');
-    out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.topHours + '時間。自分でなくてもできる作業は「' + q.q3.options[answers.q3] + '」。');
+    out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.topHours + '時間。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
     return out;
   }
 
@@ -327,8 +343,11 @@
     buildPdf().then(function (pdf) {
       msg.textContent = '送信しています…';
       var pdfBase64 = pdf.output('datauristring').split(',')[1];
+      /* 受け口は answers の値を文字列で受ける。複数選択は「A,C」のように1つにつなぐ */
+      var answersOut = {};
+      Object.keys(answers).forEach(function (k) { var v = answers[k]; answersOut[k] = Array.isArray(v) ? v.join(',') : String(v == null ? '' : v); });
       var payload = {
-        name: name, email: email, intake: result.intake, answers: answers,
+        name: name, email: email, intake: result.intake, answers: answersOut,
         result: { type: result.type, headline: result.headline, numbers: result.numbers, release: result.release.map(function (x) { return x.title; }), focus: result.focus.map(function (x) { return x.title; }), priority: result.priority.title },
         pdf: { filename: 'shindan_' + new Date().toISOString().slice(0, 10) + '.pdf', base64: pdfBase64 },
         consultUrl: (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) ? CONSULT_URL.trim() : '',
