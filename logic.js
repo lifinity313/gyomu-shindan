@@ -5,34 +5,36 @@
 
   /* ---------- 質問（場面で聞く） ---------- */
   var QUESTIONS = [
-    /* ---- 入口: 状況と目標（4問） ---- */
-    { id: 'industry', kind: 'intake', icon: '🧑‍💼', title: 'お仕事に一番近いのは？', hint: '',
-      options: { A: '講師・コンサル・コーチ', B: '士業・専門職', C: 'サロン・施術・教室', D: '制作・デザイン・ライター', E: 'その他' } },
+    /* ---- 状況（3問） ---- */
     { id: 'revenue', kind: 'intake', icon: '📊', title: '今の月の売上は？', hint: '直近3か月の平均で',
       options: { A: '10万円まで', B: '10〜30万円', C: '30〜100万円', D: '100〜300万円', E: '300万円以上' } },
     { id: 'worry', kind: 'intake', icon: '💭', title: '今、一番の悩みは？', hint: 'ひとこと添えると、お送りする内容が具体的になります', free: 'ひとことで言うと（任意）',
       options: { A: '集客が安定しない', B: '問い合わせが契約にならない', C: '忙しくて時間がない', D: '売上が頭打ち・単価が安い', E: '何から手をつけるか分からない' } },
     { id: 'goal', kind: 'intake', icon: '🎯', title: '3か月後に一番ほしい変化は？', hint: '1つだけ',
       options: { A: '夜9時に仕事を終える', B: '問い合わせが毎月安定', C: '契約が月2件増える', D: '1週間休んでも回る', E: '売上が1.5倍になる' } },
-    /* ---- 仕事（5問） ---- */
+    /* ---- 時間（3問） ---- */
     { id: 'q1', kind: 'cat', icon: '🕒', title: '先週、一番時間を使った仕事は？', hint: '一番近いものを1つ',
       options: { A: 'SNSの投稿づくり', B: '商談・交流会・提案', C: 'お客さんの対応・納品', D: '事務・日程・資料づくり', E: '商品づくり・企画・学び' } },
     { id: 'hours', kind: 'num', icon: '⏳', title: '「{q1}」に使う時間は、週に？', hint: 'ざっくりでOK',
       options: { A: '5時間以下', B: '5〜10時間', C: '10〜20時間', D: '20〜30時間', E: '30時間以上' } },
-    { id: 'q2', kind: 'cat', icon: '😮‍💨', title: '来週の予定で、一番気が重いのは？', hint: '「これ来るのか」と思うもの',
-      options: { A: '投稿のネタ出し', B: '初対面の商談・交流会', C: '「ちょっと相談いいですか」', D: '月末の請求・資料', E: '商品を考える時間' } },
     { id: 'q3', kind: 'cat', icon: '🤖', title: '自分でなくてもできる作業は？', hint: '人やAIに渡せそうなもの',
       options: { A: '投稿づくり', B: '日程調整・商談の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '思いつかない' } },
-    { id: 'q4', kind: 'cat', icon: '💰', title: '直近の契約は、どこから来た？', hint: '一番最近の1人を思い出して',
-      options: { A: '投稿・広告を見た人', B: '自分から声をかけた人', C: '今のお客さんの継続・追加', D: '紹介・交流会で会った人', E: '思い出せない' } },
-    { id: 'q5', kind: 'cat', icon: '🌤️', title: '丸一日空いたら、何をする？', hint: '義務ではなく、やりたいこと',
-      options: { A: '新しい人に会う・DM', B: '止まっている商談に連絡', C: '今のお客さんに深い提案', D: '商品づくり・学び', E: '手順書と仕組みづくり' } },
-    /* ---- 流れ（1問） ---- */
-    { id: 'q6', kind: 'cat', icon: '🔁', title: '発信と声かけを1か月止めたら？', hint: '新しい問い合わせはどうなる？',
-      options: { A: 'ゼロになる', B: '来るが相談にならない', C: '相談は来るが決まらない', D: '返信が遅れて冷める', E: '1〜2件は来る' } },
-    /* ---- 数字（3問） ---- */
-    { id: 'leads', kind: 'num', icon: '📥', title: '先月、新規の相談は何件？', hint: '問い合わせではなく、話をした件数',
+    /* ---- 集客（2問） ---- */
+    { id: 'reach', kind: 'num', icon: '📣', title: '先月、新しい接点は合わせて何人？', hint: 'フォロワーの増加・名刺・LINE登録を合わせて',
+      options: { A: '5人まで', B: '5〜20人', C: '20〜50人', D: '50〜100人', E: '100人以上' } },
+    { id: 'q4', kind: 'cat', icon: '🧭', title: '新規のお客さんは、主にどこから？', hint: '直近の契約を思い出して',
+      options: { A: '投稿・広告を見た人', B: '自分から声をかけた人', C: '紹介・交流会で会った人', D: 'ホームページ・検索', E: '分からない' } },
+    /* ---- 教育（2問） ---- */
+    { id: 'inquiries', kind: 'num', icon: '📥', title: '先月、問い合わせは何件？', hint: 'DM・フォーム・LINE・紹介の連絡を合わせて',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
+    { id: 'qnext', kind: 'cat', icon: '↩️', title: '問い合わせのあと、次にすることは？', hint: '一番多いもの',
+      options: { A: '日程の候補を送る', B: '資料を送る', C: '質問に答えて終わり', D: '返信が翌日以降になる', E: '問い合わせが無い' } },
+    /* ---- 商談（2問） ---- */
+    { id: 'leads', kind: 'num', icon: '🤝', title: '先月、個別相談は何件？', hint: '実際に話した件数',
+      options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
+    { id: 'qfirst', kind: 'cat', icon: '🗣️', title: '個別相談で、最初にすることは？', hint: '一番多いもの',
+      options: { A: '相手の状況を聞く', B: 'サービスの説明', C: '料金の説明', D: '実績の話', E: '決まっていない' } },
+    /* ---- 成約（2問） ---- */
     { id: 'won', kind: 'num', icon: '✍️', title: 'そのうち、契約は何件？', hint: '',
       options: { A: '0件', B: '1件', C: '2件', D: '3〜4件', E: '5件以上' } },
     { id: 'price', kind: 'num', icon: '💴', title: '1契約の売上は、だいたい？', hint: '一番多い商品で',
@@ -41,6 +43,8 @@
 
   var HOURS = { A: 3, B: 7.5, C: 15, D: 25, E: 35 }; /* その仕事に使う週の時間 */
   var LEADS = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
+  var REACH = { A: 3, B: 12, C: 35, D: 75, E: 150 };
+  var INQ   = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
   var WON   = { A: 0, B: 1, C: 2, D: 3.5, E: 6 };
   var PRICE = { A: 2, B: 6, C: 18, D: 60, E: 150 }; /* 万円 */
 
@@ -84,32 +88,16 @@
                tryToday: '次の企画の下調べを ChatGPT に出させ、自分は読んで判断するだけにする' }
   };
 
-  var BURDEN_SCENE = {
-    A: '日曜の夜、「投稿のネタがない」と検索を始める。',
-    B: '初対面の商談の前日は、話す順番を頭の中で何度も組み直す。',
-    C: '「ちょっと相談いいですか」の通知が鳴ると、今やっている仕事の手が止まる。',
-    D: '月末の請求書と資料は、毎月「今月こそ早めに」と言って、毎月最終日になる。',
-    E: '「新しい商品を考える」と予定に入れた時間は、別の急ぎに取られて消える。'
-  };
-
   /* Q3 → 業務カテゴリ（文言が他の設問と違うので内部で変換） */
   var Q3_MAP = { A: [{ cat: 'sns', pts: 3 }], B: [{ cat: 'sales', pts: 3 }, { cat: 'admin', pts: 1 }], C: [{ cat: 'service', pts: 3 }], D: [{ cat: 'admin', pts: 3 }], E: [] };
 
   var Q4_MAP = {
-    A: { cat: 'sns',      label: '投稿や広告からの DM を、相談まで運ぶこと' },
-    B: { cat: 'sales',    label: '自分から声をかけて商談を作ること' },
-    C: { cat: 'service',  label: '今のお客さんへの価値提供と、継続・追加の提案' },
-    D: { cat: 'referral', label: '紹介や交流会で会った人を、次の約束（30分の相談）まで運ぶこと' },
+    A: { cat: 'sns',      label: '投稿や広告を見た人を、個別相談まで運ぶこと' },
+    B: { cat: 'sales',    label: '自分から声をかけて、個別相談を作ること' },
+    C: { cat: 'referral', label: '紹介や交流会で会った人を、次の約束（個別相談）まで運ぶこと' },
+    D: { cat: 'web',      label: 'ホームページ・検索から来た人を、個別相談の申し込みまで運ぶこと' },
     E: { cat: 'unknown',  label: '直近3件の契約が、どこから来たかを書き出すこと' }
   };
-  var Q5_MAP = {
-    A: { cat: 'sns',      label: '新しい人との接点づくり' },
-    B: { cat: 'sales',    label: '止まっている商談を動かすこと' },
-    C: { cat: 'service',  label: '今のお客さんへの、もう一段深い提案' },
-    D: { cat: 'dev',      label: '商品づくり（学んだことを1つ試す）' },
-    E: { cat: 'strategy', label: '手順書と仕組みづくり' }
-  };
-
   /* Q6 → タイプ */
   var TYPES = {
     A: { where: '集客（新しい人が来る入口）', sign: '投稿や声かけを止めた週は、問い合わせが0件になる', first: '相談の申し込み先を1つ作り、固定投稿とプロフィールに置く',
@@ -170,39 +158,54 @@
   function joinJa(arr) { return arr.map(function (s) { return '「' + s + '」'; }).join(''); }
 
   function diagnose(a) {
-    /* ---------- 数字 ---------- */
-    var leads = LEADS[a.leads], won = Math.min(WON[a.won], LEADS[a.leads] || 0), price = PRICE[a.price];
+    /* ---------- 数字（4段） ---------- */
+    var reach = REACH[a.reach], inquiries = INQ[a.inquiries], leads = LEADS[a.leads], price = PRICE[a.price];
+    var won = Math.min(WON[a.won], leads || 0);
     if (a.leads === 'A') won = 0;
-    var topHours = HOURS[a.hours];                /* 一番時間を使う仕事の週の時間 */
-    var freeWeek = topHours * 0.5;                /* 定型と見る半分 */
-    var freeMonth = freeWeek * 4.3;
-    var dealsFromTime = Math.floor(freeMonth / 1.5);
-    var rate = leads > 0 ? won / leads : null;    /* 成約率 */
-    var dealValue = rate != null ? price * rate : null; /* 商談1件の期待値 */
+    if (a.inquiries === 'A') { leads = Math.min(leads, 0); won = 0; }
+    var topHours = HOURS[a.hours];
+    var freeWeek = topHours * 0.5, freeMonth = freeWeek * 4.3, dealsFromTime = Math.floor(freeMonth / 1.5);
+    var r1 = reach > 0 ? inquiries / reach : null;      /* 集客→教育: 接点のうち問い合わせた割合 */
+    var r2 = inquiries > 0 ? leads / inquiries : null;  /* 教育→商談: 問い合わせのうち相談に進んだ割合 */
+    var r3 = leads > 0 ? won / leads : null;            /* 商談→成約 */
+    var dealValue = r3 != null ? price * r3 : null;
+    var lostInq = Math.max(inquiries - leads, 0);
     var lostCount = Math.max(leads - won, 0);
     var lostMoney = lostCount * price;
+    var pct = function (x) { return x == null ? null : Math.round(x * 100); };
     var numbers = {
+      reach: reach, inquiries: inquiries, leads: leads, won: won, price: price,
+      r1Pct: pct(r1), r2Pct: pct(r2), r3Pct: pct(r3), ratePct: pct(r3), rate: r3,
+      dealValue: dealValue != null ? round1(dealValue) : null,
+      lostInq: lostInq, lostCount: lostCount, lostMoney: lostMoney,
       topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
-      leads: leads, won: won, rate: rate, ratePct: rate != null ? Math.round(rate * 100) : null,
-      price: price, dealValue: dealValue != null ? round1(dealValue) : null, lostCount: lostCount, lostMoney: lostMoney,
       formulas: [
-        '手放すと浮く時間 ＝ 週' + topHours + '時間 × 半分（定型の作業とみなす） ＝ 週' + round1(freeWeek) + '時間 ＝ 月' + round1(freeMonth) + '時間',
-        '商談に換算 ＝ 月' + round1(freeMonth) + '時間 ÷ 1.5時間（商談1件の準備込み） ＝ ' + dealsFromTime + '件分',
-        rate != null ? '成約率 ＝ 契約' + won + '件 ÷ 相談' + leads + '件 ＝ ' + Math.round(rate * 100) + '%' : '成約率 ＝ 相談0件のため計算できません',
-        dealValue != null ? '商談1件の価値 ＝ ' + man(price) + ' × ' + Math.round(rate * 100) + '% ＝ ' + man(dealValue) : '商談1件の価値 ＝ 相談が1件あれば計算できます',
-        '検討のまま消えた金額（月） ＝ （相談' + leads + '件 − 契約' + won + '件）× ' + man(price) + ' ＝ ' + man(lostMoney)
+        '新しい接点 ' + reach + '人 → 問い合わせ ' + inquiries + '件 → 個別相談 ' + leads + '件 → 契約 ' + won + '件（先月・選んだ幅の代表値）',
+        r2 != null ? '問い合わせ→相談 ＝ ' + leads + ' ÷ ' + inquiries + ' ＝ ' + pct(r2) + '%' : '問い合わせ→相談 ＝ 問い合わせ0件のため出せません',
+        r3 != null ? '相談→契約（成約率） ＝ ' + won + ' ÷ ' + leads + ' ＝ ' + pct(r3) + '%' : '相談→契約 ＝ 相談0件のため出せません',
+        dealValue != null ? '個別相談1件の価値 ＝ ' + man(price) + ' × ' + pct(r3) + '% ＝ ' + man(dealValue) : '個別相談1件の価値 ＝ 相談が1件あれば出せます',
+        '検討のまま消えた金額（月） ＝ （相談' + leads + '件 − 契約' + won + '件）× ' + man(price) + ' ＝ ' + man(lostMoney),
+        '手放すと浮く時間 ＝ 週' + topHours + '時間 × 半分（定型の作業とみなす） ＝ 月' + round1(freeMonth) + '時間 ＝ 商談' + dealsFromTime + '件分'
       ]
     };
 
-    /* ---------- 手放す候補（Q1・Q2・Q3） ---------- */
+    /* ---------- 止まっている場所（数字と行動から判定） ---------- */
+    /* 優先順: 返信が翌日以降(D) → 問い合わせが相談に進まない(B) → 相談が契約にならない(C) → 接点が少ない(A) → 回っている(E) */
+    var typeKey;
+    if (a.qnext === 'D' && inquiries > 0) typeKey = 'D';
+    else if (inquiries > 0 && (r2 != null && r2 < 0.5 || a.qnext === 'C')) typeKey = 'B';
+    else if (leads > 0 && (r3 != null && r3 < 0.34 || a.qfirst === 'B' || a.qfirst === 'C' || a.qfirst === 'D')) typeKey = 'C';
+    else if (reach <= 12 || inquiries === 0) typeKey = 'A';
+    else typeKey = 'E';
+    var t = TYPES[typeKey];
+
+    /* ---------- 手放す候補（一番時間を使った仕事 × 自分でなくてもできる作業） ---------- */
     var score = {}, hits = {};
     function add(cat, pts, tag) { score[cat] = (score[cat] || 0) + pts; hits[cat] = hits[cat] || []; if (tag && hits[cat].indexOf(tag) < 0) hits[cat].push(tag); }
     add(CAT_BY_LETTER[a.q1], 2, 'time');
-    add(CAT_BY_LETTER[a.q2], 2, 'burden');
     Q3_MAP[a.q3].forEach(function (m) { add(m.cat, m.pts, m.pts >= 3 ? 'delegable' : null); });
     var revenueCat = Q4_MAP[a.q4].cat;
     var order = ['sns', 'sales', 'service', 'admin', 'dev'];
-    /* 手放す対象は導線の中の手作業だけ。顧客対応は Q3 で本人が「定型の返信」を選んだときだけ、商品づくり・経営は対象外 */
     var eligible = Object.keys(score).filter(function (cat) {
       if (cat === 'dev') return false;
       if (cat === 'service') return a.q3 === 'C';
@@ -213,87 +216,60 @@
     if (!ranked.length) { ranked = ['admin']; fallback = true; }
     var release = ranked.map(function (cat) {
       var c = CATS[cat], tags = hits[cat] || [], names = [];
-      if (tags.indexOf('time') >= 0) names.push('画面に一番長く映っていた');
-      if (tags.indexOf('burden') >= 0) names.push('予定表でため息が出る');
-      if (tags.indexOf('delegable') >= 0) names.push('人に「自分でやらなくていい」と言われた');
-      var why = names.length ? joinJa(names) + '仕事の中の、手作業の部分です。' : (fallback ? '回答からは絞れないので、導線の中で一番手作業が多い日程調整と請求から始めます。' : '「日程調整と商談前の準備」に含まれる事務です。');
+      if (tags.indexOf('time') >= 0) names.push('一番時間を使っている');
+      if (tags.indexOf('delegable') >= 0) names.push('自分でなくてもできると答えた');
+      var why = names.length ? joinJa(names) + '仕事の中の、手作業の部分です。' : (fallback ? '回答からは絞れないので、手作業が一番多い日程調整と請求から始めます。' : '「日程調整・商談の準備」に含まれる事務です。');
       var isRevenue = (cat === revenueCat);
-      if (isRevenue) why += 'ただし直近の契約はここから来ています。業務ごと手放すのではなく、定型の作業だけを切り出します。「' + c.keep + '」は自分に残します。';
-      else if (cat === 'dev') why += '「' + c.keep + '」は手放さず、その前の準備作業だけを任せます。';
+      if (isRevenue) why += 'ただし新規のお客さんはここから来ています。仕事ごと手放すのではなく、定型の作業だけを切り出します。「' + c.keep + '」は自分に残します。';
       else why += '「' + c.keep + '」だけ残して、あとは任せる形です。';
       return { cat: cat, category: c.label, icon: c.icon, color: c.color, title: c.routine, why: why, revenueProtected: isRevenue, tryToday: c.tryToday, tools: c.tools, prompt: c.prompt };
     });
     var topCat = ranked[0];
     var releaseNote = '';
-    if (CAT_BY_LETTER[a.q1] === 'service' && a.q3 !== 'C') releaseNote = 'お客さんへの対応とサービス提供は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
-    if (CAT_BY_LETTER[a.q1] === 'dev') releaseNote = '商品づくり・企画・経営は手放しません。その前の下調べと資料の整形だけを任せます。';
+    if (CAT_BY_LETTER[a.q1] === 'service' && a.q3 !== 'C') releaseNote = 'お客さんへの対応と納品は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
+    if (CAT_BY_LETTER[a.q1] === 'dev') releaseNote = '商品づくり・企画・学びは手放しません。その前の下調べと資料の整形だけを任せます。';
     if (topCat === CAT_BY_LETTER[a.q1]) {
-      releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、商談' + dealsFromTime + '件分の時間が戻ります。';
+      releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、個別相談' + dealsFromTime + '件分の時間が戻ります。';
     }
 
-    /* ---------- 集中する仕事（Q4・Q5） ---------- */
-    var rev = Q4_MAP[a.q4], want = Q5_MAP[a.q5], focus = [], focusNote = '';
+    /* ---------- 集中する仕事（新規のお客さんの出どころ × 止まっている場所） ---------- */
+    var rev = Q4_MAP[a.q4], focus = [], focusNote = '';
     if (rev.cat === 'unknown') {
-      focus.push({ title: rev.label, why: '直近の契約がどこから来たか思い出せない状態では、集中先を決められません。契約3件の出どころを書き出すと、たいてい1つに偏っています。そこが集中先です。' });
-      focus.push({ title: want.label, why: '空いた1日にやりたいこととして選ばれました。出どころが分かるまでは、週の2割までで試します。' });
-    } else if (rev.cat === want.cat) {
-      focus.push({ title: rev.label, why: '直近の契約はここから来ていて、空いた1日にやりたいこともここです。手放して浮いた時間は、迷わずここに入れます。' });
+      focus.push({ title: rev.label, why: '新規のお客さんがどこから来たか分からない状態では、集中先を決められません。契約3件の出どころを書き出すと、たいてい1つに偏っています。そこが集中先です。' });
     } else {
-      focus.push({ title: rev.label, why: '直近の契約はここから来ています。やりたいことと違っても、今の売上を作っている活動なので先に守ります。' });
-      focus.push({ title: want.label, why: (want.cat === 'dev' || want.cat === 'strategy') ? '空いた1日にやりたいこと。売上を作る活動の時間を確保したうえで、週に決まった時間を切り分けて進めます。' : '空いた1日にやりたいこと。まだ契約の実績が無いので、上を守ったうえで小さく試して効果を見ます。' });
-      focusNote = '「売上を作っている活動」と「やりたい活動」が違います。やりたい方から始めると、今の売上が先に落ちます。';
+      focus.push({ title: rev.label, why: '新規のお客さんはここから来ています。今の売上を作っている入口なので、先に守ります。' });
     }
+    focus.push({ title: t.first, why: '止まっている場所（' + t.where + '）を直す仕事です。上の入口を守ったうえで、ここに時間を入れます。' });
 
-    /* ---------- 次の一手（Q6・Q7） ---------- */
-    var t = TYPES[a.q6];
-    var bridge = t.q7[a.goal];
-    var priority = { title: t.title, text: t.text, bridge: bridge };
+    /* ---------- 次の一手 ---------- */
+    var priority = { title: t.title, text: t.text, bridge: t.q7[a.goal] };
 
-    /* ---------- 因果（タイプ × 数字） ---------- */
+    /* ---------- 因果（止まっている場所 × 数字） ---------- */
     var cause;
-    if (a.q6 === 'A') {
-      cause = '新規の数は「あなたが動いた分 × 発信の本数」で決まっています。先月の相談' + leads + '件は、あなたの手で作った分です。稼働はこれ以上増やせないので、同じ稼働で相談が増える形（入口の自動化）に変えるしかありません。';
-    } else if (a.q6 === 'B') {
-      cause = leads > 0
-        ? '先月、相談まで進んだのは' + leads + '件、契約は' + won + '件。問い合わせの数はもっと多いはずです。問い合わせ→相談の率を数えていないので、どこで消えているかが見えていません。'
-        : '先月、相談まで進んだ人は0件。問い合わせは来ているのに、相談の場が1つも作れていません。入口の「次の一歩」が無いからです。';
-    } else if (a.q6 === 'C') {
-      cause = leads > 0
-        ? '先月、相談' + leads + '件のうち契約' + won + '件。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。新しい集客より、ここを拾う方が早いです。'
-        : '先月の相談は0件なので成約率は出ません。相談が1件でも入ったら、この数字が動き始めます。';
-    } else if (a.q6 === 'D') {
-      cause = '「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、商談' + dealsFromTime + '件分の時間が戻ります。先月の相談は' + leads + '件なので、この時間だけで相談を倍にできる計算です。';
-    } else {
-      cause = (dealValue != null)
-        ? '相談' + leads + '件→契約' + won + '件（成約率' + Math.round(rate * 100) + '%）、単価' + man(price) + '。相談を1件増やすと期待値' + man(dealValue) + '、成約率を10ポイント上げると月' + man(leads * price * 0.1) + '。どちらが早いかを数字で決めます。'
-        : '先月の相談は0件です。仕組みがあるのに相談が無いなら、入口は動いていません。まず問い合わせ→相談の数を数える所からです。';
-    }
+    if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が「' + Q4_MAP[a.q4].label.replace(/を、.*$/, '') + '」だけなので、あなたが動いた分しか増えません。';
+    else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'C' ? '「質問に答えて終わり」なので、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
+    else if (typeKey === 'C') cause = '個別相談' + leads + '件のうち契約' + won + '件（成約率' + pct(r3) + '%）。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
+    else if (typeKey === 'D') cause = '問い合わせ' + inquiries + '件のうち、個別相談は' + leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
+    else cause = '新しい接点' + reach + '人 → 問い合わせ' + inquiries + '件 → 個別相談' + leads + '件 → 契約' + won + '件。数字は回っています。' + (dealValue != null ? '個別相談1件の価値は' + man(dealValue) + '。成約率を10ポイント上げると月' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
 
-    /* ---------- 場面描写 ---------- */
-    var scene = [CATS[CAT_BY_LETTER[a.q1]].scene, BURDEN_SCENE[a.q2], t.scene].join('\n');
-
-    /* ---------- 今日からできること ---------- */
+    var scene = [CATS[CAT_BY_LETTER[a.q1]].scene, t.scene].join('\n');
     var actions = t.actions.slice();
     actions.push('「' + release[0].title + '」のうち1つを今日だけ任せてみる。例: ' + release[0].tryToday);
 
-    /* ---------- 業務マップ ---------- */
     var map = order.map(function (cat) {
       var tags = hits[cat] || [];
       return { cat: cat, label: CATS[cat].label, icon: CATS[cat].icon, color: CATS[cat].color,
-               time: tags.indexOf('time') >= 0 ? 2 : 0, burden: tags.indexOf('burden') >= 0 ? 2 : 0,
+               time: tags.indexOf('time') >= 0 ? 2 : 0, burden: 0,
                delegable: (Q3_MAP[a.q3].filter(function (m) { return m.cat === cat; })[0] || { pts: 0 }).pts,
-               isRevenue: (revenueCat === cat), isWant: (want.cat === cat), eligible: eligible.indexOf(cat) >= 0 };
+               isRevenue: (revenueCat === cat), isWant: false, eligible: eligible.indexOf(cat) >= 0 };
     });
 
     var byId = {}; QUESTIONS.forEach(function (q) { byId[q.id] = q; });
-    var intake = {
-      industry: byId.industry.options[a.industry], revenue: byId.revenue.options[a.revenue],
-      worry: byId.worry.options[a.worry], worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal]
-    };
+    var intake = { industry: '', revenue: byId.revenue.options[a.revenue], worry: byId.worry.options[a.worry], worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal] };
 
     return {
       intake: intake,
-      typeKey: a.q6, type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
+      typeKey: typeKey, type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
       headline: 'あなたが今、見直すべきなのは' + t.headline + 'です',
       scene: scene, habits: t.habits, cause: cause, alone: t.alone, numbers: numbers, map: map,
       release: release, releaseNote: releaseNote, focus: focus, focusNote: focusNote,
