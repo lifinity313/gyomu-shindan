@@ -27,8 +27,8 @@
     /* ---- 教育（2問） ---- */
     { id: 'inquiries', kind: 'num', icon: '📥', title: '先月、お客さんからの問い合わせは何件？', hint: 'DM・フォーム・LINE・紹介の連絡を合わせて',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
-    { id: 'qnext', kind: 'cat', icon: '↩️', title: '問い合わせが来たら、あなたが最初にすることは？', hint: 'お客さんから連絡が来た直後の、いつもの動き',
-      options: { A: '日程の候補を送る', B: '資料を送る', C: '質問に答えて終わり', D: '返信が翌日以降になる', E: '問い合わせが無い' } },
+    { id: 'qnext', kind: 'cat', icon: '↩️', title: 'お客様から問い合わせが来たら、あなたが最初にすることは？', hint: '一番多いもの',
+      options: { A: '質問に答える', B: '日程の候補を送る', C: '資料を送る', D: '翌日に返信する', E: '問い合わせ自体が来ない' } },
     /* ---- 商談（2問） ---- */
     { id: 'leads', kind: 'num', icon: '🤝', title: '先月、個別相談は何件？', hint: 'お客さんと実際に話した件数',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
@@ -197,7 +197,7 @@
     /* 優先順: 返信が翌日以降(D) → 問い合わせが相談に進まない(B) → 相談が契約にならない(C) → 接点が少ない(A) → 回っている(E) */
     var typeKey, knownNotAsking = false;
     if (a.qnext === 'D' && inquiries > 0) typeKey = 'D';
-    else if (inquiries > 0 && (r2 != null && r2 < 0.5 || a.qnext === 'C')) typeKey = 'B';
+    else if (inquiries > 0 && (r2 != null && r2 < 0.5 || a.qnext === 'A')) typeKey = 'B';
     else if (reach >= 35 && inquiries <= 1.5) { typeKey = 'B'; knownNotAsking = true; } /* 接点は多いのに問い合わせが無い＝教育で止まる */
     else if (leads > 0 && (r3 != null && r3 < 0.34 || a.qfirst === 'B' || a.qfirst === 'C' || a.qfirst === 'D')) typeKey = 'C';
     else if (reach <= 12 || inquiries === 0) typeKey = 'A';
@@ -259,7 +259,7 @@
     var cause;
     if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
     else if (typeKey === 'B' && knownNotAsking) cause = '先月、新しい接点は' + reach + '人なのに、問い合わせは' + inquiries + '件。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「相談するとこうなる」と「申し込み先」が無いためです。';
-    else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'C' ? '「質問に答えて終わり」なので、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
+    else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'A' ? '「質問に答える」だけで終わり、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
     else if (typeKey === 'C') cause = '個別相談' + leads + '件のうち契約' + won + '件（成約率' + pct(r3) + '%）。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
     else if (typeKey === 'D') cause = '問い合わせ' + inquiries + '件のうち、個別相談は' + leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
     else cause = '新しい接点' + reach + '人 → 問い合わせ' + inquiries + '件 → 個別相談' + leads + '件 → 契約' + won + '件。数字は回っています。' + (dealValue != null ? '個別相談1件の価値は' + man(dealValue) + '。成約率を10ポイント上げると月' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
