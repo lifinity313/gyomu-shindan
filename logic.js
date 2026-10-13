@@ -195,9 +195,10 @@
 
     /* ---------- 止まっている場所（数字と行動から判定） ---------- */
     /* 優先順: 返信が翌日以降(D) → 問い合わせが相談に進まない(B) → 相談が契約にならない(C) → 接点が少ない(A) → 回っている(E) */
-    var typeKey;
+    var typeKey, knownNotAsking = false;
     if (a.qnext === 'D' && inquiries > 0) typeKey = 'D';
     else if (inquiries > 0 && (r2 != null && r2 < 0.5 || a.qnext === 'C')) typeKey = 'B';
+    else if (reach >= 35 && inquiries <= 1.5) { typeKey = 'B'; knownNotAsking = true; } /* 接点は多いのに問い合わせが無い＝教育で止まる */
     else if (leads > 0 && (r3 != null && r3 < 0.34 || a.qfirst === 'B' || a.qfirst === 'C' || a.qfirst === 'D')) typeKey = 'C';
     else if (reach <= 12 || inquiries === 0) typeKey = 'A';
     else typeKey = 'E';
@@ -257,6 +258,7 @@
     /* ---------- 因果（止まっている場所 × 数字） ---------- */
     var cause;
     if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
+    else if (typeKey === 'B' && knownNotAsking) cause = '先月、新しい接点は' + reach + '人なのに、問い合わせは' + inquiries + '件。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「相談するとこうなる」と「申し込み先」が無いためです。';
     else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'C' ? '「質問に答えて終わり」なので、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
     else if (typeKey === 'C') cause = '個別相談' + leads + '件のうち契約' + won + '件（成約率' + pct(r3) + '%）。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
     else if (typeKey === 'D') cause = '問い合わせ' + inquiries + '件のうち、個別相談は' + leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
@@ -279,7 +281,7 @@
 
     return {
       intake: intake,
-      typeKey: typeKey, type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
+      typeKey: typeKey, knownNotAsking: knownNotAsking, type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
       headline: 'あなたが今、見直すべきなのは' + t.headline + 'です',
       scene: scene, habits: t.habits, cause: cause, alone: t.alone, numbers: numbers, map: map,
       release: release, releaseNote: releaseNote, focus: focus, focusNote: focusNote,
