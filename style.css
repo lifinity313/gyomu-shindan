@@ -351,3 +351,5 @@ details.formulas li { font-size: 12.5px; color: var(--ink-sub); padding: 4px 0; 
 .rp-p1 .rp-key { margin-top: 12px; }
 .rp-p2 .tiles { grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 6px 0; }
 .rp-p2 .tile { padding: 8px; } .rp-p2 .tile .tv { font-size: 18px; } .rp-p2 .tile .tl { font-size: 10.5px; }
+
+.result-where { font-size: 15px; font-weight: 800; color: var(--coral-dark); text-align: center; margin-top: 8px; }

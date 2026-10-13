@@ -52,11 +52,11 @@
   var CAT_BY_LETTER = { A: 'sns', B: 'sales', C: 'service', D: 'admin', E: 'dev' };
   var CATS = {
     sns:     { label: 'SNS発信・集客', icon: '📣', color: '#ff7a59',
-               scene: '朝いちばんに Instagram を開き、昨日の投稿の数字を見てから1日が始まる。投稿は「今日こそ作り置き」と言いながら、結局その日の分だけ。',
+               scene: '朝いちばんに SNS を開き、昨日の投稿の数字を見てから1日が始まる。投稿は「今日こそ作り置き」と言いながら、結局その日の分だけ。',
                routine: '投稿の下書き・画像づくり・予約投稿',
                keep: '発信の方針と、反応してくれた人への返信',
                tools: ['ChatGPT', 'Canva', '予約投稿ツール'],
-               prompt: 'あなたはSNS運用のプロです。私は【あなたの職業・対象のお客様】です。次のテーマで、Instagram／Threads向けの投稿文を3案、各150字以内で書いてください。1行目は読者が思わず止まる一言にしてください。\nテーマ：【ここにテーマ】\n読者の悩み：【ここに悩み】',
+               prompt: 'あなたはSNS運用のプロです。私は【あなたの職業・対象のお客様】です。次のテーマで、【使っているSNS】向けの投稿文を3案、各150字以内で書いてください。1行目は読者が思わず止まる一言にしてください。\nテーマ：【ここにテーマ】\n読者の悩み：【ここに悩み】',
                tryToday: '次の投稿1本の下書きを ChatGPT に出させ、直すのにかかった時間を測る' },
     sales:   { label: '営業・商談・提案', icon: '🤝', color: '#2bb3a3',
                scene: 'Zoom の前に資料を直し、商談が終わるとまた次の資料。1日に話した人数は多いのに、契約の話まで行った会話は少ない。',
@@ -168,6 +168,8 @@
     if (a.leads === 'A') won = 0;
     if (a.inquiries === 'A') { leads = Math.min(leads, 0); won = 0; }
     var topHours = HOURS[a.hours];
+    /* 本人が答えた幅の文字（例「20〜50人」）。文章には代表値でなくこちらを使う。計算した値には「約」を付ける */
+    var LB = { reach: byIdOpt('reach', a.reach), inquiries: byIdOpt('inquiries', a.inquiries), leads: byIdOpt('leads', a.leads), won: byIdOpt('won', a.won), price: byIdOpt('price', a.price), hours: byIdOpt('hours', a.hours) };
     var freeWeek = topHours * 0.5, freeMonth = freeWeek * 4.3, dealsFromTime = Math.floor(freeMonth / 1.5);
     var r1 = reach > 0 ? inquiries / reach : null;      /* 集客→教育: 接点のうち問い合わせた割合 */
     var r2 = inquiries > 0 ? leads / inquiries : null;  /* 教育→商談: 問い合わせのうち相談に進んだ割合 */
@@ -178,18 +180,19 @@
     var lostMoney = lostCount * price;
     var pct = function (x) { return x == null ? null : Math.round(x * 100); };
     var numbers = {
-      reach: reach, inquiries: inquiries, leads: leads, won: won, price: price,
+      reach: reach, inquiries: inquiries, leads: leads, won: won, price: price, labels: LB,
       r1Pct: pct(r1), r2Pct: pct(r2), r3Pct: pct(r3), ratePct: pct(r3), rate: r3,
       dealValue: dealValue != null ? round1(dealValue) : null,
       lostInq: lostInq, lostCount: lostCount, lostMoney: lostMoney,
       topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
       formulas: [
-        '新しい接点 ' + reach + '人 → 問い合わせ ' + inquiries + '件 → 個別相談 ' + leads + '件 → 契約 ' + won + '件（先月・選んだ幅の代表値）',
-        r2 != null ? '問い合わせ→相談 ＝ ' + leads + ' ÷ ' + inquiries + ' ＝ ' + pct(r2) + '%' : '問い合わせ→相談 ＝ 問い合わせ0件のため出せません',
-        r3 != null ? '相談→契約（成約率） ＝ ' + won + ' ÷ ' + leads + ' ＝ ' + pct(r3) + '%' : '相談→契約 ＝ 相談0件のため出せません',
-        dealValue != null ? '個別相談1件の価値 ＝ ' + man(price) + ' × ' + pct(r3) + '% ＝ ' + man(dealValue) : '個別相談1件の価値 ＝ 相談が1件あれば出せます',
-        '検討のまま消えた金額（月） ＝ （相談' + leads + '件 − 契約' + won + '件）× ' + man(price) + ' ＝ ' + man(lostMoney),
-        '手放すと浮く時間 ＝ 週' + topHours + '時間 × 半分（定型の作業とみなす） ＝ 月' + round1(freeMonth) + '時間 ＝ 商談' + dealsFromTime + '件分'
+        '答えた幅: 新しい接点 ' + LB.reach + ' → 問い合わせ ' + LB.inquiries + ' → 個別相談 ' + LB.leads + ' → 契約 ' + LB.won + '（1契約 ' + LB.price + '）',
+        '計算には幅の真ん中の値を使っています: 接点' + reach + '人・問い合わせ' + inquiries + '件・相談' + leads + '件・契約' + won + '件・単価' + price + '万円。以下はすべて「約」の数字です',
+        r2 != null ? '問い合わせ→相談 ＝ ' + leads + ' ÷ ' + inquiries + ' ＝ 約' + pct(r2) + '%' : '問い合わせ→相談 ＝ 問い合わせ0件のため出せません',
+        r3 != null ? '相談→契約（成約率） ＝ ' + won + ' ÷ ' + leads + ' ＝ 約' + pct(r3) + '%' : '相談→契約 ＝ 相談0件のため出せません',
+        dealValue != null ? '個別相談1件の価値 ＝ ' + man(price) + ' × ' + pct(r3) + '% ＝ 約' + man(dealValue) : '個別相談1件の価値 ＝ 相談が1件あれば出せます',
+        '検討のまま消えた金額（月） ＝ （相談' + leads + '件 − 契約' + won + '件）× ' + man(price) + ' ＝ 約' + man(lostMoney),
+        '手放すと浮く時間 ＝ 週' + topHours + '時間 × 半分（定型の作業とみなす） ＝ 約 月' + round1(freeMonth) + '時間 ＝ 商談' + dealsFromTime + '件分'
       ]
     };
 
@@ -237,7 +240,7 @@
     if (CAT_BY_LETTER[a.q1] === 'service' && q3list.indexOf('C') < 0) releaseNote = 'お客さんへの対応と納品は手放しません。ここはあなたが集中する側です。手放すのは、その前後にある手作業（日程調整・定型の返信・請求）だけです。';
     if (CAT_BY_LETTER[a.q1] === 'dev') releaseNote = '商品づくり・企画・学びは手放しません。その前の下調べと資料の整形だけを任せます。';
     if (topCat === CAT_BY_LETTER[a.q1]) {
-      releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間、個別相談' + dealsFromTime + '件分の時間が戻ります。';
+      releaseNote += (releaseNote ? ' ' : '') + '「' + CATS[topCat].label + '」に週' + LB.hours + '。半分を型にすると月およそ' + round1(freeMonth) + '時間、個別相談' + dealsFromTime + '件分の時間が戻ります。';
     }
 
     /* ---------- 集中する仕事（新規のお客さんの出どころ × 止まっている場所） ---------- */
@@ -257,12 +260,13 @@
 
     /* ---------- 因果（止まっている場所 × 数字） ---------- */
     var cause;
-    if (typeKey === 'A') cause = '先月、新しい接点は' + reach + '人、問い合わせは' + inquiries + '件。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
-    else if (typeKey === 'B' && knownNotAsking) cause = '先月、新しい接点は' + reach + '人なのに、問い合わせは' + inquiries + '件。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「相談するとこうなる」と「申し込み先」が無いためです。';
-    else if (typeKey === 'B') cause = '問い合わせ' + inquiries + '件のうち、個別相談まで進んだのは' + leads + '件（' + pct(r2) + '%）。' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'A' ? '「質問に答える」だけで終わり、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
-    else if (typeKey === 'C') cause = '個別相談' + leads + '件のうち契約' + won + '件（成約率' + pct(r3) + '%）。' + lostCount + '件が「検討します」のまま。単価' + man(price) + 'なら、月' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
-    else if (typeKey === 'D') cause = '問い合わせ' + inquiries + '件のうち、個別相談は' + leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + round1(topHours) + '時間。半分を型にすると月' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
-    else cause = '新しい接点' + reach + '人 → 問い合わせ' + inquiries + '件 → 個別相談' + leads + '件 → 契約' + won + '件。数字は回っています。' + (dealValue != null ? '個別相談1件の価値は' + man(dealValue) + '。成約率を10ポイント上げると月' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
+    if (typeKey === 'A') cause = '先月、新しい接点は' + LB.reach + '、問い合わせは' + LB.inquiries + '。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
+    else if (typeKey === 'B' && knownNotAsking) cause = '先月、新しい接点は' + LB.reach + 'なのに、問い合わせは' + LB.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「相談するとこうなる」と「申し込み先」が無いためです。';
+    else if (typeKey === 'B' && lostInq === 0) cause = '問い合わせ' + LB.inquiries + 'は、今は個別相談まで進んでいます。ただ返信が「質問に答える」だけで、次の約束（日程・資料・質問）を置いていないので、答えだけで満足した人から消えていきます。';
+    else if (typeKey === 'B') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談まで進んだのは' + LB.leads + '（約' + pct(r2) + '%）。約' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'A' ? '「質問に答える」だけで終わり、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
+    else if (typeKey === 'C') cause = '個別相談' + LB.leads + 'のうち契約' + LB.won + '（成約率 約' + pct(r3) + '%）。約' + lostCount + '件が「検討します」のまま。1契約' + LB.price + 'なら、月およそ' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
+    else if (typeKey === 'D') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談は' + LB.leads + '。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + LB.hours + '。半分を型にすると月およそ' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
+    else cause = '新しい接点' + LB.reach + ' → 問い合わせ' + LB.inquiries + ' → 個別相談' + LB.leads + ' → 契約' + LB.won + '。数字は回っています。' + (dealValue != null ? '個別相談1件の価値は約' + man(dealValue) + '。成約率を10ポイント上げると月およそ' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
 
     var scene = [CATS[CAT_BY_LETTER[a.q1]].scene, t.scene].join('\n');
     var actions = t.actions.slice();

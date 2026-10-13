@@ -148,6 +148,7 @@
     result = diagnose(answers);
     $('progress-fill').style.width = '100%';
     $('result-art').innerHTML = funnelSVG(result.funnel.stage);
+    $('r-where').textContent = result.where ? '止まっているのは「' + result.where + '」です。' : '';
     $('r-char').src = 'images/type_' + result.typeKey + '.jpg';
     $('r-type').textContent = result.type;
     $('r-tagline').textContent = result.tagline;
@@ -162,52 +163,59 @@
     var q1label = QUESTIONS.filter(function (x) { return x.id === 'q1'; })[0].options[answers.q1];
     var h1, key, go, stop, consult, reason, consequence;
     if (k === 'A') {
-      h1 = '先月、新しい接点は' + n.reach + '人、問い合わせは' + n.inquiries + '件。新規のお客さん候補が、まず足りていません。';
-      key = { num: String(n.reach), unit: '人', label: '先月、新しくつながった人の数', sub: 'フォロワーの増加・名刺・LINE登録を合わせた数。ここが増えないと、問い合わせも個別相談も増えません。' };
+      h1 = '先月、新しい接点は' + n.labels.reach + '、問い合わせは' + n.labels.inquiries + '。新規のお客さん候補が、まず足りていません。';
+      key = { num: n.labels.reach, unit: '', label: '先月、新しくつながった人の数（答えた幅）', sub: 'フォロワーの増加・名刺・LINE登録を合わせた数。ここが増えないと、問い合わせも個別相談も増えません。' };
       go = '個別相談の申し込み先を1つ作って、固定投稿とプロフィールに置く（予約ページでも、問い合わせフォームでもかまいません）。そのうえで、新しい接点を週に何人作るかを決めて、毎週数える。';
       stop = '';
       reason = '新規のお客さんが、あなたが投稿したり声をかけたりした分しか来ない形だからです。';
       consequence = 'あなたが動けない週は問い合わせが0件になり、売上が稼働で頭打ちになります。';
       consult = 'あなたの今の投稿とプロフィールを見て、申し込み先をどこに置くか、新しい接点を週に何人作るかを一緒に決めます。';
     } else if (k === 'B' && r.knownNotAsking) {
-      h1 = '先月、新しい接点は' + n.reach + '人なのに、問い合わせは' + n.inquiries + '件。知られてはいるのに、問い合わせたくなる所までいっていません。';
-      key = { num: String(n.reach), unit: '人', label: '先月、新しくつながったのに問い合わせに至らなかった人', sub: '接点' + n.reach + '人 − 問い合わせ' + n.inquiries + '件。相談すると何が起きるかと、申し込み先が、投稿とプロフィールに無いためです。' };
+      h1 = '先月、新しい接点は' + n.labels.reach + 'なのに、問い合わせは' + n.labels.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。';
+      key = { num: n.labels.reach, unit: '', label: '先月、新しくつながったのに問い合わせに至らなかった人（答えた幅）', sub: '接点' + n.labels.reach + 'に対して問い合わせ' + n.labels.inquiries + '。相談すると何が起きるかと、申し込み先が、投稿とプロフィールに無いためです。' };
       go = 'プロフィールと固定投稿に「個別相談で決まること」を1行と、申し込み先を置く。次の1週間の投稿のうち2本を、お客さんの「相談前」と「相談後」の話にする。';
       stop = '';
       reason = '投稿やプロフィールに「個別相談で何が決まるか」と「申し込み先」が無いからです。';
       consequence = '接点を増やしても、問い合わせる理由が無いので数は変わりません。';
       consult = 'あなたの投稿とプロフィールを見て、「相談で決まること」の1行と申し込み先の置き方を一緒に決めます。';
+    } else if (k === 'B' && n.lostInq === 0) {
+      h1 = '問い合わせ' + n.labels.inquiries + 'は、今は個別相談まで進んでいます。ただ、返信が「質問に答える」だけなので、次の約束が無い人から消えていきます。';
+      key = { num: n.labels.inquiries, unit: '', label: '先月の問い合わせ（答えた幅）', sub: '返信の最後に次の約束（日程・資料・質問）を置くだけで、この数がそのまま個別相談になります。' };
+      go = '問い合わせに返信するとき、文の最後に必ず約束を1つ置く。例:「来週の火曜か木曜で、30分お話しできますか」。相手が1行返すだけで日程が決まる形にする。';
+      reason = '返信が「質問に答える」だけで、次の約束（日程・資料・質問）を置いていないからです。';
+      consequence = '答えだけで満足した人は戻ってきません。問い合わせの数は同じでも、個別相談が減っていきます。';
+      consult = 'あなたの直近の問い合わせ5件を見て、返信の最後に置く約束の文を一緒に作ります。';
     } else if (k === 'B') {
-      h1 = '問い合わせ' + n.inquiries + '件のうち、個別相談まで進んだのは' + n.leads + '件。問い合わせのあとに次の約束が無いので、途中で消えています。';
-      key = { num: String(n.lostInq), unit: '件', label: '先月、問い合わせたのに個別相談に進まなかった人', sub: '問い合わせ' + n.inquiries + '件 − 個別相談' + n.leads + '件。新しく集めるより、ここを拾う方が早いです。' };
+      h1 = '問い合わせ' + n.labels.inquiries + 'のうち、個別相談まで進んだのは' + n.labels.leads + '。問い合わせのあとに次の約束が無いので、途中で消えています。';
+      key = { num: '約' + n.lostInq, unit: '件', label: '先月、問い合わせたのに個別相談に進まなかった人', sub: '問い合わせ' + n.labels.inquiries + ' − 個別相談' + n.labels.leads + '（幅の真ん中で計算）。新しく集めるより、ここを拾う方が早いです。' };
       go = '問い合わせに返信するとき、文の最後に必ず約束を1つ置く。例:「来週の火曜か木曜で、30分お話しできますか」。相手が1行返すだけで日程が決まる形にする。返信した人の名前と日付を1枚の表に書き、1週間返事が無い人には、同じ約束をもう一度だけ送る。';
       stop = '';
       reason = '問い合わせへの返信の最後に、次の約束（日程・資料・質問）を置いていないからです。';
       consequence = '返信を丁寧にしても往復が増えるだけで、個別相談の数は変わりません。';
       consult = 'あなたの直近の問い合わせ5件を見て、返信の最後に置く約束の文を一緒に作ります。';
     } else if (k === 'C') {
-      h1 = '個別相談' + n.leads + '件のうち、契約は' + n.won + '件。残り' + n.lostCount + '件は「検討します」と言って、そのあと連絡が来ていません。';
-      key = { num: String(n.lostMoney), unit: '万円', label: '先月、個別相談に来たのに契約にならなかった人の売上の合計', sub: n.lostCount + '件 × 1契約' + n.price + '万円 ＝ ' + n.lostMoney + '万円。新しくお客さんを探すより、ここを1件減らす方が早いです。' };
+      h1 = '個別相談' + n.labels.leads + 'のうち、契約は' + n.labels.won + '。残りの約' + n.lostCount + '件は「検討します」と言って、そのあと連絡が来ていません。';
+      key = { num: '約' + n.lostMoney, unit: '万円', label: '先月、個別相談に来たのに契約にならなかった人の売上の合計', sub: '約' + n.lostCount + '件 × 1契約' + n.labels.price + '（幅の真ん中で計算）。新しくお客さんを探すより、ここを1件減らす方が早いです。' };
       go = '個別相談の最初に「何が分かれば決められますか」と聞く。相手が挙げたもの（金額・期間・効果・不安）の順番で説明する。金額は、相手に聞かれる前にこちらから言う。相手は金額を知るまで決められないので、最後まで言わないと「検討します」になります。';
       stop = '';
       reason = '個別相談で、相手が決める基準（金額・期間・効果・不安）を聞く前に、説明を始めているからです。';
       consequence = '個別相談の数を増やしても、同じ割合で「検討します」になります。';
       consult = 'あなたの個別相談の流れ（最初の質問・説明の順番・金額の出し方・最後の一言）を一緒に書き直します。';
     } else if (k === 'D') {
-      h1 = '問い合わせ' + n.inquiries + '件のうち、個別相談は' + n.leads + '件。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。';
-      key = { num: String(Math.round(n.freeMonth)), unit: '時間', label: '毎月、同じ内容の返信と対応に使っている時間', sub: '「' + q1label + '」に週' + n.topHours + '時間。その半分が同じ内容の繰り返しと見た計算です。個別相談' + n.dealsFromTime + '件分の時間です。' };
+      h1 = '問い合わせ' + n.labels.inquiries + 'のうち、個別相談は' + n.labels.leads + '。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。';
+      key = { num: '約' + Math.round(n.freeMonth), unit: '時間', label: '毎月、同じ内容の返信と対応に使っている時間', sub: '「' + q1label + '」に週' + n.labels.hours + '。その半分が同じ内容の繰り返しと見た計算です。個別相談' + n.dealsFromTime + '件分の時間です。' };
       go = '今日の返信を書き出し、同じ内容を2回以上書いたものに印を付ける。印の付いた1つを、そのまま使える返信の文（テンプレート）にして、次からは貼るだけにする。空いた時間で、新しい問い合わせにその日のうちに返す。';
       stop = '';
       reason = '今のお客さんへの返信と対応で手がふさがり、新しい問い合わせへの返信が翌日以降になるからです。';
       consequence = '返すころには相手の気持ちが冷めていて、新しい接点を増やしても受けられません。';
       consult = 'あなたの1週間の対応を書き出して、型にできるものと自分に残すものを一緒に仕分けます。';
     } else {
-      h1 = '先月は、新しい接点' + n.reach + '人 → 問い合わせ' + n.inquiries + '件 → 個別相談' + n.leads + '件 → 契約' + n.won + '件。4つとも動いています。';
+      h1 = '先月は、新しい接点' + n.labels.reach + ' → 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '。4つとも動いています。';
       if (n.dealValue != null) {
         var up = Math.round(n.leads * n.price * 0.1 * 10) / 10;
-        key = { num: String(n.dealValue), unit: '万円', label: '個別相談1件の価値（1契約' + n.price + '万円 × 成約率' + n.ratePct + '%）', sub: '成約率を10ポイント上げると、月' + up + '万円増えます。相談を1件増やすのと、どちらが早いかを数字で決めます。' };
+        key = { num: '約' + n.dealValue, unit: '万円', label: '個別相談1件の価値（1契約' + n.labels.price + ' × 成約率 約' + n.ratePct + '%）', sub: '成約率を10ポイント上げると、月およそ' + up + '万円増えます。相談を1件増やすのと、どちらが早いかを数字で決めます。' };
       } else {
-        key = { num: String(n.inquiries), unit: '件', label: '先月の問い合わせ', sub: '個別相談が1件入れば、相談1件の価値が出せます。' };
+        key = { num: n.labels.inquiries, unit: '', label: '先月の問い合わせ（答えた幅）', sub: '個別相談が1件入れば、相談1件の価値が出せます。' };
       }
       go = '先月の4つの数（新しい接点→問い合わせ→個別相談→契約）を並べる。一番減り幅が大きい所を1つ選び、今月はそこだけを直す。';
       stop = '';
@@ -221,11 +229,11 @@
   function whyBullets(r) {
     var n = r.numbers, out = [];
     var q = {}; QUESTIONS.forEach(function (x) { q[x.id] = x; });
-    out.push('先月の数: 新しい接点' + n.reach + '人 → 問い合わせ' + n.inquiries + '件 → 個別相談' + n.leads + '件 → 契約' + n.won + '件（単価' + n.price + '万円）。');
+    out.push('先月の数（答えた幅）: 新しい接点' + n.labels.reach + ' → 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '（1契約' + n.labels.price + '）。');
     var lab = function (id, v) { return (Array.isArray(v) ? v : [v]).map(function (l) { return q[id].options[l]; }).join('・'); };
     out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせが来たら「' + q.qnext.options[answers.qnext] + '」。');
     out.push('個別相談の最初にするのは「' + q.qfirst.options[answers.qfirst] + '」。');
-    out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.topHours + '時間。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
+    out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.labels.hours + '。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
     return out;
   }
 
@@ -311,10 +319,10 @@
       var v = el('div', 'tv', value); if (unit) v.appendChild(el('small', null, unit)); d.appendChild(v);
       if (sub) d.appendChild(el('div', 'ts', sub)); tiles.appendChild(d);
     }
-    tile('手放すと浮く時間（月）', String(Math.round(n.freeMonth)), '時間', '商談' + n.dealsFromTime + '件分');
-    tile('成約率', n.ratePct == null ? '—' : String(n.ratePct), n.ratePct == null ? '' : '%', '契約' + n.won + '件 ÷ 相談' + n.leads + '件');
-    tile('商談1件の価値', n.dealValue == null ? '—' : String(n.dealValue), n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
-    tile('検討のまま消えた金額（月）', String(n.lostMoney), '万円', '（相談 − 契約）× 単価');
+    tile('手放すと浮く時間（月）', '約' + Math.round(n.freeMonth), '時間', '商談' + n.dealsFromTime + '件分');
+    tile('成約率', n.ratePct == null ? '—' : '約' + n.ratePct, n.ratePct == null ? '' : '%', '契約' + n.labels.won + ' ÷ 相談' + n.labels.leads);
+    tile('商談1件の価値', n.dealValue == null ? '—' : '約' + n.dealValue, n.dealValue == null ? '' : '万円', n.dealValue == null ? '相談が1件あれば出ます' : '単価 × 成約率');
+    tile('検討のまま消えた金額（月）', '約' + n.lostMoney, '万円', '（相談 − 契約）× 単価');
     var fl = $('rp-formulas'); fl.innerHTML = '';
     n.formulas.forEach(function (f) { fl.appendChild(el('li', null, f)); });
     var acts = $('rp-actions'); acts.innerHTML = '';
@@ -381,6 +389,10 @@
     }).then(function (res) {
       if (!res || !res.ok) throw new Error('send failed ' + (res && res.status));
       $('thanks-text').textContent = email + ' 宛に、診断結果の PDF をお送りしました。';
+      var hp = headlineParts(result);
+      $('thanks-consult').textContent = hp.consult;
+      var tb = $('btn-consult-thanks');
+      if (typeof CONSULT_URL === 'string' && CONSULT_URL.trim()) { tb.href = CONSULT_URL.trim(); tb.textContent = CTA_LABEL; tb.hidden = false; } else { tb.hidden = true; }
       show('thanks');
     }).catch(function (err) {
       msg.textContent = '送信できませんでした。時間をおいてもう一度お試しください。';
