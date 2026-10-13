@@ -319,3 +319,26 @@ details.formulas li { font-size: 12.5px; color: var(--ink-sub); padding: 4px 0; 
 /* 複数選択 */
 .option.multi .mark { border-radius: 6px; min-width: 22px; text-align: center; }
 .option.multi.selected .mark::before { content: "✓ "; }
+
+/* ===== v16: キャラ先出しの1枚目 ===== */
+.rp-hero2 { display: flex; gap: 20px; align-items: center; background: linear-gradient(160deg, #ffe3d6, #fff3d6 60%, #e3f6f3); border-radius: 18px; padding: 10px 18px; margin-top: 8px; }
+.rp-char { width: 170px; height: 170px; object-fit: cover; border-radius: 16px; flex: 0 0 170px; }
+.rp-hero2-text .rp-you { font-size: 14px; }
+.rp-type-big { font-size: 36px; font-weight: 900; color: var(--coral-dark); line-height: 1.2; }
+.rp-tagline2 { font-size: 15px; color: var(--ink); margin-top: 6px; font-weight: 700; }
+.rp-situation { margin-top: 12px; background: #fff; border: 1.5px solid var(--sand-dark); border-radius: 14px; padding: 10px 16px; }
+.rp-situation .rp-go-h { color: var(--ink-sub); }
+.rp-situation p { font-size: 14px; line-height: 1.7; }
+.rp-h1b { font-size: 17px; font-weight: 800; line-height: 1.5; margin: 14px 0 10px; padding-left: 10px; border-left: 5px solid var(--coral); }
+.rp-p1 .rp-key { margin-top: 0; padding: 12px 18px; }
+.rp-p1 .rp-key-num { font-size: 48px; }
+.rp-p1 .rp-key-num small { font-size: 20px; }
+.rp-p1 .rp-key-label { font-size: 15px; }
+.rp-p1 .rp-key-sub { font-size: 13px; margin-top: 4px; }
+.rp-p1 .rp-go { margin-top: 12px; padding: 12px 18px; }
+.rp-p1 .rp-go p { font-size: 14.5px; }
+.rp-p1 .rp-go .rp-go-not { font-size: 12.5px; }
+.rp-p1 .rp-cta1 { margin-top: 12px; padding: 10px 18px 12px; }
+.rp-p1 .rp-cta1 .rp-empty { font-size: 14px; }
+.rp-p1 .rp-consult a { padding: 9px 20px; font-size: 14px; }
+.result-char { width: 150px; height: 150px; object-fit: cover; border-radius: 20px; display: block; margin: 0 auto 8px; }

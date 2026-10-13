@@ -148,6 +148,7 @@
     result = diagnose(answers);
     $('progress-fill').style.width = '100%';
     $('result-art').innerHTML = funnelSVG(result.funnel.stage);
+    $('r-char').src = 'images/type_' + result.typeKey + '.jpg';
     $('r-type').textContent = result.type;
     $('r-tagline').textContent = result.tagline;
     $('form-msg').textContent = '';
@@ -220,6 +221,9 @@
     var n = r.numbers, hp = headlineParts(r);
     $('rp-meta').textContent = (answers.leadName ? answers.leadName + ' 様　' : '') + new Date().toLocaleDateString('ja-JP');
     $('rp-type').textContent = r.type;
+    $('rp-tagline').textContent = r.tagline;
+    $('rp-char').src = 'images/type_' + r.typeKey + '.jpg';
+    $('rp-situation').textContent = r.where + 'で止まっています。' + r.sign + '。' + r.scene.split('\n')[1];
     $('rp-stop').textContent = hp.h1;
     $('rp-key-label').textContent = hp.key.label;
     $('rp-key-num').textContent = hp.key.num;
@@ -313,10 +317,12 @@
   /* ---------- PDF（1ページ＝1枚の画像。ボタンの位置に押せるリンクを重ねる） ---------- */
   function buildPdf() {
     var pages = Array.prototype.slice.call(document.querySelectorAll('#report .rp-page'));
+    var imgs = Array.prototype.slice.call(document.querySelectorAll('#report img'));
+    var ready = Promise.all(imgs.map(function (im) { return (im.complete && im.naturalWidth) ? null : new Promise(function (res) { im.onload = res; im.onerror = res; }); }));
     var jsPDF = window.jspdf.jsPDF;
     var pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
     var MM = 210 / 794; // 1px → mm
-    var chain = Promise.resolve();
+    var chain = ready;
     pages.forEach(function (page, i) {
       chain = chain.then(function () {
         return html2canvas(page, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 }).then(function (canvas) {

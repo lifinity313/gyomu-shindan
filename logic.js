@@ -281,7 +281,7 @@
 
     return {
       intake: intake,
-      typeKey: typeKey, knownNotAsking: knownNotAsking, type: t.type, tagline: t.tagline, mood: t.mood, funnel: { stage: t.stage },
+      typeKey: typeKey, knownNotAsking: knownNotAsking, type: t.type, tagline: t.tagline, where: t.where, sign: t.sign, mood: t.mood, funnel: { stage: t.stage },
       headline: 'あなたが今、見直すべきなのは' + t.headline + 'です',
       scene: scene, habits: t.habits, cause: cause, alone: t.alone, numbers: numbers, map: map,
       release: release, releaseNote: releaseNote, focus: focus, focusNote: focusNote,
