@@ -11,18 +11,18 @@
   var screens = { intro: $('screen-intro'), question: $('screen-question'), gate: $('screen-gate'), thanks: $('screen-thanks') };
 
   var OICON = {
-    revenue: { A: '🌱', B: '🌿', C: '🌳', D: '🏢', E: '🏙️' },
     worry: { A: '📉', B: '🤷', C: '⏰', D: '🧱', E: '🧭' },
     goal: { A: '🌙', B: '📈', C: '✍️', D: '🏖️', E: '🚀' },
     q1: { A: '📣', B: '🤝', C: '💬', D: '📄', E: '💡' },
     hours: { A: '◔', B: '◑', C: '◕', D: '●', E: '⏰' },
     q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
-    reach: { A: '👤', B: '👥', C: '👥', D: '🧑‍🤝‍🧑', E: '🏟️' },
+    ck_lead: { A: '⏸️', B: '🚪', C: '🏠', D: '👥', E: '—' },
     q4: { A: '📣', B: '🤝', C: '🧑‍🤝‍🧑', D: '🔍', E: '❓' },
+    ck_edu: { A: '💬', B: '🐢', C: '📋', D: '📄', E: '—' },
     inquiries: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
-    qnext: { A: '💬', B: '📅', C: '📄', D: '🐢', E: '🤷' },
+    ck_talk: { A: '📣', B: '💴', C: '👂', D: '🗓️', E: '—' },
     leads: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
-    qfirst: { A: '👂', B: '📣', C: '💴', D: '🏆', E: '🤷' },
+    ck_close: { A: '🤔', B: '🏷️', C: '📨', D: '🗺️', E: '—' },
     won: { A: '0️⃣', B: '1️⃣', C: '2️⃣', D: '3️⃣', E: '5️⃣' },
     price: { A: '💴', B: '💴', C: '💰', D: '💰', E: '💎' }
   };
@@ -83,7 +83,7 @@
     $('progress-label').textContent = (index + 1) + ' / ' + total;
     $('progress-pct').textContent = pct + '%';
     $('progress-fill').style.width = pct + '%';
-    $('phase').innerHTML = index < INTAKE_COUNT ? '<b>STEP 1</b>　今の状況と目標' : '<b>STEP 2</b>　時間と、集客・教育・商談・成約の数字';
+    $('phase').innerHTML = index < INTAKE_COUNT ? '<b>STEP 1</b>　悩みと目標' : '<b>STEP 2</b>　時間と、集客・教育・商談・成約';
     $('question-icon').textContent = q.icon;
     var q1q = QUESTIONS.filter(function (x) { return x.id === 'q1'; })[0];
     $('question-title').textContent = q.title.replace('{q1}', answers.q1 ? q1q.options[answers.q1] : 'その仕事');
@@ -163,16 +163,16 @@
     var q1label = QUESTIONS.filter(function (x) { return x.id === 'q1'; })[0].options[answers.q1];
     var h1, key, go, stop, consult, reason, consequence;
     if (k === 'A') {
-      h1 = '先月、新しい接点は' + n.labels.reach + '、問い合わせは' + n.labels.inquiries + '。新規のお客さん候補が、まず足りていません。';
-      key = { num: n.labels.reach, unit: '', label: '先月、新しくつながった人の数（答えた幅）', sub: 'フォロワーの増加・名刺・LINE登録を合わせた数。ここが増えないと、問い合わせも個別相談も増えません。' };
+      h1 = '先月の問い合わせは' + n.labels.inquiries + '。' + (n.checks.lead.length ? '当てはまったのは: ' + n.checks.lead.join('／') + '。' : '') + '新規のお客さん候補が、まず足りていません。';
+      key = { num: n.labels.inquiries, unit: '', label: '先月の問い合わせ（答えた幅）', sub: '入口があなたの手にある限り、この数はあなたの稼働で頭打ちです。' };
       go = '個別相談の申し込み先を1つ作って、固定投稿とプロフィールに置く（予約ページでも、問い合わせフォームでもかまいません）。そのうえで、新しい接点を週に何人作るかを決めて、毎週数える。';
       stop = '';
       reason = '新規のお客さんが、あなたが投稿したり声をかけたりした分しか来ない形だからです。';
       consequence = 'あなたが動けない週は問い合わせが0件になり、売上が稼働で頭打ちになります。';
       consult = 'あなたの今の投稿とプロフィールを見て、申し込み先をどこに置くか、新しい接点を週に何人作るかを一緒に決めます。';
     } else if (k === 'B' && r.knownNotAsking) {
-      h1 = '先月、新しい接点は' + n.labels.reach + 'なのに、問い合わせは' + n.labels.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。';
-      key = { num: n.labels.reach, unit: '', label: '先月、新しくつながったのに問い合わせに至らなかった人（答えた幅）', sub: '接点' + n.labels.reach + 'に対して問い合わせ' + n.labels.inquiries + '。相談すると何が起きるかと、申し込み先が、投稿とプロフィールに無いためです。' };
+      h1 = 'フォロワーや名刺は増えているのに、先月の問い合わせは' + n.labels.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。';
+      key = { num: n.labels.inquiries, unit: '', label: '先月の問い合わせ（答えた幅）', sub: '相談すると何が起きるかと、申し込み先が、投稿とプロフィールに無いためです。' };
       go = 'プロフィールと固定投稿に「個別相談で決まること」を1行と、申し込み先を置く。次の1週間の投稿のうち2本を、お客さんの「相談前」と「相談後」の話にする。';
       stop = '';
       reason = '投稿やプロフィールに「個別相談で何が決まるか」と「申し込み先」が無いからです。';
@@ -210,18 +210,18 @@
       consequence = '返すころには相手の気持ちが冷めていて、新しい接点を増やしても受けられません。';
       consult = 'あなたの1週間の対応を書き出して、型にできるものと自分に残すものを一緒に仕分けます。';
     } else {
-      h1 = '先月は、新しい接点' + n.labels.reach + ' → 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '。4つとも動いています。';
+      h1 = '先月は、問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '。当てはまる項目も無く、数字は回っています。'
       if (n.dealValue != null) {
         var up = Math.round(n.leads * n.price * 0.1 * 10) / 10;
         key = { num: '約' + n.dealValue, unit: '万円', label: '個別相談1件の価値（1契約' + n.labels.price + ' × 成約率 約' + n.ratePct + '%）', sub: '成約率を10ポイント上げると、月およそ' + up + '万円増えます。相談を1件増やすのと、どちらが早いかを数字で決めます。' };
       } else {
         key = { num: n.labels.inquiries, unit: '', label: '先月の問い合わせ（答えた幅）', sub: '個別相談が1件入れば、相談1件の価値が出せます。' };
       }
-      go = '先月の4つの数（新しい接点→問い合わせ→個別相談→契約）を並べる。一番減り幅が大きい所を1つ選び、今月はそこだけを直す。';
+      go = '先月の数（問い合わせ→個別相談→契約）を並べる。一番減り幅が大きい所を1つ選び、今月はそこだけを直す。';
       stop = '';
       reason = '4つの数のどこで減っているかを、まだ数えていないからです。';
       consequence = '新しい集客から始めると、減っている所はそのままで、同じ割合で減ります。';
-      consult = 'あなたの4つの数字を一緒に出して、今月直す1か所を決めます。';
+      consult = 'あなたの数字を一緒に出して、今月直す1か所を決めます。';
     }
     return { h1: h1, key: key, stop: stop, go: go, consult: consult, reason: reason, consequence: consequence };
   }
@@ -229,10 +229,11 @@
   function whyBullets(r) {
     var n = r.numbers, out = [];
     var q = {}; QUESTIONS.forEach(function (x) { q[x.id] = x; });
-    out.push('先月の数（答えた幅）: 新しい接点' + n.labels.reach + ' → 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '（1契約' + n.labels.price + '）。');
     var lab = function (id, v) { return (Array.isArray(v) ? v : [v]).map(function (l) { return q[id].options[l]; }).join('・'); };
-    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせが来たら「' + q.qnext.options[answers.qnext] + '」。');
-    out.push('個別相談の最初にするのは「' + q.qfirst.options[answers.qfirst] + '」。');
+    out.push('先月の数（答えた幅）: 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '（1契約' + n.labels.price + '）。');
+    var all = [].concat(n.checks.lead, n.checks.edu, n.checks.talk, n.checks.close);
+    out.push(all.length ? '当てはまった項目: ' + all.join('／') + '。' : '当てはまる項目はありませんでした。');
+    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。');
     out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.labels.hours + '。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
     return out;
   }

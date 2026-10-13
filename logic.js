@@ -5,9 +5,7 @@
 
   /* ---------- 質問（場面で聞く） ---------- */
   var QUESTIONS = [
-    /* ---- 状況（3問） ---- */
-    { id: 'revenue', kind: 'intake', icon: '📊', title: '今の月の売上は？', hint: '直近3か月の平均で',
-      options: { A: '10万円まで', B: '10〜30万円', C: '30〜100万円', D: '100〜300万円', E: '300万円以上' } },
+    /* ---- 状況（2問） ---- */
     { id: 'worry', kind: 'intake', multi: true, icon: '💭', title: '今の悩みは？（いくつでも）', hint: 'ひとこと添えると、お送りする内容が具体的になります', free: 'ひとことで言うと（任意）',
       options: { A: '集客が安定しない', B: '問い合わせが契約にならない', C: '忙しくて時間がない', D: '売上が頭打ち・単価が安い', E: '何から手をつけるか分からない' } },
     { id: 'goal', kind: 'intake', icon: '🎯', title: '3か月後に一番ほしい変化は？', hint: '1つだけ',
@@ -20,22 +18,24 @@
     { id: 'q3', kind: 'cat', multi: true, icon: '🤖', title: '自分でなくてもできる作業は？', hint: '人やAIに渡せそうなもの。いくつでも',
       options: { A: '投稿づくり', B: '日程調整・商談の準備', C: 'お客さんへの定型の返信', D: '請求書・資料づくり', E: '思いつかない' } },
     /* ---- 集客（2問） ---- */
-    { id: 'reach', kind: 'num', icon: '📣', title: '先月、新しい接点は合わせて何人？', hint: 'フォロワーの増加・名刺・LINE登録を合わせて',
-      options: { A: '5人まで', B: '5〜20人', C: '20〜50人', D: '50〜100人', E: '100人以上' } },
+    { id: 'ck_lead', kind: 'check', multi: true, icon: '📣', title: '集客で、当てはまるものは？', hint: '当てはまるものを全部タップ',
+      options: { A: '投稿や声かけを休むと、問い合わせが止まる', B: 'プロフィールに申し込み先が無い', C: '新しい人と会う場に、月1回も出ていない', D: 'フォロワーや名刺は増えるのに、問い合わせが来ない', E: '当てはまるものはない' } },
     { id: 'q4', kind: 'cat', multi: true, icon: '🧭', title: '新規のお客さんは、どこから来た？', hint: '直近の契約を思い出して。いくつでも',
       options: { A: '投稿・広告を見た人', B: '自分から声をかけた人', C: '紹介・交流会で会った人', D: 'ホームページ・検索', E: '分からない' } },
     /* ---- 教育（2問） ---- */
-    { id: 'inquiries', kind: 'num', icon: '📥', title: '先月、お客さんからの問い合わせは何件？', hint: 'DM・フォーム・LINE・紹介の連絡を合わせて',
+    { id: 'ck_edu', kind: 'check', multi: true, icon: '📥', title: '問い合わせの後で、当てはまるものは？', hint: '当てはまるものを全部タップ',
+      options: { A: '質問に答えるだけで終わることが多い', B: '返信が翌日以降になることがある', C: '問い合わせた人の名前を一覧にしていない', D: '資料は送るが、その後こちらから連絡していない', E: '当てはまるものはない' } },
+    { id: 'inquiries', kind: 'num', icon: '📨', title: '先月、お客さんからの問い合わせは何件？', hint: 'DM・フォーム・LINE・紹介の連絡を合わせて。ざっくりで',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
-    { id: 'qnext', kind: 'cat', icon: '↩️', title: 'お客様から問い合わせが来たら、あなたが最初にすることは？', hint: '一番多いもの',
-      options: { A: '質問に答える', B: '日程の候補を送る', C: '資料を送る', D: '翌日に返信する', E: '問い合わせ自体が来ない' } },
     /* ---- 商談（2問） ---- */
-    { id: 'leads', kind: 'num', icon: '🤝', title: '先月、個別相談は何件？', hint: 'お客さんと実際に話した件数',
+    { id: 'ck_talk', kind: 'check', multi: true, icon: '🤝', title: '個別相談で、当てはまるものは？', hint: '当てはまるものを全部タップ',
+      options: { A: 'まず自分のサービスの説明から始める', B: '料金は、聞かれてから言う', C: '相手が何で決めるかを、聞いていない', D: '最後に次の予定を決めずに終わる', E: '当てはまるものはない' } },
+    { id: 'leads', kind: 'num', icon: '🗓️', title: '先月、個別相談は何件？', hint: 'お客さんと実際に話した件数。ざっくりで',
       options: { A: '0件', B: '1〜2件', C: '3〜5件', D: '6〜10件', E: '11件以上' } },
-    { id: 'qfirst', kind: 'cat', icon: '🗣️', title: '個別相談で、あなたが最初にすることは？', hint: '相手と向き合った直後の、いつもの動き',
-      options: { A: '相手の状況を聞く', B: 'サービスの説明', C: '料金の説明', D: '実績の話', E: '決まっていない' } },
     /* ---- 成約（2問） ---- */
-    { id: 'won', kind: 'num', icon: '✍️', title: 'そのうち、契約は何件？', hint: '',
+    { id: 'ck_close', kind: 'check', multi: true, icon: '✍️', title: '契約の前後で、当てはまるものは？', hint: '当てはまるものを全部タップ',
+      options: { A: '「検討します」と言われて、そのあと連絡が来ない', B: '値引きを求められることが多い', C: '契約の返事を、こちらから催促していない', D: '契約後に何をするかを、相談の場で見せていない', E: '当てはまるものはない' } },
+    { id: 'won', kind: 'num', icon: '📝', title: '先月、契約は何件？', hint: '',
       options: { A: '0件', B: '1件', C: '2件', D: '3〜4件', E: '5件以上' } },
     { id: 'price', kind: 'num', icon: '💴', title: '1契約の売上は、だいたい？', hint: '一番多い商品で',
       options: { A: '3万円まで', B: '3〜10万円', C: '10〜30万円', D: '30〜100万円', E: '100万円以上' } }
@@ -43,7 +43,6 @@
 
   var HOURS = { A: 3, B: 7.5, C: 15, D: 25, E: 35 }; /* その仕事に使う週の時間 */
   var LEADS = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
-  var REACH = { A: 3, B: 12, C: 35, D: 75, E: 150 };
   var INQ   = { A: 0, B: 1.5, C: 4, D: 8, E: 13 };
   var WON   = { A: 0, B: 1, C: 2, D: 3.5, E: 6 };
   var PRICE = { A: 2, B: 6, C: 18, D: 60, E: 150 }; /* 万円 */
@@ -162,32 +161,35 @@
   function byIdOpt(id, letter) { var q = QUESTIONS.filter(function (x) { return x.id === id; })[0]; return q.options[letter] || ''; }
 
   function diagnose(a) {
-    /* ---------- 数字（4段） ---------- */
-    var reach = REACH[a.reach], inquiries = INQ[a.inquiries], leads = LEADS[a.leads], price = PRICE[a.price];
+    /* ---------- 数字（問い合わせ→個別相談→契約） ---------- */
+    var inquiries = INQ[a.inquiries], leads = LEADS[a.leads], price = PRICE[a.price];
     var won = Math.min(WON[a.won], leads || 0);
     if (a.leads === 'A') won = 0;
-    if (a.inquiries === 'A') { leads = Math.min(leads, 0); won = 0; }
+    if (a.inquiries === 'A') { leads = 0; won = 0; }
     var topHours = HOURS[a.hours];
-    /* 本人が答えた幅の文字（例「20〜50人」）。文章には代表値でなくこちらを使う。計算した値には「約」を付ける */
-    var LB = { reach: byIdOpt('reach', a.reach), inquiries: byIdOpt('inquiries', a.inquiries), leads: byIdOpt('leads', a.leads), won: byIdOpt('won', a.won), price: byIdOpt('price', a.price), hours: byIdOpt('hours', a.hours) };
+    var LB = { inquiries: byIdOpt('inquiries', a.inquiries), leads: byIdOpt('leads', a.leads), won: byIdOpt('won', a.won), price: byIdOpt('price', a.price), hours: byIdOpt('hours', a.hours) };
     var freeWeek = topHours * 0.5, freeMonth = freeWeek * 4.3, dealsFromTime = Math.floor(freeMonth / 1.5);
-    var r1 = reach > 0 ? inquiries / reach : null;      /* 集客→教育: 接点のうち問い合わせた割合 */
-    var r2 = inquiries > 0 ? leads / inquiries : null;  /* 教育→商談: 問い合わせのうち相談に進んだ割合 */
+    var r2 = inquiries > 0 ? leads / inquiries : null;  /* 教育→商談 */
     var r3 = leads > 0 ? won / leads : null;            /* 商談→成約 */
     var dealValue = r3 != null ? price * r3 : null;
     var lostInq = Math.max(inquiries - leads, 0);
     var lostCount = Math.max(leads - won, 0);
     var lostMoney = lostCount * price;
     var pct = function (x) { return x == null ? null : Math.round(x * 100); };
+    /* チェック（当てはまる項目。「当てはまるものはない」は除く） */
+    var CK = {};
+    ['ck_lead', 'ck_edu', 'ck_talk', 'ck_close'].forEach(function (id) { CK[id] = asList(a[id]).filter(function (l) { return l !== 'E'; }); });
+    var ckText = function (id) { return CK[id].map(function (l) { return byIdOpt(id, l); }); };
     var numbers = {
-      reach: reach, inquiries: inquiries, leads: leads, won: won, price: price, labels: LB,
-      r1Pct: pct(r1), r2Pct: pct(r2), r3Pct: pct(r3), ratePct: pct(r3), rate: r3,
+      inquiries: inquiries, leads: leads, won: won, price: price, labels: LB,
+      r2Pct: pct(r2), r3Pct: pct(r3), ratePct: pct(r3), rate: r3,
       dealValue: dealValue != null ? round1(dealValue) : null,
       lostInq: lostInq, lostCount: lostCount, lostMoney: lostMoney,
       topHours: round1(topHours), freeWeek: round1(freeWeek), freeMonth: round1(freeMonth), dealsFromTime: dealsFromTime,
+      checks: { lead: ckText('ck_lead'), edu: ckText('ck_edu'), talk: ckText('ck_talk'), close: ckText('ck_close') },
       formulas: [
-        '答えた幅: 新しい接点 ' + LB.reach + ' → 問い合わせ ' + LB.inquiries + ' → 個別相談 ' + LB.leads + ' → 契約 ' + LB.won + '（1契約 ' + LB.price + '）',
-        '計算には幅の真ん中の値を使っています: 接点' + reach + '人・問い合わせ' + inquiries + '件・相談' + leads + '件・契約' + won + '件・単価' + price + '万円。以下はすべて「約」の数字です',
+        '答えた幅: 問い合わせ ' + LB.inquiries + ' → 個別相談 ' + LB.leads + ' → 契約 ' + LB.won + '（1契約 ' + LB.price + '）',
+        '計算には幅の真ん中の値を使っています: 問い合わせ' + inquiries + '件・相談' + leads + '件・契約' + won + '件・単価' + price + '万円。以下はすべて「約」の数字です',
         r2 != null ? '問い合わせ→相談 ＝ ' + leads + ' ÷ ' + inquiries + ' ＝ 約' + pct(r2) + '%' : '問い合わせ→相談 ＝ 問い合わせ0件のため出せません',
         r3 != null ? '相談→契約（成約率） ＝ ' + won + ' ÷ ' + leads + ' ＝ 約' + pct(r3) + '%' : '相談→契約 ＝ 相談0件のため出せません',
         dealValue != null ? '個別相談1件の価値 ＝ ' + man(price) + ' × ' + pct(r3) + '% ＝ 約' + man(dealValue) : '個別相談1件の価値 ＝ 相談が1件あれば出せます',
@@ -196,15 +198,17 @@
       ]
     };
 
-    /* ---------- 止まっている場所（数字と行動から判定） ---------- */
-    /* 優先順: 返信が翌日以降(D) → 問い合わせが相談に進まない(B) → 相談が契約にならない(C) → 接点が少ない(A) → 回っている(E) */
+    /* ---------- 止まっている場所（当てはまった項目と数字で判定） ---------- */
+    /* 優先順: 返信が翌日以降(D) → 教育の項目が2つ以上 または 問い合わせ→相談が半分未満(B) → 商談・成約の項目が2つ以上 または 相談→契約が3分の1未満(C) → 集客の項目が2つ以上 または 問い合わせ0件(A) → 回っている(E) */
     var typeKey, knownNotAsking = false;
-    if (a.qnext === 'D' && inquiries > 0) typeKey = 'D';
-    else if (inquiries > 0 && (r2 != null && r2 < 0.5 || a.qnext === 'A')) typeKey = 'B';
-    else if (reach >= 35 && inquiries <= 1.5) { typeKey = 'B'; knownNotAsking = true; } /* 接点は多いのに問い合わせが無い＝教育で止まる */
-    else if (leads > 0 && (r3 != null && r3 < 0.34 || a.qfirst === 'B' || a.qfirst === 'C' || a.qfirst === 'D')) typeKey = 'C';
-    else if (reach <= 12 || inquiries === 0) typeKey = 'A';
-    else typeKey = 'E';
+    var nLead = CK.ck_lead.length, nEdu = CK.ck_edu.length, nDeal = CK.ck_talk.length + CK.ck_close.length;
+    if (CK.ck_edu.indexOf('B') >= 0 && inquiries > 0) typeKey = 'D';
+    else if (inquiries > 0 && (nEdu >= 2 || (r2 != null && r2 < 0.5) || CK.ck_edu.indexOf('A') >= 0)) typeKey = 'B';
+    else if (CK.ck_lead.indexOf('D') >= 0 && inquiries <= 1.5) { typeKey = 'B'; knownNotAsking = true; }
+    else if (leads > 0 && (nDeal >= 2 || (r3 != null && r3 < 0.34) || CK.ck_talk.indexOf('A') >= 0 || CK.ck_talk.indexOf('B') >= 0)) typeKey = 'C';
+    else if (nLead >= 2 || inquiries === 0 || CK.ck_lead.indexOf('A') >= 0) typeKey = 'A';
+    else if (nLead + nEdu + nDeal === 0 && leads > 0 && won > 0) typeKey = 'E';
+    else typeKey = nLead >= nEdu && nLead >= nDeal ? 'A' : (nEdu >= nDeal ? 'B' : 'C');
     var t = TYPES[typeKey];
 
     /* ---------- 手放す候補（一番時間を使った仕事 × 自分でなくてもできる作業） ---------- */
@@ -260,13 +264,14 @@
 
     /* ---------- 因果（止まっている場所 × 数字） ---------- */
     var cause;
-    if (typeKey === 'A') cause = '先月、新しい接点は' + LB.reach + '、問い合わせは' + LB.inquiries + '。新規のお客さん候補が、まず足りていません。入口が' + (q4list.length ? joinJa(q4list.map(function (l) { return byIdOpt('q4', l); })) : '不明') + 'で、あなたが動いた分しか増えません。';
-    else if (typeKey === 'B' && knownNotAsking) cause = '先月、新しい接点は' + LB.reach + 'なのに、問い合わせは' + LB.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「相談するとこうなる」と「申し込み先」が無いためです。';
-    else if (typeKey === 'B' && lostInq === 0) cause = '問い合わせ' + LB.inquiries + 'は、今は個別相談まで進んでいます。ただ返信が「質問に答える」だけで、次の約束（日程・資料・質問）を置いていないので、答えだけで満足した人から消えていきます。';
-    else if (typeKey === 'B') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談まで進んだのは' + LB.leads + '（約' + pct(r2) + '%）。約' + lostInq + '件が、問い合わせのあとで止まっています。' + (a.qnext === 'A' ? '「質問に答える」だけで終わり、次の約束がありません。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
-    else if (typeKey === 'C') cause = '個別相談' + LB.leads + 'のうち契約' + LB.won + '（成約率 約' + pct(r3) + '%）。約' + lostCount + '件が「検討します」のまま。1契約' + LB.price + 'なら、月およそ' + man(lostMoney) + 'が検討の中に残っています。' + (a.qfirst === 'A' ? '' : '相談の最初が「' + QUESTIONS.filter(function (q) { return q.id === 'qfirst'; })[0].options[a.qfirst] + '」で、相手の決める基準を聞く前に説明が始まっています。');
-    else if (typeKey === 'D') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談は' + LB.leads + '。返信が翌日以降になるので、返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + LB.hours + '。半分を型にすると月およそ' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
-    else cause = '新しい接点' + LB.reach + ' → 問い合わせ' + LB.inquiries + ' → 個別相談' + LB.leads + ' → 契約' + LB.won + '。数字は回っています。' + (dealValue != null ? '個別相談1件の価値は約' + man(dealValue) + '。成約率を10ポイント上げると月およそ' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
+    var hit = function (id, l) { return CK[id].indexOf(l) >= 0; };
+    if (typeKey === 'A') cause = '先月の問い合わせは' + LB.inquiries + '。' + (hit('ck_lead', 'A') ? '「投稿や声かけを休むと、問い合わせが止まる」に当てはまる、つまり新規はあなたが動いた分しか来ていません。' : '新規のお客さん候補が、まず足りていません。') + (hit('ck_lead', 'B') ? 'プロフィールに申し込み先が無いので、知った人が次に進めません。' : '');
+    else if (typeKey === 'B' && knownNotAsking) cause = '「フォロワーや名刺は増えるのに、問い合わせが来ない」に当てはまり、先月の問い合わせは' + LB.inquiries + '。知られてはいるのに、問い合わせたくなる所までいっていません。投稿やプロフィールに「個別相談で何が決まるか」と「申し込み先」が無いためです。';
+    else if (typeKey === 'B' && lostInq === 0) cause = '問い合わせ' + LB.inquiries + 'は、今は個別相談まで進んでいます。ただ「' + ckText('ck_edu').join('」「') + '」に当てはまるので、次の約束が無い人から消えていきます。';
+    else if (typeKey === 'B') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談まで進んだのは' + LB.leads + '（約' + pct(r2) + '%）。約' + lostInq + '件が、問い合わせのあとで止まっています。' + (CK.ck_edu.length ? '当てはまったのは: ' + ckText('ck_edu').join('／') + '。返信のあとに次の約束（日程・資料・質問）が無いためです。' : '返信のあとに次の約束（日程・資料・質問）を置いていないためです。');
+    else if (typeKey === 'C') cause = '個別相談' + LB.leads + 'のうち契約' + LB.won + '（成約率 約' + pct(r3) + '%）。約' + lostCount + '件が「検討します」のまま。1契約' + LB.price + 'なら、月およそ' + man(lostMoney) + 'が検討の中に残っています。' + (CK.ck_talk.length + CK.ck_close.length ? '当てはまったのは: ' + ckText('ck_talk').concat(ckText('ck_close')).join('／') + '。相手の決める基準を聞く前に説明が始まっています。' : '');
+    else if (typeKey === 'D') cause = '問い合わせ' + LB.inquiries + 'のうち、個別相談は' + LB.leads + '。「返信が翌日以降になることがある」に当てはまる、つまり返すころには相手の気持ちが冷めています。「' + CATS[CAT_BY_LETTER[a.q1]].label + '」に週' + LB.hours + '。半分を型にすると月およそ' + round1(freeMonth) + '時間が戻り、その日のうちに返せます。';
+    else cause = '問い合わせ' + LB.inquiries + ' → 個別相談' + LB.leads + ' → 契約' + LB.won + '。当てはまる項目も無く、数字は回っています。' + (dealValue != null ? '個別相談1件の価値は約' + man(dealValue) + '。成約率を10ポイント上げると月およそ' + man(leads * price * 0.1) + '増えます。' : '') + '次は、一番減り幅が大きい所を1つ直します。';
 
     var scene = [CATS[CAT_BY_LETTER[a.q1]].scene, t.scene].join('\n');
     var actions = t.actions.slice();
@@ -281,7 +286,7 @@
     });
 
     var byId = {}; QUESTIONS.forEach(function (q) { byId[q.id] = q; });
-    var intake = { industry: '', revenue: byId.revenue.options[a.revenue], worry: asList(a.worry).map(function (l) { return byId.worry.options[l]; }).join('・'), worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal] };
+    var intake = { industry: '', revenue: '', worry: asList(a.worry).map(function (l) { return byId.worry.options[l]; }).join('・'), worryFree: (a.worryFree || '').trim(), goal: byId.goal.options[a.goal] };
 
     return {
       intake: intake,
