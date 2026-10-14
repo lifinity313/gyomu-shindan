@@ -1,205 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="robots" content="noindex">
-<title>売上が伸び悩む原因診断｜あなたの売上は、どこで止まっているか</title>
-<meta name="description" content="約3分。忙しいのに売上が伸びない個人事業主・ひとり社長・講師・コンサルタント向けに、手放す仕事と集中する仕事、売上アップの優先行動を整理する無料診断。結果はPDFでメールにお届けします。">
-<link rel="stylesheet" href="style.css?v=28">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>売上が伸び悩む原因診断｜あなたの売上は、どこで止まっているか</title>
+  <meta name="description" content="15の質問で、集客から成約までの5工程のどこで売上が止まっているかを診断します。3分で終わります。">
+  <script type="module" crossorigin src="./assets/index-DQt8L09N.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-bkFgya0o.css">
 </head>
 <body>
-<div class="app">
-
-  <header class="header">
+  <header class="top">
     <span class="brand">売上が伸び悩む原因診断</span>
-    <span class="brand-sub">無料・3分・結果はPDFでお届け</span>
   </header>
 
-  <!-- ===== 開始画面 ===== -->
-  <section class="screen active" id="screen-intro">
-    <p class="eyebrow">ひとりで事業を回している人へ</p>
-    <h1 class="title">あなたの売上は、<br>どこで止まっているか。</h1>
-    <p class="lead">忙しいのに売上が伸びないのは、頑張りが足りないからではありません。集客→教育→商談→成約のどこか1か所が細くなっていて、毎月そこでお金が消えています。</p>
-    <div class="hero-flow" id="hero-art"></div>
-    <div class="gets">
-      <div class="get"><span class="get-no">1</span><p>止まっている場所<br><small>5つのうち、どれか</small></p></div>
-      <div class="get"><span class="get-no">2</span><p>そこで消えている金額<br><small>あなたの数字で計算</small></p></div>
-      <div class="get"><span class="get-no">3</span><p>まず、やること1つ<br><small>明日からの手順つき</small></p></div>
-    </div>
-    <button class="btn btn-primary btn-big" id="btn-start" type="button">3分で診断する →</button>
-    <p class="start-note">14問・タップだけ・登録なし。結果はPDFでメールに届きます。</p>
-    <p class="trust">対人支援15年、相談2,500人を見てきた Lifinity. が設計しました。</p>
-  </section>
-
-  <!-- ===== 質問画面（入口4問＋診断10問） ===== -->
-  <section class="screen" id="screen-question">
-    <div class="progress" aria-label="進捗">
-      <div class="progress-top"><span class="progress-label" id="progress-label">1 / 14</span><span class="progress-pct" id="progress-pct">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="phase" id="phase"></div>
-    </div>
-    <div class="qcard">
-      <div class="qicon" id="question-icon">🕒</div>
-      <h2 class="question" id="question-title"></h2>
-      <p class="qhint" id="question-hint"></p>
-    </div>
-    <div class="options" id="options" role="group"></div>
-    <div class="free" id="free" hidden>
-      <label class="free-label" id="free-label" for="free-input"></label>
-      <textarea id="free-input" rows="2" maxlength="200" placeholder="例: 投稿は続けているのに問い合わせが月1件"></textarea>
-      <button class="btn btn-primary" id="btn-free-next" type="button">次へ →</button>
-    </div>
-    <div class="nav">
-      <button class="btn btn-ghost" id="btn-back" type="button">← 前の質問へ</button>
-    </div>
-  </section>
-
-  <!-- ===== 結果（タイプだけ）＋メール登録 ===== -->
-  <section class="screen" id="screen-gate">
-    <div class="result-hero">
-      <img class="result-char" id="r-char" alt="">
-      <p class="result-you">あなたは</p>
-      <p class="result-type" id="r-type"></p>
-      <p class="result-tagline" id="r-tagline"></p>
-      <div class="result-flow" id="result-art"></div>
-      <p class="result-where" id="r-where"></p>
-    </div>
-
-    <article class="card card-gate">
-      <h3 class="card-title"><span class="emoji">📩</span>詳しい結果はPDFでお送りします</h3>
-      <ul class="gate-list">
-        <li>あなたの1週間、たぶんこう（場面で描写）</li>
-        <li>あなたの数字（集客→教育→商談→成約の減り幅・個別相談1件の価値・検討で消えた金額）</li>
-        <li>導線の中で手放す作業と、ChatGPTへの頼み方</li>
-        <li>集中する仕事と、売上アップの次の一手</li>
-        <li>今日からできる3つ</li>
-      </ul>
-      <form id="lead-form" novalidate>
-        <label class="fl" for="lead-name">お名前</label>
-        <input class="fi" id="lead-name" type="text" autocomplete="name" placeholder="例: 山田 花子" required>
-        <label class="fl" for="lead-email">メールアドレス</label>
-        <input class="fi" id="lead-email" type="email" autocomplete="email" inputmode="email" placeholder="例: hanako@example.com" required>
-        <p class="privacy">入力いただいた内容は、診断結果PDFの送付と、<span id="privacy-company">Lifinity.</span>からのご案内（売上づくり・協業の情報）に使います。配信はいつでも解除できます。</p>
-        <button class="btn btn-primary btn-big" id="btn-send" type="submit">結果PDFを受け取る →</button>
-        <p class="form-msg" id="form-msg" role="status"></p>
-      </form>
-    </article>
-
-    <div class="nav nav-center">
-      <button class="btn btn-ghost" id="btn-restart" type="button">↻ 診断を最初からやり直す</button>
-    </div>
-  </section>
-
-  <!-- ===== 送信完了 ===== -->
-  <section class="screen" id="screen-thanks">
-    <div class="result-hero">
-      <div class="cta-art">📬</div>
-      <p class="result-type">お送りしました</p>
-      <p class="result-tagline" id="thanks-text"></p>
-    </div>
-    <article class="card card-gate">
-      <h3 class="card-title"><span class="emoji">🗓️</span>導線設計のロードマップ 個別作戦会議</h3>
-      <p class="cta-text" id="thanks-consult"></p>
-      <a class="btn btn-primary" id="btn-consult-thanks" href="#" target="_blank" rel="noopener"></a>
-    </article>
-    <article class="card">
-      <p class="cta-text">数分たっても届かない場合は、迷惑メールフォルダをご確認ください。</p>
-    </article>
-    <div class="nav nav-center">
-      <button class="btn btn-ghost" id="btn-restart2" type="button">↻ もう一度診断する</button>
-    </div>
-  </section>
-
-  <footer class="footer"><span id="footer-company">Lifinity.</span></footer>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-</div>
-
-<!-- ===== PDF用レポート（A4 3枚。画面外で描画して1枚ずつPDF化） ===== -->
-<div class="report" id="report" aria-hidden="true">
-
-  <!-- 1枚目: タイプ → 状況（3文） → 消えているもの → やること → 作戦会議 -->
-  <section class="rp-page rp-p1">
-    <div class="rp-top"><span class="rp-doc"><b>売上が伸び悩む原因診断　結果</b></span><span class="rp-meta" id="rp-meta"></span></div>
-    <div class="rp-hero2">
-      <img class="rp-char" id="rp-char" alt="">
-      <div class="rp-hero2-text">
-        <div class="rp-you">あなたは</div>
-        <div class="rp-type-big" id="rp-type"></div>
-        <div class="rp-tagline2" id="rp-stage"></div>
+  <main id="app">
+    <!-- ===== 入口 ===== -->
+    <section class="screen screen-on" id="screen-intro">
+      <div class="intro">
+        <p class="intro-kicker">ひとりで事業を回す、講師・コンサルタント・コーチ・士業の方へ</p>
+        <h1 class="intro-h1">あなたの売上は、<br>どこで止まっているか。</h1>
+        <p class="intro-lead">集客から成約までの5つの工程を、15の質問で点検します。頑張る場所と、売上が止まっている場所は、たいてい違います。</p>
+        <ol class="flow" aria-label="売上導線の5工程">
+          <li>認知・集客</li><li>興味・リスト獲得</li><li>教育・価値理解</li><li>相談・申込み</li><li>成約・売上化</li>
+        </ol>
+        <div class="gets">
+          <p class="gets-ttl">診断で分かること</p>
+          <ul>
+            <li>止まっている工程と、あなたのタイプ（7種類）</li>
+            <li>5工程の点数と、理解・実践・成果の3軸分析</li>
+            <li>今すぐ直す3つのポイントと、手放せる可能性がある仕事</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-big" id="btn-start" type="button">3分で診断する →</button>
+        <p class="intro-note">全15問・選ぶだけ。結果は画面とPDFでお渡しします。</p>
+        <p class="trust" id="intro-about"></p>
       </div>
-    </div>
-    <div class="rp-situation">
-      <div class="rp-go-h">いま、こうなっています</div>
-      <ol class="rp-sit" id="rp-situation"></ol>
-    </div>
-    <div class="rp-key">
-      <div class="rp-key-num"><span id="rp-key-num"></span><small id="rp-key-unit"></small></div>
-      <div class="rp-key-label" id="rp-key-label"></div>
-      <div class="rp-key-sub" id="rp-key-sub"></div>
-    </div>
-    <div class="rp-go">
-      <div class="rp-go-h">まず、これをやる</div>
-      <p id="rp-go-do"></p>
-    </div>
-    <div class="rp-cta1">
-      <div class="rp-go-h">導線設計のロードマップ 個別作戦会議</div>
-      <div id="rp-consult-body"></div>
-      <p class="rp-worry" id="rp-worry"></p>
-      <div class="rp-consult" id="rp-consult"></div>
-    </div>
-    <div class="rp-foot">1/4　2枚目: 根拠　3枚目: 今日からの手順　4枚目: 補足（5つのタイプ・計算の式）</div>
-  </section>
+    </section>
 
-  <!-- 2枚目: 根拠 -->
-  <section class="rp-page rp-p3b">
-    <div class="rp-top"><span class="rp-doc">売上が伸び悩む原因診断　結果</span><span class="rp-meta">なぜ、そこで止まるのか</span></div>
-    <div class="rp-h2">回答から分かったこと</div>
-    <ul class="rp-why" id="rp-why"></ul>
-    <div class="rp-h2">あなたの1週間、たぶんこう</div>
-    <div class="scene" id="rp-scene"></div>
-    <div class="rp-h2">このタイプがやりがちな3つ</div>
-    <ul class="habits" id="rp-habits"></ul>
-    <div class="rp-h2">なぜ、ひとりだと同じ所で止まるか</div>
-    <p class="rp-alone-text" id="rp-alone"></p>
-    <div class="rp-h2">売上の流れの、細い所</div>
-    <div class="funnel" id="rp-funnel"></div>
-    <p class="rp-cause" id="rp-cause"></p>
-    <div class="rp-foot">2/4</div>
-  </section>
+    <!-- ===== 質問 ===== -->
+    <section class="screen" id="screen-question">
+      <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+      <p class="phase" id="phase"></p>
+      <div class="qcard">
+        <p class="qno" id="qno"></p>
+        <h2 class="qtitle" id="qtitle"></h2>
+        <p class="qhint" id="qhint"></p>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="nav">
+        <button class="btn btn-ghost" id="btn-back" type="button">← 前へ</button>
+      </div>
+    </section>
 
-  <!-- 3枚目: 手順 -->
-  <section class="rp-page rp-p3">
-    <div class="rp-top"><span class="rp-doc">売上が伸び悩む原因診断　結果</span><span class="rp-meta">今日からの手順</span></div>
-    <div class="rp-h2">導線の中で、手放す作業（お客さんへの対応と商品づくりは手放さない）</div>
-    <table class="rp-table" id="rp-release-table"><thead><tr><th>作業</th><th>誰に任せる</th><th>今日やる1つ</th></tr></thead><tbody></tbody></table>
-    <p class="rp-note" id="rp-release-note"></p>
-    <div class="rp-h2">今日からできる3つ</div>
-    <ol class="rp-actions" id="rp-actions"></ol>
-    <p class="rp-after">3つやって1週間で変わらなければ、原因は手順ではなく設計です。そのときは個別相談へ。</p>
-    <div class="rp-h2">ChatGPT にこう頼む（1つ目の作業）</div>
-    <div class="prompt-text" id="rp-prompt"></div>
-    <div class="rp-about" id="rp-about-block"><div class="rp-box-h">誰が見ているか</div><p id="rp-about"></p></div>
-    <div class="rp-foot">3/4</div>
-  </section>
+    <!-- ===== 結果の入口（メール登録） ===== -->
+    <section class="screen" id="screen-gate">
+      <div class="gate-hero">
+        <p class="rs-kicker">あなたの診断結果</p>
+        <h2 class="gate-h1" id="gate-h1"></h2>
+        <p class="rs-type" id="gate-type"></p>
+        <p class="rs-hook" id="gate-hook"></p>
+      </div>
+      <article class="card card-gate">
+        <p class="card-ttl">詳しい結果を表示します</p>
+        <ul class="gate-list">
+          <li>5工程の点数（売上導線の可視化）</li>
+          <li>理解・実践・成果の3軸分析</li>
+          <li>あなたが見落としているかもしれない課題</li>
+          <li>今すぐ改善すべき3つのポイント</li>
+          <li>手放せる可能性がある仕事と、改善後の姿</li>
+        </ul>
+        <form id="lead-form" novalidate>
+          <label class="fl" for="lead-name">お名前</label>
+          <input class="fi" id="lead-name" type="text" autocomplete="name" placeholder="例: 山田 花子" required>
+          <label class="fl" for="lead-email">メールアドレス</label>
+          <input class="fi" id="lead-email" type="email" autocomplete="email" inputmode="email" placeholder="例: hanako@example.com" required>
+          <p class="privacy">入力いただいた内容は、診断結果（PDF）の送付と、<span id="privacy-company">Lifinity.</span>からのご案内（売上づくり・協業の情報）に使います。配信はいつでも解除できます。</p>
+          <button class="btn btn-primary btn-big" id="btn-send" type="submit">結果を表示する →</button>
+          <p class="form-msg" id="form-msg" role="status"></p>
+        </form>
+      </article>
+      <div class="nav nav-center">
+        <button class="btn btn-ghost" id="btn-restart" type="button">↻ 診断を最初からやり直す</button>
+      </div>
+    </section>
 
-  <!-- 4枚目: 補足（5つのタイプ） -->
-  <section class="rp-page rp-p2">
-    <div class="rp-top"><span class="rp-doc">売上が伸び悩む原因診断　結果</span><span class="rp-meta">補足: 5つのタイプ</span></div>
-    <div class="rp-h2">補足: 売上が止まる場所は5つ。あなたは<span id="rp-type-inline"></span></div>
-    <p class="rp-lead">ひとりで事業を回している人の売上は、この5か所のどれかで止まります。1つだけとは限りません。「これもある」と思った行は、2つ目の詰まりです。</p>
-    <table class="rp-table rp-types" id="rp-types"><thead><tr><th>タイプ</th><th>止まっている場所</th><th>よくあるサイン</th><th>まず直すこと</th></tr></thead><tbody></tbody></table>
-    <div class="rp-h2">あなたの数字と、計算の式</div>
-    <div class="tiles" id="rp-tiles"></div>
-    <ul class="rp-formulas" id="rp-formulas"></ul>
-    <div class="rp-foot">4/4　<span id="rp-company">Lifinity.</span>　数字は入力した目安からの概算です</div>
-  </section>
-</div>
+    <!-- ===== 結果 ===== -->
+    <section class="screen" id="screen-result">
+      <div class="result" id="result"></div>
+      <div class="nav nav-center">
+        <button class="btn btn-ghost" id="btn-restart2" type="button">↻ もう一度診断する</button>
+      </div>
+    </section>
+  </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="config.js?v=13"></script>
-<script src="logic.js?v=29"></script>
-<script src="app.js?v=29"></script>
+  <footer class="foot"><span id="foot-company">Lifinity.</span></footer>
+
+  <!-- PDF 用（画面外。結果と同じ HTML を A4 幅で描く） -->
+  <div id="pdf-root" class="pdf-root" aria-hidden="true"></div>
+
+  <script src="./config.js"></script>
 </body>
 </html>
