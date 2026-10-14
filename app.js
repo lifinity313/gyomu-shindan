@@ -18,7 +18,7 @@
     q3: { A: '📣', B: '📅', C: '💬', D: '📄', E: '🤷' },
     ck_lead: { A: '⏸️', B: '🚪', C: '🏠', D: '👥', E: '—' },
     q4: { A: '📣', B: '🤝', C: '🧑‍🤝‍🧑', D: '🔍', E: '❓' },
-    ck_edu: { A: '💬', B: '🐢', C: '📋', D: '📄', E: '—' },
+    qnext: { A: '💬', B: '📅', C: '📄', D: '🐢', E: '🤷' },
     inquiries: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
     ck_talk: { A: '📣', B: '💴', C: '👂', D: '🗓️', E: '—' },
     leads: { A: '0️⃣', B: '1️⃣', C: '3️⃣', D: '6️⃣', E: '🔟' },
@@ -233,7 +233,7 @@
     out.push('先月の数（答えた幅）: 問い合わせ' + n.labels.inquiries + ' → 個別相談' + n.labels.leads + ' → 契約' + n.labels.won + '（1契約' + n.labels.price + '）。');
     var all = [].concat(n.checks.lead, n.checks.edu, n.checks.talk, n.checks.close);
     out.push(all.length ? '当てはまった項目: ' + all.join('／') + '。' : '当てはまる項目はありませんでした。');
-    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。');
+    out.push('新規のお客さんは「' + lab('q4', answers.q4) + '」から。問い合わせが来たら最初にするのは「' + q.qnext.options[answers.qnext] + '」。');
     out.push('先週いちばん時間を使ったのは「' + q.q1.options[answers.q1] + '」で、週' + n.labels.hours + '。自分でなくてもできる作業は「' + lab('q3', answers.q3) + '」。');
     return out;
   }
